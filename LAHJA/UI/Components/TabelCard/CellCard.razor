@@ -1,0 +1,17 @@
+﻿
+
+@if(Value.GetType() ==typeof(RenderFragment))
+{
+    @((RenderFragment)Value)
+}
+else
+{
+    @Value
+}
+
+@code {
+    [Parameter] public object Value { set; get; }
+   
+
+   
+}

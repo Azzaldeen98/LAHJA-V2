@@ -1,0 +1,43 @@
+﻿@page "/email-confirmation"
+@page "/email-confirmation/{Email}"
+
+@using MudBlazor
+
+<MudCard Class="w60 mx-auto my-5 p-6 rounded-lg shadow-lg text-center bg-white dark:bg-gray-900">
+    <MudCardContent>
+        <MudIcon Icon="@Icons.Material.Filled.MarkEmailRead" Color="Color.Primary"  Class="mb-4" />
+        <MudText Typo="Typo.h5" Class="font-bold">@Title</MudText>
+        <MudText Typo="Typo.body1" Class="text-gray-600  dark:text-gray-300 mt-4">@Message</MudText>
+
+        <MudButton Variant="Variant.Text" Color="Color.Primary" Class="mt-6" OnClick="ResendEmail" Disabled="@isResending">
+            @if (isResending)
+            {
+                <MudProgressCircular  Class="mr-2" />
+            }
+            إعادة إرسال الرابط
+        </MudButton>
+    </MudCardContent>
+</MudCard>
+
+@code {
+
+    [Parameter] public string Email { get; set; }
+    [Parameter] public string Title { get; set; } = "تم إرسال رابط التحقق";
+    [Parameter] public string Message { get; set; } = "لقد أرسلنا رابط التحقق إلى بريدك الإلكتروني. يرجى التحقق من صندوق البريد الخاص بك. إذا لم تستلم البريد، يمكنك إعادة إرساله.";
+    [Parameter] public EventCallback OnResend { get; set; }
+
+    private bool isResending = false;
+
+    private async Task ResendEmail()
+    {
+        isResending = true;
+
+        isResending = false;
+
+        if (OnResend.HasDelegate)
+        {
+            await OnResend.InvokeAsync();
+        }
+      
+    }
+}

@@ -1,0 +1,39 @@
+﻿@page "/ReturnExternalLoginPage"
+@using LAHAJ.Loading
+@using LAHJA.Helpers.Enum
+@using LAHJA.Helpers.Services
+@using global::Shared.Constants.Router
+ @inject NavigationManager Navigation
+ @inject AuthService AuthService
+
+<Loading />
+
+@code {
+
+
+    private string Token{ get; set; }
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
+            var queryParams = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query);
+
+
+            if (queryParams.ContainsKey("token"))
+            {
+                var token = queryParams["token"];
+                if (!string.IsNullOrEmpty(token))
+                {
+                    await AuthService.SaveAccessTokenInCookiesAsync(token);
+                    await AuthService.SaveAccessTokenInSessionAsync(token);
+                    await AuthService.SaveLoginTypeAsync(LoginType.Google);
+                    Navigation.NavigateTo(RouterPage.HOME,true);
+                }
+            }
+        }
+        
+    }
+}

@@ -1,0 +1,56 @@
+﻿@* @page "/settings/subscriptions" *@
+@using LAHJA.Data.UI.Components
+@using LAHJA.Data.UI.Components.Plan
+@using LAHJA.Data.UI.Components.ProFileModel
+@using LAHJA.UI.Components.Auth
+@using LAHJA.Data.UI.Templates.Auth 
+@using LAHJA.UI.Components.Plan
+@using LAHJA.UI.Components.ProFile
+@using LAHJA.UI.Components.ProFile.Settings
+@using LAHJA.UI.Components.ProFile.USettings
+
+
+@inject LAHJA.Data.UI.Templates.Profile.TemplateProfile Template
+
+
+
+@if(Template!=null && buildData!=null){
+    <Subscription DataBuild="buildData" />
+}
+
+@code{
+
+    private List<DataBuildUserSubscriptionInfo> buildData;
+
+    protected async override void OnInitialized()
+    {
+
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+
+        if (firstRender)
+        {
+
+            var res= await Template.GetDataBuildSubscriptions();
+            if (res.Succeeded)
+            {
+                buildData = res.Data;
+            }else if (res.HttpCode == 401)
+            {
+                
+            }
+
+            
+        }
+
+
+        StateHasChanged();
+    }
+
+    
+
+
+
+  } 
