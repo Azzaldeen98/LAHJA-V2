@@ -266,54 +266,7 @@
 
 </MudRTLProvider>
 
-<script>
 
-       
-
-    // const drawer = document.getElementById('drawer');
-    // const drawerBorder = document.getElementById('drawer-border');
-    // const toggleButton = document.getElementById('toggle-btn');
-    // let isResizing = false;
-    // let initialMouseX = 0;
-
-    // // Toggle Drawer Open/Close
-    // toggleButton.addEventListener('click', () => {
-    //     if (drawer.style.width === '0px' || drawer.style.width === '') {
-    //         drawer.style.width = '200px';
-    //     } else {
-    //         drawer.style.width = '0px';
-    //     }
-    // });
-
-    // // Start Resizing
-    // drawerBorder.addEventListener('mousedown', (e) => {
-    //     isResizing = true;
-    //     initialMouseX = e.clientX;
-    //     document.body.style.cursor = 'ew-resize';
-    // });
-
-
-    // // Resize Drawer
-    // document.addEventListener('mousemove', (e) => {
-    //     if (!isResizing) return;
-
-    //     const offset = window.innerWidth - e.clientX;
-    //     const minWidth = 200; // Minimum drawer width
-    //     const maxWidth = 1500; // Maximum drawer width
-
-    //     if (offset >= minWidth && offset <= maxWidth) {
-    //         drawer.style.width = `${offset}px`;
-    //     }
-    // });
-
-    // // Stop Resizing
-    // document.addEventListener('mouseup', () => {
-    //     if (isResizing) {
-    //         isResizing = false;
-    //         document.body.style.cursor = '';
-    //     }
-    // });
-</script>
 
 
 @code {
@@ -332,7 +285,7 @@
     }
     private bool _rightToLeft = true;
 
-    
+
 
     private ThemeManagerTheme _themeManager = new();
     private MudThemeProvider _mudThemeProvider;
@@ -512,12 +465,12 @@
                     {
                         var refreshToken = await _tokenService.GetRefreshTokenAsync();
                         var resp = await templateAuth.RefreshToken(new RefreshRequest { RefreshToken = refreshToken });
-                     
+
                         if (resp.Succeeded)
                         {
                             _isAuth = true;
                             tokenn = resp.Data.accessToken;
-                            // await _authService.SaveAccessTokenInSessionAsync(tokenn);
+                            await _authService.SaveAccessTokenInSessionAsync(tokenn);
                             flagauth = false;
 
                         }
@@ -526,8 +479,16 @@
                             NavigationManager.NavigateTo($"Logout/{true}");
                         }
                     }
+                    else
+                    {
+
+                        ////TODO: 8-2
+                        _isAuth = true;
+                        await _authService.SaveAccessTokenInSessionAsync(tokenn);
+                        flagauth = false;
+                    }
                 }
-                else
+                else 
                 {
 
                     await pass.SetAsync("accessToken", "$$$$$");
@@ -540,7 +501,6 @@
            
             }
 
-            await base.OnAfterRenderAsync(firstRender);
         }
         catch { }
         finally

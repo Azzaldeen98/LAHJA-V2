@@ -7,9 +7,11 @@ using Shared.Constants;
 using Shared.Constants.Localization;
 using Shared.Helpers;
 using System.Threading.Tasks;
+using static IdentityModel.OidcConstants;
 namespace LAHJA.Helpers.Services
 {
- 
+
+    ////TODO: 8-2
     public class TokenService : ITokenService
     {
         private readonly IJSRuntime _jsRuntime;
@@ -25,7 +27,11 @@ namespace LAHJA.Helpers.Services
 
             try
             {
-                await PSession.SetAsync(ConstantsApp.ACCESS_TOKEN, token);
+                if (!string.IsNullOrEmpty(token))
+                {
+
+                    await PSession.SetAsync(ConstantsApp.ACCESS_TOKEN, token);
+                }
 
             }
             catch (Exception e)
@@ -50,20 +56,37 @@ namespace LAHJA.Helpers.Services
   
         public async Task SaveTokenAsync(string token)
         {
-            await _jsRuntime.InvokeVoidAsync("localStorageHelper.setItem", ConstantsApp.ACCESS_TOKEN, token);
+            if (!string.IsNullOrEmpty(token))
+            {
+                await _jsRuntime.InvokeVoidAsync("localStorageHelper.setItem", ConstantsApp.ACCESS_TOKEN, token);
+            }
+           
         }
 
         public async Task SaveRefreshTokenAsync(string token)
         {
-            await _jsRuntime.InvokeVoidAsync("localStorageHelper.setItem", ConstantsApp.REFRESH_TOKEN, token);
+            if (!string.IsNullOrEmpty(token))
+            {
+                await _jsRuntime.InvokeVoidAsync("localStorageHelper.setItem", ConstantsApp.REFRESH_TOKEN, token);
+            }
+
+           
         }
         public async Task SaveExpiresInTokenAsync(string expiresIn)
         {
-            await _jsRuntime.InvokeVoidAsync("localStorageHelper.setItem", ConstantsApp.EXPIRES_IN_TOKEN, expiresIn);
+            if (!string.IsNullOrEmpty(expiresIn))
+            {
+                await _jsRuntime.InvokeVoidAsync("localStorageHelper.setItem", ConstantsApp.EXPIRES_IN_TOKEN, expiresIn);
+            }
+           
         }
         public async Task SaveTokenTypeAsync(string tokenType)
         {
-            await _jsRuntime.InvokeVoidAsync("localStorageHelper.setItem", ConstantsApp.TOKEN_TYPE, tokenType);
+            if (!string.IsNullOrEmpty(tokenType))
+            {
+                await _jsRuntime.InvokeVoidAsync("localStorageHelper.setItem", ConstantsApp.TOKEN_TYPE, tokenType);
+            }
+ 
         }
         public async Task SaveLoginTypeAsync(LoginType type)
         {
@@ -75,17 +98,17 @@ namespace LAHJA.Helpers.Services
         }
         public async Task<string> GetLoginTypeAsync()
         {
-            return await _jsRuntime.InvokeAsync<string>("localStorageHelper.setItem", ConstantsApp.LOGIN_TYPE) ?? LoginType.Email.ToString();
+            return await _jsRuntime.InvokeAsync<string>("localStorageHelper.getItem", ConstantsApp.LOGIN_TYPE) ?? LoginType.Email.ToString();
         }
         public async Task<string> GetTokenAsync()
         {
-            return await _jsRuntime.InvokeAsync<string>("localStorageHelper.getItem", ConstantsApp.ACCESS_TOKEN) ?? "";
+            return await _jsRuntime.InvokeAsync<string>("localStorageHelper.getItem", ConstantsApp.ACCESS_TOKEN)??"";
         }  
         
 
         public async Task<string> GetRefreshTokenAsync()
         {
-            return await _jsRuntime.InvokeAsync<string>("localStorageHelper.getItem", ConstantsApp.REFRESH_TOKEN);
+            return await _jsRuntime.InvokeAsync<string>("localStorageHelper.getItem", ConstantsApp.REFRESH_TOKEN) ?? "";
         }
         public async Task<string> GetExpiresInTokenAsync()
         {
@@ -100,12 +123,24 @@ namespace LAHJA.Helpers.Services
             string expiresInToken, string tokenType)
         {
 
+            if (!string.IsNullOrEmpty(accessToken))
+            {
+                await SaveTempTokenAsync(accessToken);
+            }
 
-            await SaveTempTokenAsync(accessToken);
+
             await SaveTokenAsync(accessToken);
+             
             await SaveRefreshTokenAsync(refreshToken);
+             
             await SaveExpiresInTokenAsync(expiresInToken);
+
             await SaveTokenTypeAsync(tokenType);
+            
+        
+          
+           
+          
         }
 
         public async Task RemoveTokenAsync()

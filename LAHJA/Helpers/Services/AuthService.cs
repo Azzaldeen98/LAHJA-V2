@@ -8,6 +8,7 @@ using Microsoft.JSInterop;
 
 namespace LAHJA.Helpers.Services
 {
+    ////TODO: 8-2
     public class AuthService
     {
         private readonly TokenService tokenService;
@@ -100,6 +101,14 @@ namespace LAHJA.Helpers.Services
                 await tokenService.SaveTokenInSessionAsync(token);
 
             }
+        }
+
+        public async Task<string> GetAccessTokenAsync()
+        {
+   
+              return  await tokenService.GetTokenAsync();
+
+            
         }
 
     }
