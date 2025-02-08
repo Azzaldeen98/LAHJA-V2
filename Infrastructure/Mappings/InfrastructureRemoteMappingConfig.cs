@@ -6,8 +6,8 @@ using Domain.ShareData.Base.Auth;
 using Infrastructure.Models.AuthorizationSession;
 using Infrastructure.Models.BaseFolder.Response;
 using Infrastructure.Models.ModelGateway;
-using Infrastructure.Models.Payment.Request;
-using Infrastructure.Models.Payment.Response;
+using Infrastructure.Models.Checkout.Request;
+using Infrastructure.Models.Checkout.Response;
 using Infrastructure.Models.Plans;
 using Infrastructure.Models.Price.Request;
 using Infrastructure.Models.Price.Response;
@@ -70,8 +70,8 @@ namespace Infrastructure.Mappings.Plans
 
 
             /// Payment
-            CreateMap<PaymentCheckoutRequestModel, CheckoutOptions>().ReverseMap();
-            CreateMap<PaymentCheckoutResponseModel, CheckoutResponse>().ReverseMap();
+            CreateMap<CheckoutRequestModel, CheckoutOptions>().ReverseMap();
+            CreateMap<CheckoutResponseModel, CheckoutResponse>().ReverseMap();
             CreateMap<SessionCreateModel, SessionCreate>().ReverseMap();
 
 

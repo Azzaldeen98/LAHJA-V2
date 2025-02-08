@@ -2,9 +2,9 @@
 using AutoMapper;
 using Domain.Wrapper;
 using LAHJA.Helpers.Services;
-using Domain.Entities.Payment.Response;
-using Domain.Entities.Payment;
-using Domain.Entities.Payment.Request;
+using Domain.Entities.Checkout.Response;
+using Domain.Entities.Checkout;
+using Domain.Entities.Checkout.Request;
 
 namespace LAHJA.ApplicationLayer.Payment
 {
@@ -27,20 +27,20 @@ namespace LAHJA.ApplicationLayer.Payment
 
 
 
-        public async Task<Result<PaymentCheckoutResponse>> getPaymentCheckOutPage(PaymentCheckoutRequest request)
+        public async Task<Result<CheckoutResponse>> getCheckoutPage(CheckoutRequest request)
         {
 
-            var result=await paymentService.getPaymentCheckOut(request);
+            var result=await paymentService.getCheckout(request);
             return result;
 
        
 
         }     
         
-        public async Task<Result<PaymentCheckoutResponse>> getPaymentCheckOutManage(SessionCreate request)
+        public async Task<Result<CheckoutResponse>> CheckoutManageAsync(SessionCreate request)
         {
 
-            var result=await paymentService.getPaymentCheckOutManage(request);
+            var result=await paymentService.CheckoutManageAsync(request);
             return result;
 
        

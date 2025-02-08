@@ -1,6 +1,6 @@
-﻿namespace Domain.Entities.Payment
+﻿namespace Domain.Entities.Checkout
 {
-    public class PaymentCheckoutRequest
+    public class CheckoutRequest
     {
         public string? planId { get; set; }
         public string? successUrl { get; set; }

@@ -31,7 +31,7 @@
 
          if (planId != null)
          {
-             var res2 = await Template2.getPaymentCheckoutUrlPage(new DataBuildPaymentBase { PlanId = "price_1Pst3IKMQ7LabgRTZV9VgPex" });
+             var res2 = await Template2.getCheckoutUrlPage(new DataBuildPaymentBase { PlanId = "price_1Pst3IKMQ7LabgRTZV9VgPex" });
              var res = await Template.OnSubmitSubscriptionPlan(new DataBuildPlansBase { PlanId = planId });
              if (res.Succeeded)
              {

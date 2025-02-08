@@ -48,19 +48,23 @@ namespace Infrastructure.Repository.AuthorizationSession
                   async () => _apiClient.ValidateSessionTokenAsync(token)
               );
         }
-        public async Task EncryptFromWebAsync() {
+        public async Task<AuthorizationSessionEncryptResponse> EncryptFromWebAsync() {
 
-                await ExecutorAppMode.ExecuteAsync(
+               var  res= await ExecutorAppMode.ExecuteAsync(
                     async () => _apiClient.EncryptFromWebAsync(),
                     async () => _apiClient.EncryptFromWebAsync()
                 );
+
+            return _mapper.Map<AuthorizationSessionEncryptResponse>(res);
         }
-        public async Task EncryptFromCoreAsync(string sessionToken) {
+        public async Task<AuthorizationSessionEncryptResponse> EncryptFromCoreAsync(string sessionToken) {
 
             await ExecutorAppMode.ExecuteAsync(
                   async () => _apiClient.EncryptFromCoreAsync(sessionToken),
                   async () => _apiClient.EncryptFromCoreAsync(sessionToken)
               );
+
+            return new();
         }
         public async Task<DeleteResponse> DeleteAuthorizationSessionAsync(string sessionId) {
 

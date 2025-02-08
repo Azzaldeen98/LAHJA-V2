@@ -77,8 +77,8 @@ namespace Infrastructure
 
 
             /// Payment
-            serviceCollection.AddScoped<GetPaymentCheckOutUseCase>();
-            serviceCollection.AddScoped<GetPaymentCheckOutManageUseCase>();
+            serviceCollection.AddScoped<GetCheckoutUseCase>();
+            serviceCollection.AddScoped<GetCheckoutManageUseCase>();
 
                
             /// Price

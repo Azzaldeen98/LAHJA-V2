@@ -53,11 +53,15 @@ namespace Infrastructure.DataSource.ApiClient.AuthorizationSession
                 await client.ValidateSessionTokenAsync(token);  
 
         }
-        public async Task EncryptFromWebAsync()
+        public async Task<AuthorizationSessionEncryptResponseModel> EncryptFromWebAsync()
         {
       
-                var client = await GetApiClient();  
+                var client = await GetApiClient();
+
+                ///TODO : this must  will be have return value 
                 await client.EncryptFromWebAsync(); 
+               /// Not added now to mapping
+               return _mapper.Map<AuthorizationSessionEncryptResponseModel>(client);
         }
 
         public async Task EncryptFromCoreAsync(string sessionToken)

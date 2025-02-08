@@ -2,7 +2,7 @@
 using Domain.Repository.AuthorizationSession;
 using Domain.Repository.Billing;
 using Domain.Repository.CreditCard;
-using Domain.Repository.Payment;
+using Domain.Repository.Checkout;
 using Domain.Repository.Plans;
 using Domain.Repository.Price;
 using Domain.Repository.Product;
@@ -80,7 +80,7 @@ namespace Infrastructure
             serviceCollection.AddScoped(typeof(IBuildApiClient<>), typeof(BuildApiClient<>));
             serviceCollection.AddScoped<AuthApiClient>();
             serviceCollection.AddScoped<PlansApiClient>();
-            serviceCollection.AddScoped<PaymentApiClient>();
+            serviceCollection.AddScoped<CheckoutApiClient>();
             serviceCollection.AddScoped<PriceApiClient>();
             serviceCollection.AddScoped<ProductApiClient>();
             serviceCollection.AddScoped<SubscriptionsApiClient>();
@@ -120,7 +120,7 @@ namespace Infrastructure
         private static void InstallRepositories(this IServiceCollection serviceCollection)
         {
             serviceCollection.AddScoped<IPlansContainerRepository, PlansContainerRepository>();
-            serviceCollection.AddScoped<IPaymentRepository, PaymentRepository>();
+            serviceCollection.AddScoped<ICheckoutRepository, CheckoutRepository>();
             serviceCollection.AddScoped<IPlansRepository,PlansRepository>();
             serviceCollection.AddScoped<IUsersRepository,UsersRepository>();
             serviceCollection.AddScoped<IAuthRepository,AuthRepository>();

@@ -3,7 +3,7 @@ using LAHJA.Data.UI.Components.Base;
 using Domain.Entities.Auth.Request;
 using LAHJA.Data.UI.Components.Category;
 using LAHJA.Data.UI.Templates.Payment;
-using Domain.Entities.Payment;
+using Domain.Entities.Checkout;
 using LAHJA.Data.UI.Components.Plan;
 using LAHJA.Data.UI.Components.Payment.DataBuildBillingBase;
 using Domain.Entities.Billing.Response;
@@ -118,7 +118,7 @@ namespace LAHJA.Mappings
 
             /// Payment
             
-            CreateMap<PaymentCheckoutRequest, DataBuildPaymentBase>().ReverseMap();
+            CreateMap<CheckoutRequest, DataBuildPaymentBase>().ReverseMap();
 
             /// Billing
 

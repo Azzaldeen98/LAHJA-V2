@@ -7,10 +7,10 @@ using Domain.Entities.Auth.Request;
 using Infrastructure.Models.Profile.Response;
 using Domain.ShareData.Base.Auth;
 using Infrastructure.Models.Auth.Response;
-using Domain.Entities.Payment;
-using Infrastructure.Models.Payment.Request;
-using Infrastructure.Models.Payment.Response;
-using Domain.Entities.Payment.Response;
+using Domain.Entities.Checkout;
+using Infrastructure.Models.Checkout.Request;
+using Infrastructure.Models.Checkout.Response;
+using Domain.Entities.Checkout.Response;
 using Infrastructure.Models.BaseFolder.Response;
 using Domain.ShareData.Base;
 using Infrastructure.Models.Price.Response;
@@ -93,8 +93,8 @@ namespace Infrastructure.Mappings.Plans
            
 
             /// Payment
-            CreateMap<PaymentCheckoutRequestModel, PaymentCheckoutRequest>().ReverseMap();
-            CreateMap<PaymentCheckoutResponseModel, PaymentCheckoutResponse>().ReverseMap();
+            CreateMap<CheckoutRequestModel, CheckoutRequest>().ReverseMap();
+            CreateMap<CheckoutResponseModel, CheckoutResponse>().ReverseMap();
 
             CreateMap<DeleteResponseModel, DeleteResponse>().ReverseMap();
 
@@ -167,6 +167,8 @@ namespace Infrastructure.Mappings.Plans
             CreateMap<AuthorizationWebRequest, AuthorizationWebRequestModel>().ReverseMap();
             CreateMap<AuthorizationSessionWebResponseModel, AuthorizationSessionWebResponse>().ReverseMap();
             CreateMap<AuthorizationSessionCoreResponseModel, AuthorizationSessionCoreResponse>().ReverseMap();
+            CreateMap<AuthorizationSessionEncryptResponseModel, AuthorizationSessionEncryptResponse>().ReverseMap();
+
 
             //// ModelGateway
             CreateMap<ModelGatewayResponseModel,ModelGatewayResponse>().ReverseMap();

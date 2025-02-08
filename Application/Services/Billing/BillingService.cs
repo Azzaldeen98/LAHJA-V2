@@ -2,9 +2,9 @@
 using Application.UseCase.Plans.Get;
 using Domain.Entities.Billing.Request;
 using Domain.Entities.Billing.Response;
-using Domain.Entities.Payment;
-using Domain.Entities.Payment.Request;
-using Domain.Entities.Payment.Response;
+using Domain.Entities.Checkout;
+using Domain.Entities.Checkout.Request;
+using Domain.Entities.Checkout.Response;
 using Domain.Entities.Plans.Response;
 using Domain.ShareData.Base;
 using Domain.Wrapper;

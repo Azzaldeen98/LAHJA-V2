@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Domain.Wrapper;
 using Infrastructure.DataSource.ApiClientFactory;
-using Infrastructure.Models.Payment.Request;
-using Infrastructure.Models.Payment.Response;
+using Infrastructure.Models.Checkout.Request;
+using Infrastructure.Models.Checkout.Response;
 using Infrastructure.Nswag;
 using Microsoft.Extensions.Configuration;
 using Infrastructure.DataSource.ApiClient.Base;
@@ -63,7 +63,7 @@ namespace Infrastructure.DataSource.ApiClient.Billing
                 //var response = await client.ManageAsync(model);
 
 
-                //var resModel = _mapper.Map<PaymentCheckoutResponseModel>(response);
+                //var resModel = _mapper.Map<CheckoutResponseModel>(response);
                 return Result<List<CardDetailsResponseModel>>.Success();
 
             }

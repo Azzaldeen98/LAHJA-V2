@@ -1,26 +1,26 @@
-﻿using Domain.Entities.Payment;
-using Domain.Entities.Payment.Response;
+﻿using Domain.Entities.Checkout;
+using Domain.Entities.Checkout.Response;
 using Domain.Entities.Plans.Response;
-using Domain.Repository.Payment;
+using Domain.Repository.Checkout;
 using Domain.Repository.Plans;
 using Domain.Wrapper;
 
 namespace Application.UseCase.Plans.Get
 {
-    public class GetPaymentCheckOutUseCase
+    public class GetCheckoutUseCase
     {
-        private readonly IPaymentRepository repository;
-        public GetPaymentCheckOutUseCase(IPaymentRepository repository)
+        private readonly ICheckoutRepository repository;
+        public GetCheckoutUseCase(ICheckoutRepository repository)
         {
 
             this.repository = repository;
         }
 
 
-        public async Task<Result<PaymentCheckoutResponse>> ExecuteAsync(PaymentCheckoutRequest request)
+        public async Task<Result<CheckoutResponse>> ExecuteAsync(CheckoutRequest request)
         {
 
-            return await repository.getPaymentCheckoutPage(request);
+            return await repository.CheckoutAsync(request);
 
         }
     }

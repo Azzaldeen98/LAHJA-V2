@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Domain.Exceptions;
 using Domain.Wrapper;
 using Infrastructure.DataSource.ApiClient.Base;
 using Infrastructure.DataSource.ApiClientFactory;
@@ -17,28 +18,21 @@ namespace Infrastructure.DataSource.ApiClient.Service
         {
         }
 
-        public async Task<Result<List<ServiceResponseModel>>> GetAllAsync()
+        public async Task<List<ServiceResponseModel>> GetAllAsync()
         {
             try
             {
            
                 var client = await GetApiClient();
                 var response = await client.GetServicesAsync();
-
-
-                var resModel = _mapper.Map<List<ServiceResponseModel>>(response);
-                return Result<List<ServiceResponseModel>>.Success(resModel);
+                 return _mapper.Map<List<ServiceResponseModel>>(response);
+               
 
             }
             catch (ApiException e)
             {
-
-                return Result<List<ServiceResponseModel>>.Fail(e.Response, httpCode: e.StatusCode);
-
-            }catch (Exception e) 
-            {
-
-                return Result<List<ServiceResponseModel>>.Fail(e.Message);
+                throw new ServerException(e.Message, e.StatusCode);
+                //return Result<List<ServiceResponseModel>>.Fail(e.Response, httpCode: e.StatusCode);
 
             }
 
@@ -47,7 +41,7 @@ namespace Infrastructure.DataSource.ApiClient.Service
 
         }
 
-        public async Task<Result<ServiceResponseModel>> GetOneAsync(string id)
+        public async Task<ServiceResponseModel> GetOneAsync(string id)
         {
             try
             {
@@ -55,15 +49,14 @@ namespace Infrastructure.DataSource.ApiClient.Service
                 var client = await GetApiClient();
                 var response = await client.GetServiceAsync(id);
 
-
                 var resModel = _mapper.Map<ServiceResponseModel>(response);
-                return Result<ServiceResponseModel>.Success(resModel);
+                return resModel;
 
             }
             catch (ApiException e)
             {
-
-                return Result<ServiceResponseModel>.Fail(e.Response, httpCode: e.StatusCode);
+                throw new ServerException(e.Message,e.StatusCode);
+                //return Result<ServiceResponseModel>.Fail(e.Response, httpCode: e.StatusCode);
 
             }
 

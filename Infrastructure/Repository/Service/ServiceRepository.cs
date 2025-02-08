@@ -13,6 +13,7 @@ using Domain.Entities.Service.Response;
 using Domain.Entities.Service.Request;
 using Infrastructure.Models.Service.Request;
 using System.Text.Json.Serialization;
+using Domain.Exceptions;
 
 
 namespace Infrastructure.Repository.Services
@@ -39,38 +40,41 @@ namespace Infrastructure.Repository.Services
             this._servicesApiClient = ServicesApiClient;
         }
       
-        public async Task<Result<List<ServiceResponse>>> GetAllAsync()
+        public async Task<List<ServiceResponse>> GetAllAsync()
         {
-            var response = await ExecutorAppMode.ExecuteAsync<Result<List<ServiceResponseModel>>>(
+            var response = await ExecutorAppMode.ExecuteAsync(
                  async () => await _servicesApiClient.GetAllAsync(),
-                  async () => Result<List<ServiceResponseModel>>.Success());
+                  async () => new());
 
-            if (response.Succeeded)
+            if (response!=null)
             {
-                var result = (response.Data != null) ? _mapper.Map<List<ServiceResponse>>(response.Data) : null;
-                return Result<List<ServiceResponse>>.Success(result);
+                var result =  _mapper.Map<List<ServiceResponse>>(response);
+                return result;
             }
             else
             {
-                return Result<List<ServiceResponse>>.Fail(response.Messages);
+                return new();
             }
 
 
         }
         public async Task<Result<ServiceResponse>> GetOneAsync(string id)
         {
-            var response = await ExecutorAppMode.ExecuteAsync<Result<ServiceResponseModel>>(
+            var response = await ExecutorAppMode.ExecuteAsync<ServiceResponseModel>(
                  async () => await _servicesApiClient.GetOneAsync(id),
-                  async () => Result<ServiceResponseModel>.Success());
+                  async () => await _servicesApiClient.GetOneAsync(id));
 
-            if (response.Succeeded)
+
+         
+
+            if (response!=null)
             {
-                var result = (response.Data != null) ? _mapper.Map<ServiceResponse>(response.Data) : null;
+                var result =  _mapper.Map<ServiceResponse>(response);
                 return Result<ServiceResponse>.Success(result);
             }
             else
             {
-                return Result<ServiceResponse>.Fail(response.Messages);
+                return Result<ServiceResponse>.Fail();
             }
 
 

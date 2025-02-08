@@ -2,12 +2,10 @@
 
 namespace Infrastructure.Models.AuthorizationSession
 {
-    public partial class ValidateTokenRequestModel : ValidateTokenRequest
+    public partial class AuthorizationSessionEncryptResponseModel : AuthorizationSessionEncryptResponse
     {
 
+       
 
     }
-
-
-
 }

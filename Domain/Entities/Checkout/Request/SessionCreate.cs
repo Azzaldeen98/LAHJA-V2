@@ -1,6 +1,6 @@
 ﻿using Domain.ShareData.Base;
 
-namespace Domain.Entities.Payment.Request
+namespace Domain.Entities.Checkout.Request
 {
     public partial class SessionCreate : BaseSessionCreate
     {

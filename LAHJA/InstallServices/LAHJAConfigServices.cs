@@ -76,7 +76,7 @@ namespace LAHJA
             serviceCollection.AddScoped<TemplatePlans>();
 
             //// Payment
-            serviceCollection.AddScoped<IBuilderPaymentApi<DataBuildPaymentBase>, BuilderPaymentApiClient>();
+            serviceCollection.AddScoped<IBuilderCheckoutApi<DataBuildPaymentBase>, BuilderCheckoutApiClient>();
             serviceCollection.AddScoped<IBuilderPaymentComponent<DataBuildPaymentBase>, BuilderPaymentComponent<DataBuildPaymentBase>>();
             serviceCollection.AddScoped<TemplatePaymentShare<PaymentClientService, DataBuildPaymentBase>>();
             serviceCollection.AddScoped<TemplatePayment>();

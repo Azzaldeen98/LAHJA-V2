@@ -30,7 +30,7 @@
         } else
         {
 
-            <PaymentComponts BuildPlanData="buildPlanData" BuildBillingData="buildBillingData" SubmitPayment="onSubmitPaymentCheckOut" BuildCreditCardData="buildCreditCardData" OnSelect="onSubmitActiveCreditCard" />
+            <PaymentComponts BuildPlanData="buildPlanData" BuildBillingData="buildBillingData" SubmitPayment="onSubmitCheckout" BuildCreditCardData="buildCreditCardData" OnSelect="onSubmitActiveCreditCard" />
         }
 }
 
@@ -119,21 +119,21 @@
 
         StateHasChanged();
     }
-    private async Task onSubmitPaymentCheckOut(SubscriptionPlanInfo plan)
+    private async Task onSubmitCheckout(SubscriptionPlanInfo plan)
     {
 
-        if (templatePayment.BuilderComponents.SubmitPaymentCheckOut != null && plan!=null)
-            await templatePayment.BuilderComponents.SubmitPaymentCheckOut(new DataBuildPaymentBase { PlanId = plan.Id });
+        if (templatePayment.BuilderComponents.SubmitCheckout != null && plan!=null)
+            await templatePayment.BuilderComponents.SubmitCheckout(new DataBuildPaymentBase { PlanId = plan.Id });
     }
     private async Task onSubmitActiveCreditCard(CardDetails card)
     {
         if (templateCreditCard.BuilderComponents.SubmitActiveCreditCard != null && card != null)
             await templateCreditCard.BuilderComponents.SubmitActiveCreditCard(new DataBuildCreditCardBase { CreditCardId = card.CardNumber });
     }
-    private async Task getPaymentCheckoutUrlPageAsync()
+    private async Task getCheckoutUrlPageAsync()
     {
 
-        var res2 = await templatePayment.getPaymentCheckoutUrlPage(new DataBuildPaymentBase { PlanId = planId });
+        var res2 = await templatePayment.getCheckoutUrlPage(new DataBuildPaymentBase { PlanId = planId });
 
         if (res2.Data != null)
 
@@ -141,7 +141,7 @@
     }
     // {
 
-    //     var res2 = await Template.getPaymentCheckoutUrlPage(new DataBuildPaymentBase { PlanId = "price_1Pst3IKMQ7LabgRTZV9VgPex" });
+    //     var res2 = await Template.getCheckoutUrlPage(new DataBuildPaymentBase { PlanId = "price_1Pst3IKMQ7LabgRTZV9VgPex" });
 
     //     if (res2.Data != null)
 

@@ -1,8 +1,8 @@
 ﻿using Application.UseCase.Plans;
 using Application.UseCase.Plans.Get;
-using Domain.Entities.Payment;
-using Domain.Entities.Payment.Request;
-using Domain.Entities.Payment.Response;
+using Domain.Entities.Checkout;
+using Domain.Entities.Checkout.Request;
+using Domain.Entities.Checkout.Response;
 using Domain.Entities.Plans.Response;
 using Domain.Wrapper;
 using Infrastructure.Models.Profile.Response;
@@ -11,25 +11,25 @@ namespace Application.Services.Plans
 {
     public class PaymentService
     {
-        private readonly GetPaymentCheckOutUseCase getPaymentCheckOutUseCase;
-        private readonly GetPaymentCheckOutManageUseCase getPaymentCheckOutManageUseCase;
+        private readonly GetCheckoutUseCase getCheckoutUseCase;
+        private readonly GetCheckoutManageUseCase getCheckoutManageUseCase;
 
 
-        public PaymentService(GetPaymentCheckOutUseCase getPaymentCheckOutUseCase, GetPaymentCheckOutManageUseCase getPaymentCheckOutManage)
+        public PaymentService(GetCheckoutUseCase getCheckoutUseCase, GetCheckoutManageUseCase CheckoutManageAsync)
         {
-            this.getPaymentCheckOutUseCase = getPaymentCheckOutUseCase;
-            this.getPaymentCheckOutManageUseCase = getPaymentCheckOutManage;
+            this.getCheckoutUseCase = getCheckoutUseCase;
+            this.getCheckoutManageUseCase = CheckoutManageAsync;
         }
 
-        public async Task<Result<PaymentCheckoutResponse>> getPaymentCheckOut(PaymentCheckoutRequest  request)
+        public async Task<Result<CheckoutResponse>> getCheckout(CheckoutRequest  request)
         {
-            return await getPaymentCheckOutUseCase.ExecuteAsync(request);
+            return await getCheckoutUseCase.ExecuteAsync(request);
 
         }
 
-        public async Task<Result<PaymentCheckoutResponse>> getPaymentCheckOutManage(SessionCreate request)
+        public async Task<Result<CheckoutResponse>> CheckoutManageAsync(SessionCreate request)
         {
-            return await getPaymentCheckOutManageUseCase.ExecuteAsync(request);
+            return await getCheckoutManageUseCase.ExecuteAsync(request);
 
         }
 

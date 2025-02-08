@@ -1,9 +1,9 @@
-﻿using Domain.Entities.Payment;
-using Domain.Entities.Payment.Response;
+﻿using Domain.Entities.Checkout;
+using Domain.Entities.Checkout.Response;
 using Domain.Entities.Plans.Response;
 using Domain.Entities.Price.Request;
 using Domain.Entities.Price.Response;
-using Domain.Repository.Payment;
+using Domain.Repository.Checkout;
 using Domain.Repository.Plans;
 using Domain.Repository.Price;
 using Domain.Wrapper;
