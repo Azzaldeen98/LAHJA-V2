@@ -8,13 +8,13 @@
 @inherits CardAuth<DataBuildAuthBase>
 
 
-<MudContainer  class="w60 p-3 rounded-3 border  d-flex align-center justify-content-center flex-column">
+<h4 class="d-flex align-center justify-content-center flex-column">
+    Confirmation  Email
+</h4>
 
-        <MudText Typo="Typo.h6">
-            <h4 class="d-flex align-center justify-content-center flex-column">
-                Confirmation  Email
-            </h4>
-        </MudText>
+<MudContainer>
+
+    <MudCard Class="w60 mx-auto my-5 p-6 rounded-lg shadow-lg text-center  dark:bg-gray-900  d-flex align-center justify-content-center flex-column">
 
             <MudForm Class="my-3" Style="width:100% !important;" @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
                 <div class="d-flex align-center justify-content-center flex-column" style="padding:2% 2%;margin:auto 10px;width:100% !important ">
@@ -38,8 +38,8 @@
 
                 </div>
             </MudForm>
-
-        </MudContainer>
+    </MudCard>
+</MudContainer>
 
    
 

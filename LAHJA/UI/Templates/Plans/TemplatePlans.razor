@@ -14,7 +14,7 @@ else{
         
     @if (Template != null)
     {
-        <MainPlan DataBuilds="Template.AllSubscriptionPlans"
+        <MainPlan IsLoading="isLoading" DataBuilds="Template.AllSubscriptionPlans"
                   OnSubmit="Template.BuilderComponents.SubmitSubscriptionPlan" />
     }
 }
@@ -26,6 +26,8 @@ else{
 
 
     [Parameter] public int CountItemsShow{   set => _countItemsShow = value; get=>_countItemsShow; } 
+
+    [Parameter] public bool IsLoading { get => isLoading; set => isLoading = value; }
 
     private int _countItemsShow = 4;
 

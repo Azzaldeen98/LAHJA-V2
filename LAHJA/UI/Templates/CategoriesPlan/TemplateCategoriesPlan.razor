@@ -19,11 +19,8 @@
     <Loading IsLoading="isLoading" />
 
 }
-
 else
 {
-
-
 
     @if (Template != null)
     {
@@ -50,7 +47,7 @@ else
 {
 
 
-
+    [Parameter] public bool IsLoading { get => isLoading; set => isLoading = value; }
 
     private bool isLoading = true;
 

@@ -17,7 +17,7 @@
 {
     <MudCard Class="position-relative" Style="height: 100% !important; width: 100% !important;  ">
         <!-- عناصر Skeleton -->
-        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="100%" />
+  @*       <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="100%" />
         <MudCardContent>
             <MudSkeleton Width="30%" Height="42px;" />
             <MudSkeleton Width="80%" />
@@ -26,7 +26,7 @@
         <MudCardActions>
             <MudSkeleton Width="64px" Height="40px" Class="ml-2" />
             <MudSkeleton Width="105px" Height="40px" Class="ml-3" />
-        </MudCardActions>
+        </MudCardActions> *@
 
         <!-- Overlay للتحميل -->
         <MudOverlay Visible="true" DarkBackground="true"  Class="full-screen-overlay">
@@ -58,19 +58,14 @@
 @code {
 
     private bool isLoading = true;
-    [Parameter] public bool IsLoading { get => isLoading; set
-        {
-            if (value!=isLoading)
-            {
-                isLoading = value;
-                StateHasChanged();
-            }
-        } }
-        
+
+    [Parameter] public bool IsLoading { get => isLoading; set=>isLoading = value;}
+
 
     [Parameter] public string LoadingMessage { get; set; } = "";
-    protected override void OnInitialized()
+
+    protected override async void OnInitialized()
     {
-        Thread.Sleep(1000);
+        await Task.Delay(2000);
     }
 }

@@ -17,5 +17,6 @@ namespace Shared.Constants
         public static string PROTECT_SESSION_DEVAULT_VALUE= "$$$$$";
         public static string CONFIRM_EMAIL_PAGE_URL = "ConfirmEmail";
         public static string RESET_PASSWORDL_PAGE_URL = "ResetPassword";
+        public static string RETEURN_EXTERNAL_LOGIN_PAGE= "ReturnExternalLoginPage";
     }
 }

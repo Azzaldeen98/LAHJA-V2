@@ -15,11 +15,11 @@
 @inject LanguageService languageService
 @inject IManageLanguageService _manageLanguageService
 
-@* @if (isLoading)
+@if (isLoading)
 {
     <Loading IsLoading="isLoading" />
 
-}else{ *@
+}else{
 
 <CardStart />
 <CardShowExperience Translations="TranslationsLST" />
@@ -41,7 +41,7 @@
     <p> @GetTranslation("OurServicesDescription") </p>
 
     <div class="d-flex my-5 flex-wrap">
-        <TemplateCategoriesPlan />
+        <TemplateCategoriesPlan  IsLoading="false"/>
     </div>
 </div>
 <div class="d-flex flex-column justify-content-center align-items-center" style="padding:5% !important">
@@ -51,7 +51,7 @@
     <p> @GetTranslation("PlanDescription") </p>
 
     <div class="d-flex my-5 flex-wrap" style="width: 100%;">
-        <TemplatePlans CountItemsShow="4" />
+        <TemplatePlans CountItemsShow="4" IsLoading="false" />
     </div>
 </div>
 
@@ -72,7 +72,7 @@
 <Footer />
 
 
-@* } *@
+}
 @code {
 
 

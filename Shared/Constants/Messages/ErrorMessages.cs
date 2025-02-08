@@ -16,6 +16,7 @@ namespace Shared.Constants
 
 
         public static string PROCESS_IS_FAILED_EN = "Process is Failed !! try anther way ";
+        public static string PROCESS_IS_FAILED_AR = "فشلت العملية !! حاول مره أخرى";
 
 
         public static string INVALID_EMAIL_PASSWORD_EN = "Invalid email or password";

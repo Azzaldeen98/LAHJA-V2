@@ -2,6 +2,7 @@
 @using Domain.ShareData
 @using LAHAJ.Loading
 @using LAHJA.Data.UI.Components.Base
+@using LAHJA.Helpers
 @using LAHJA.Helpers.Enum
 @using LAHJA.Them
 @using LAHJA.UI.Components.Auth
@@ -321,9 +322,9 @@
 
     private bool isMobile;
     private bool isHome=false;
-    protected override async void OnInitialized()
+    protected override  void OnInitialized()
     {
-
+        Helper.Init(NavigationManager);
     }
     private void OnMobileMatch(bool match)
     {
@@ -331,12 +332,12 @@
     }
     private bool _rightToLeft = true;
 
-    // [Parameter] public bool HiddenNavMenu { get => _hiddenNavMenu; set => _hiddenNavMenu = value; }
+    
 
     private ThemeManagerTheme _themeManager = new();
     private MudThemeProvider _mudThemeProvider;
     private string tokenn;
-    // private string buttonColor=AppColors.
+
     private bool _hiddenNavMenu = false;
     private bool _isDarkMode;
     private bool _drawerOpen = false;

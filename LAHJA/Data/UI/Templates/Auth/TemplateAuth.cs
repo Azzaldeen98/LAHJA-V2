@@ -9,6 +9,7 @@ using Domain.Wrapper;
 using LAHJA.ApplicationLayer.Auth;
 using LAHJA.Data.UI.Components.Base;
 using LAHJA.Data.UI.Templates.Base;
+using LAHJA.Helpers;
 using LAHJA.Helpers.Enum;
 using LAHJA.Helpers.Services;
 using LAHJA.UI.Components;
@@ -185,7 +186,7 @@ public class BuilderAuthApiClient : BuilderAuthApi<ClientAuthService, DataBuildA
     {
         var model = Mapper.Map<ForgetPasswordRequest>(data);
 
-        model.ReturnUrl = navigationManager.BaseUri+ConstantsApp.RESET_PASSWORDL_PAGE_URL;
+        model.ReturnUrl = Helper.GetInstance().GetFullPath(ConstantsApp.RESET_PASSWORDL_PAGE_URL);// navigationManager.BaseUri+ConstantsApp.RESET_PASSWORDL_PAGE_URL;
         return await Service.forgetPasswordAsync(model);
     }
 
@@ -213,8 +214,8 @@ public class BuilderAuthApiClient : BuilderAuthApi<ClientAuthService, DataBuildA
     public override async Task<Result<RegisterResponse>> Register(DataBuildAuthBase data)
     {
         var model = Mapper.Map<RegisterRequest>(data);
-        model.Avatar = "string";
-        model.ReturnUrl = navigationManager.BaseUri + ConstantsApp.CONFIRM_EMAIL_PAGE_URL;
+
+        model.ReturnUrl = Helper.GetInstance().GetFullPath(ConstantsApp.CONFIRM_EMAIL_PAGE_URL); //navigationManager.BaseUri + ConstantsApp.CONFIRM_EMAIL_PAGE_URL;
 
 
         return await Service.registerAsync(model);
@@ -224,7 +225,7 @@ public class BuilderAuthApiClient : BuilderAuthApi<ClientAuthService, DataBuildA
     {
         var model = Mapper.Map<ResendConfirmationEmail>(data);
 
-        model.ReturnUrl = navigationManager.BaseUri+ConstantsApp.CONFIRM_EMAIL_PAGE_URL;
+        model.ReturnUrl = Helper.GetInstance().GetFullPath(ConstantsApp.CONFIRM_EMAIL_PAGE_URL); //navigationManager.BaseUri+ConstantsApp.CONFIRM_EMAIL_PAGE_URL;
 
         return await Service.reConfirmationEmailAsync(model);
     }
@@ -239,7 +240,8 @@ public class BuilderAuthApiClient : BuilderAuthApi<ClientAuthService, DataBuildA
     public override async Task<Result> SubmitConfirmEmail(DataBuildAuthBase data)
     {
         var model = Mapper.Map<ConfirmationEmail>(data);
-        model.ReturnUrl = navigationManager.BaseUri + ConstantsApp.CONFIRM_EMAIL_PAGE_URL;
+        model.ReturnUrl = Helper.GetInstance().GetFullPath(ConstantsApp.CONFIRM_EMAIL_PAGE_URL);
+        //navigationManager.BaseUri + ConstantsApp.CONFIRM_EMAIL_PAGE_URL;
 
         return await Service.confirmationEmailAsync(model);
     }
@@ -313,13 +315,6 @@ public class TemplateAuth: TemplateAuthShare<ClientAuthService, DataBuildAuthBas
                 await authService.DeleteLoginAsync();
                 navigation.NavigateTo(RouterPage.LOGIN, forceLoad: true);
 
-                //if (response.Messages != null && response.Messages.Count() > 0)
-                //{
-
-                //    _errors?.Clear();
-                //    _errors.Add(MapperMessages.Map(ErrorMessages.INVALID_EMAIL_EN, ErrorMessages.IINVALID_EMAIL_AR));
-
-                //}
             }
         }
         catch(Exception e)
@@ -345,21 +340,64 @@ public class TemplateAuth: TemplateAuthShare<ClientAuthService, DataBuildAuthBas
         
 
     }
-    protected async Task OnReSendConfirmationEmail(DataBuildAuthBase dataBuildAuthBase)
+    public async Task ReForgetPassword(DataBuildAuthBase data)
     {
-        var response = await builderApi.ReSendConfirmationEmail(dataBuildAuthBase);
+        var response = await builderApi.ForgetPassword(data);
+        if (response.Succeeded)
+        {
+            var msg = MapperMessages.Map(SuccessMessages.LINK_SENT_SUCCESSFULLY_EN, SuccessMessages.LINK_SENT_SUCCESSFULLY_AR);
+            Snackbar.Add(msg, Severity.Success);
+        }
+        else
+        {
+            //if (response.Messages != null && response.Messages.Count() > 0)
+            {
+                var msg = MapperMessages.Map(ErrorMessages.PROCESS_IS_FAILED_EN, ErrorMessages.PROCESS_IS_FAILED_AR);
+                Snackbar.Add(msg, Severity.Success);
+
+            }
+        }
+    }
+
+    public async Task ReSendConfirmationEmail(DataBuildAuthBase data)
+    {
+        var response = await builderApi.ReSendConfirmationEmail(data);
+        if (response.Succeeded)
+        {
+            var msg = MapperMessages.Map(SuccessMessages.LINK_SENT_SUCCESSFULLY_EN, SuccessMessages.LINK_SENT_SUCCESSFULLY_AR);
+            Snackbar.Add(msg, Severity.Success);
+        }
+        else
+        {
+            //if (response.Messages != null && response.Messages.Count() > 0)
+            {
+                var msg = MapperMessages.Map(ErrorMessages.PROCESS_IS_FAILED_EN, ErrorMessages.PROCESS_IS_FAILED_AR);
+                Snackbar.Add(msg,Severity.Success);
+
+            }
+        }
+    }
+    public async Task OnReSendConfirmationEmail(DataBuildAuthBase data)
+    {
+      
+
+        var response = await builderApi.ReSendConfirmationEmail(data);
         if (response.Succeeded)
         {
 
-            var res = await  ConfirmAsync("Confirm Email", SuccessMessages.CONFIRM_EMAIL_MESSAGE_EN);
-             if (res == true)
-            {
-                    navigation.NavigateTo(RouterPage.LOGIN, forceLoad: true);
-            }
-            else
-            {
 
-            }
+            var fullPath = Helper.GetInstance().GetFullPath(ConstantsApp.CONFIRM_EMAIL_PAGE_URL);
+            navigation.NavigateTo($"{RouterPage.EMAIL_CONFIRM_PAGE}?Email={data.Email}&Url={fullPath}&Method={AuthMethods.ConfirmEmail.ToString()}", forceLoad: true);
+
+            //var res = await  ConfirmAsync("Confirm Email", SuccessMessages.CONFIRM_EMAIL_MESSAGE_EN);
+            // if (res == true)
+            //{
+            //        navigation.NavigateTo(RouterPage.LOGIN, forceLoad: true);
+            //}
+            //else
+            //{
+
+            //}
 
 
         }
@@ -404,7 +442,7 @@ public class TemplateAuth: TemplateAuthShare<ClientAuthService, DataBuildAuthBas
                 navigation.NavigateTo(RouterPage.LOGIN, forceLoad: true);
             }
             
-            //navigation.NavigateTo(RouterPage.LOGIN, forceLoad: true);
+          
 
         }
         else
@@ -412,13 +450,6 @@ public class TemplateAuth: TemplateAuthShare<ClientAuthService, DataBuildAuthBas
 
             var res = await ConfirmAsync("Error", ErrorMessages.PROCESS_IS_FAILED_EN);
 
-            //if (response.Messages != null && response.Messages.Count() > 0)
-            //{
-
-            //    _errors?.Clear();
-            //    _errors.Add(MapperMessages.Map(ErrorMessages.INVALID_EMAIL_EN, ErrorMessages.IINVALID_EMAIL_AR));
-
-            //}
         }
     }
 
@@ -427,7 +458,8 @@ public class TemplateAuth: TemplateAuthShare<ClientAuthService, DataBuildAuthBas
 
         try
         {
-            request.ReturnUrl = $"{navigation.BaseUri}ReturnExternalLoginPage";
+            request.ReturnUrl = Helper.GetInstance().GetFullPath(ConstantsApp.RETEURN_EXTERNAL_LOGIN_PAGE); 
+            //$"{navigation.BaseUri}ReturnExternalLoginPage";
             //await builderApi.ExternalLoginAsync(request);
             navigation.NavigateTo($"https://asg-api.runasp.net/api/ExternalLogin?provider={request.Provider}&returnUrl={request.ReturnUrl}",true);
 
@@ -468,7 +500,8 @@ public class TemplateAuth: TemplateAuthShare<ClientAuthService, DataBuildAuthBas
         var response = await builderApi.ForgetPassword(data);
         if (response.Succeeded)
         {
-            navigation.NavigateTo($"{RouterPage.EMAIL_CONFIRM_PAGE}?Email={data.Email}", forceLoad: true);
+            var fullPath = Helper.GetInstance().GetFullPath(ConstantsApp.RESET_PASSWORDL_PAGE_URL);
+            navigation.NavigateTo($"{RouterPage.EMAIL_CONFIRM_PAGE}?Email={data.Email}&Url={fullPath}&Method={AuthMethods.ForgetPassword.ToString()}", forceLoad: true);
             //navigation.NavigateTo($"{RouterPage.FORGET_PASSWORD}/{SuccessMessages.LINK_SENT_SUCCESSFULLY_AR}", forceLoad: true);
 
         }
@@ -530,7 +563,8 @@ public class TemplateAuth: TemplateAuthShare<ClientAuthService, DataBuildAuthBas
         var response = await builderApi.Register(data);
         if (response.Succeeded)
         {
-            navigation.NavigateTo($"{RouterPage.EMAIL_CONFIRM_PAGE}?Email={data.Email}", forceLoad: true);
+            var fullPath = Helper.GetInstance().GetFullPath(ConstantsApp.CONFIRM_EMAIL_PAGE_URL);
+            navigation.NavigateTo($"{RouterPage.EMAIL_CONFIRM_PAGE}?Email={data.Email}&Url={fullPath}&Method={AuthMethods.ConfirmEmail.ToString()}", forceLoad: true);
 
         }
         else

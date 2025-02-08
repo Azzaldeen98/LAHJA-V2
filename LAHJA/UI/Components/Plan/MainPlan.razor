@@ -23,7 +23,7 @@
         @if (DataBuild != null)
         {
             <MudItem Class="@MainPlanStyle.MainPlanItem">
-                <TemplatePlan  Params="@DataBuild" />
+                <TemplatePlan IsLoading="IsLoading" Params="@DataBuild" />
             </MudItem>
         }
 
@@ -37,7 +37,7 @@
             @foreach (var item in DataBuilds)
             {
                 <MudItem Class="@MainPlanStyle.MainPlanItem" xs="12" sm="12" md="3">
-                    <TemplatePlan Params="@item" OnSubmit="OnSubmitButton"   />
+                    <TemplatePlan IsLoading="IsLoading" Params="@item" OnSubmit="OnSubmitButton" />
                 </MudItem>
             }
         }
@@ -57,7 +57,7 @@
 
 @code
 {
-        
+    [Parameter] public bool IsLoading { get; set; }
     public string Error { get; set; } = "No Data  ";
     [Parameter]
     public bool IsDialog { get; set; } = false;
