@@ -48,6 +48,8 @@ using Infrastructure.Models.AuthorizationSession;
 using Domain.Entities.AuthorizationSession;
 using Domain.Entities.ModelGateway;
 using Infrastructure.Models.ModelGateway;
+using Domain.Entities.Checkout.Request;
+
 
 
 
@@ -61,6 +63,7 @@ namespace Infrastructure.Mappings.Plans
         {
 
 
+            CreateMap<DeleteResponseModel, DeleteResponse>().ReverseMap();
 
             /// Auth
             CreateMap<UserModel, RegisterRequestModel>().ReverseMap();
@@ -90,13 +93,15 @@ namespace Infrastructure.Mappings.Plans
 
             /// Profile 
             CreateMap<ProfileResponseModel, UserApp>().ReverseMap();
-           
 
-            /// Payment
+
+            /// Checkout
             CreateMap<CheckoutRequestModel, CheckoutRequest>().ReverseMap();
+            CreateMap<CheckoutOptionsModel, CheckoutOptions>().ReverseMap();
             CreateMap<CheckoutResponseModel, CheckoutResponse>().ReverseMap();
+            CreateMap<SessionCreateModel, SessionCreate>().ReverseMap();
 
-            CreateMap<DeleteResponseModel, DeleteResponse>().ReverseMap();
+
 
 
 

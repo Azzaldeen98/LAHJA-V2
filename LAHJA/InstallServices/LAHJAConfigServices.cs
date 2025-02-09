@@ -5,9 +5,7 @@ using LAHJA.ApplicationLayer.Profile;
 using LAHJA.Data.UI.Templates.Auth;
 using LAHJA.Data.UI.Templates.Plans;
 using LAHJA.Data.UI.Components.Base;
-using LAHJA.Data.UI.Components.Category;
 using LAHJA.Data.UI.Templates.Payment;
-using LAHJA.ApplicationLayer.Payment;
 using LAHJA.ApplicationLayer.Product;
 using LAHJA.ApplicationLayer.Subscription;
 using LAHJA.ApplicationLayer.Price;
@@ -23,10 +21,10 @@ using LAHJA.Data.UI.Components.ProFileModel;
 using LAHJA.Data.UI.Components.Payment.DataBuildBillingBase;
 using LAHJA.ApplicationLayer.Service;
 using LAHJA.Data.UI.Templates.Services;
-using LAHJA.UI.Templates.Services;
 using LAHJA.Helpers.Services;
 using Domain.ShareData;
 using LAHJA.ApplicationLayer.Request;
+using LAHJA.ApplicationLayer.Checkout;
 
 
 namespace LAHJA
@@ -78,7 +76,7 @@ namespace LAHJA
             //// Payment
             serviceCollection.AddScoped<IBuilderCheckoutApi<DataBuildPaymentBase>, BuilderCheckoutApiClient>();
             serviceCollection.AddScoped<IBuilderPaymentComponent<DataBuildPaymentBase>, BuilderPaymentComponent<DataBuildPaymentBase>>();
-            serviceCollection.AddScoped<TemplatePaymentShare<PaymentClientService, DataBuildPaymentBase>>();
+            serviceCollection.AddScoped<TemplatePaymentShare<CheckoutClientService, DataBuildPaymentBase>>();
             serviceCollection.AddScoped<TemplatePayment>();
           
 
@@ -135,7 +133,7 @@ namespace LAHJA
 
             serviceCollection.AddScoped<ClientAuthService>();
             serviceCollection.AddScoped<PlansClientService>();
-            serviceCollection.AddScoped<PaymentClientService>();
+            serviceCollection.AddScoped<CheckoutClientService>();
             serviceCollection.AddScoped<PriceClientService>();
             serviceCollection.AddScoped<SubscriptionClientService>();
             serviceCollection.AddScoped<ProductClientService>();

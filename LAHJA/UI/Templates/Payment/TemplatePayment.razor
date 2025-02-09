@@ -130,44 +130,18 @@
         if (templateCreditCard.BuilderComponents.SubmitActiveCreditCard != null && card != null)
             await templateCreditCard.BuilderComponents.SubmitActiveCreditCard(new DataBuildCreditCardBase { CreditCardId = card.CardNumber });
     }
-    private async Task getCheckoutUrlPageAsync()
+
+
+    private async Task CheckoutAsync()
     {
 
-        var res2 = await templatePayment.getCheckoutUrlPage(new DataBuildPaymentBase { PlanId = planId });
+        var res = await templatePayment.CheckoutAsync(new DataBuildPaymentBase { PlanId = planId });
 
-        if (res2.Data != null)
+        if (res.Data != null)
 
-            Navigation.NavigateTo(res2.Data.url ?? RouterPage.HOME);
+            Navigation.NavigateTo(res.Data.Url ?? RouterPage.HOME);
     }
-    // {
-
-    //     var res2 = await Template.getCheckoutUrlPage(new DataBuildPaymentBase { PlanId = "price_1Pst3IKMQ7LabgRTZV9VgPex" });
-
-    //     if (res2.Data != null)
-
-    //         Navigation.NavigateTo(res2.Data.url ?? RouterPage.HOME);
-
-       
-
-
-
-
-
-
-
-    //     StateHasChanged();
-
-
-
-
-
-
-
-
-
-
-
-    // }
+   
 
 }
 

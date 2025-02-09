@@ -5,18 +5,19 @@ using LAHJA.Helpers.Services;
 using Domain.Entities.Checkout.Response;
 using Domain.Entities.Checkout;
 using Domain.Entities.Checkout.Request;
+using Application.Services.Checkout;
 
-namespace LAHJA.ApplicationLayer.Payment
+namespace LAHJA.ApplicationLayer.Checkout
 {
-    public class PaymentClientService
+    public class CheckoutClientService
     {
-        private readonly PaymentService paymentService;
+        private readonly CheckoutService paymentService;
         private readonly TokenService tokenService;
         private readonly IMapper _mapper;
 
 
 
-        public PaymentClientService(PaymentService paymentService, IMapper mapper, TokenService tokenService)
+        public CheckoutClientService(CheckoutService paymentService, IMapper mapper, TokenService tokenService)
         {
 
             this.paymentService = paymentService;
@@ -27,10 +28,10 @@ namespace LAHJA.ApplicationLayer.Payment
 
 
 
-        public async Task<Result<CheckoutResponse>> getCheckoutPage(CheckoutRequest request)
+        public async Task<Result<CheckoutResponse>> CheckoutAsync(CheckoutRequest request)
         {
 
-            var result=await paymentService.getCheckout(request);
+            var result=await paymentService.CheckoutAsync(request);
             return result;
 
        

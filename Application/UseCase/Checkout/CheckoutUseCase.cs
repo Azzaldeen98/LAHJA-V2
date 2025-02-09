@@ -7,10 +7,10 @@ using Domain.Wrapper;
 
 namespace Application.UseCase.Plans.Get
 {
-    public class GetCheckoutUseCase
+    public class CheckoutUseCase
     {
         private readonly ICheckoutRepository repository;
-        public GetCheckoutUseCase(ICheckoutRepository repository)
+        public CheckoutUseCase(ICheckoutRepository repository)
         {
 
             this.repository = repository;

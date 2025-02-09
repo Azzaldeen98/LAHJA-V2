@@ -1,8 +1,8 @@
-﻿namespace  Domain.Entities.Checkout.Response
+﻿namespace Domain.Entities.Checkout.Response
 {
     public class CheckoutResponse
     {
-        public string? url { get; set; }
+        public string? Url { get; set; }
     }
 
 

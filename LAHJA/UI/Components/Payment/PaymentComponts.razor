@@ -39,9 +39,9 @@
                         <BillingMethodsSection ReadOnly="@(BuildBillingData!=null)" ReadData="OnReadBillingData" BuildData="BuildBillingData" />
                      </div>
 
-                 <div class="w40 mt-3">
-                    <PaymentMethodsSection SelectedCard="OnSelectedCardData" BuildData="BuildCreditCardData"  EditCard="OnEditCard" CreateCard="OnCreateCard" />
-                </div>
+                     <div class="w40 mt-3">
+                            <CardsMethodsSection SelectedCard="OnSelectedCardData" BuildData="BuildCreditCardData" EditCard="OnEditCard" CreateCard="OnCreateCard" />
+                    </div>
                
             </MudPaper>
         </MudStep>

@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
 using Domain.Entities.Checkout;
+using Domain.Entities.Checkout.Request;
 using Domain.Entities.Checkout.Response;
 using Domain.Wrapper;
-using LAHJA.ApplicationLayer.Payment;
+using LAHJA.ApplicationLayer.Checkout;
 using LAHJA.Data.UI.Templates.Base;
 using LAHJA.Helpers.Services;
 using Microsoft.AspNetCore.Components;
@@ -15,7 +16,9 @@ namespace LAHJA.Data.UI.Templates.Payment
 
         public string PlanId  { get; set; }
         public string SuccessUrl { get; set; }
-        public string CancelUrl { get; set; } 
+        public string CancelUrl { get; set; }  
+
+        public string ReturnUrl { get; set; }  
     }
 
 
@@ -23,6 +26,7 @@ namespace LAHJA.Data.UI.Templates.Payment
     {
 
         public Func<T, Task> SubmitCheckout { get; set; }
+        public Func<T, Task> SubmitCheckoutManage { get; set; }
 
 
 
@@ -39,6 +43,7 @@ namespace LAHJA.Data.UI.Templates.Payment
 
 
         Task<Result<CheckoutResponse>> CheckoutAsync(T data);
+        Task<Result<CheckoutResponse>> CheckoutManageAsync(T data);
 
 
     }
@@ -54,6 +59,7 @@ namespace LAHJA.Data.UI.Templates.Payment
         //public abstract Task<Result<List<InputCategory>>> OnInitialize();
 
         public abstract Task<Result<CheckoutResponse>> CheckoutAsync(E data);
+        public abstract Task<Result<CheckoutResponse>> CheckoutManageAsync(E data);
 
 
 
@@ -62,6 +68,7 @@ namespace LAHJA.Data.UI.Templates.Payment
     public class BuilderPaymentComponent<T> : IBuilderPaymentComponent<T>
     {
         public Func<T, Task> SubmitCheckout { get; set; }
+        public Func<T, Task> SubmitCheckoutManage { get; set; }
     }
 
 
@@ -102,9 +109,9 @@ namespace LAHJA.Data.UI.Templates.Payment
     }
 
      
-    public class BuilderCheckoutApiClient : BuilderCheckoutApi<PaymentClientService, DataBuildPaymentBase>, IBuilderCheckoutApi<DataBuildPaymentBase>
+    public class BuilderCheckoutApiClient : BuilderCheckoutApi<CheckoutClientService, DataBuildPaymentBase>, IBuilderCheckoutApi<DataBuildPaymentBase>
     {
-        public BuilderCheckoutApiClient(IMapper mapper, PaymentClientService service) : base(mapper, service)
+        public BuilderCheckoutApiClient(IMapper mapper, CheckoutClientService service) : base(mapper, service)
         {
         }
 
@@ -113,19 +120,28 @@ namespace LAHJA.Data.UI.Templates.Payment
         {
 
             var model = Mapper.Map<CheckoutRequest>(data);
-            var res = await Service.getCheckoutPage(model);
+            var res = await Service.CheckoutAsync(model);
             if (res.Succeeded)
             {
-                try
-                {
-                    var map = Mapper.Map<CheckoutResponse>(res.Data);
-                    return Result<CheckoutResponse>.Success(map);
 
-                }
-                catch (Exception e)
-                {
-                    return Result<CheckoutResponse>.Fail();
-                }
+
+                return Result<CheckoutResponse>.Success(res.Data);
+
+            }
+            else
+            {
+                return Result<CheckoutResponse>.Fail(res.Messages);
+            }
+        }    
+        public override async Task<Result<CheckoutResponse>> CheckoutManageAsync(DataBuildPaymentBase data)
+        {
+
+            
+            var res = await Service.CheckoutManageAsync(new SessionCreate { ReturnUrl = data.ReturnUrl });
+            if (res.Succeeded)
+            {
+  
+                    return Result<CheckoutResponse>.Success(res.Data);
             }
             else
             {
@@ -135,7 +151,7 @@ namespace LAHJA.Data.UI.Templates.Payment
     }
 
 
-    public class TemplatePayment : TemplatePaymentShare<PaymentClientService, DataBuildPaymentBase>
+    public class TemplatePayment : TemplatePaymentShare<CheckoutClientService, DataBuildPaymentBase>
     {
 
    
@@ -147,39 +163,52 @@ namespace LAHJA.Data.UI.Templates.Payment
         public TemplatePayment(
             IMapper mapper,
             AuthService AuthService,
-            PaymentClientService client,
+            CheckoutClientService client,
             IBuilderPaymentComponent<DataBuildPaymentBase> builderComponents,
             NavigationManager navigation,
             IDialogService dialogService,
             ISnackbar snackbar) : base(mapper, AuthService, client, builderComponents, navigation, dialogService, snackbar)
         {
             this.BuilderComponents.SubmitCheckout = onSubmitCheckout;
-       
-
+            this.BuilderComponents.SubmitCheckoutManage = onSubmitCheckoutManage;
             this.builderApi = new BuilderCheckoutApiClient(mapper, client);
 
-            //Task.FromResult(OnInitialize());
 
         }
 
 
 
-        public async Task onSubmitCheckout(DataBuildPaymentBase data) {
+        private async Task onSubmitCheckout(DataBuildPaymentBase data) {
             
             data.SuccessUrl = $"{navigation.BaseUri}settings";
             data.CancelUrl = $"{navigation.BaseUri}settings/billing";
 			var res=await  builderApi.CheckoutAsync(data);
-            if (res.Succeeded && res.Data!=null && !string.IsNullOrEmpty(res.Data.url)) {
-                navigation.NavigateTo(res.Data.url,true);
+            if (res.Succeeded && res.Data!=null && !string.IsNullOrEmpty(res.Data.Url)) {
+                navigation.NavigateTo(res.Data.Url,true);
             }
             else
             {
                 Snackbar.Add("Field Option ! Please try anther once or again login ", Severity.Error);
             }
 
-        } 
+        }
+        private async Task onSubmitCheckoutManage(DataBuildPaymentBase data)
+        {
 
-        public async Task<Result<CheckoutResponse>> getCheckoutUrlPage(DataBuildPaymentBase DataBuildPaymentBase)
+     
+            var res = await builderApi.CheckoutManageAsync(data);
+            if (res.Succeeded  && !string.IsNullOrEmpty(res.Data.Url))
+            {
+                navigation.NavigateTo(res.Data.Url, true);
+            }
+            else
+            {
+                Snackbar.Add("Field Option ! Please try anther once or again login ", Severity.Error);
+            }
+
+        }
+
+        public async Task<Result<CheckoutResponse>> CheckoutAsync(DataBuildPaymentBase DataBuildPaymentBase)
         {
       
                return await builderApi.CheckoutAsync(DataBuildPaymentBase);

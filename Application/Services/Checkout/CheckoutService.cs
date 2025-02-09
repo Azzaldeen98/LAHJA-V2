@@ -1,27 +1,24 @@
-﻿using Application.UseCase.Plans;
-using Application.UseCase.Plans.Get;
+﻿using Application.UseCase.Plans.Get;
 using Domain.Entities.Checkout;
 using Domain.Entities.Checkout.Request;
 using Domain.Entities.Checkout.Response;
-using Domain.Entities.Plans.Response;
 using Domain.Wrapper;
-using Infrastructure.Models.Profile.Response;
 
-namespace Application.Services.Plans
+namespace Application.Services.Checkout
 {
-    public class PaymentService
+    public class CheckoutService
     {
-        private readonly GetCheckoutUseCase getCheckoutUseCase;
-        private readonly GetCheckoutManageUseCase getCheckoutManageUseCase;
+        private readonly CheckoutUseCase getCheckoutUseCase;
+        private readonly CheckoutManageUseCase getCheckoutManageUseCase;
 
 
-        public PaymentService(GetCheckoutUseCase getCheckoutUseCase, GetCheckoutManageUseCase CheckoutManageAsync)
+        public CheckoutService(CheckoutUseCase getCheckoutUseCase, CheckoutManageUseCase CheckoutManageAsync)
         {
             this.getCheckoutUseCase = getCheckoutUseCase;
             this.getCheckoutManageUseCase = CheckoutManageAsync;
         }
 
-        public async Task<Result<CheckoutResponse>> getCheckout(CheckoutRequest  request)
+        public async Task<Result<CheckoutResponse>> CheckoutAsync(CheckoutRequest  request)
         {
             return await getCheckoutUseCase.ExecuteAsync(request);
 

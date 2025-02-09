@@ -7,6 +7,7 @@ using Infrastructure.Nswag;
 using Microsoft.Extensions.Configuration;
 using Infrastructure.DataSource.ApiClient.Base;
 
+
 namespace Infrastructure.DataSource.ApiClient.Payment
 {
     public class CheckoutApiClient : BuildApiClient<CheckoutClient>
@@ -24,24 +25,22 @@ namespace Infrastructure.DataSource.ApiClient.Payment
             return client;
         }
        
-        public async Task<Result<CheckoutResponseModel>> CheckoutAsync(CheckoutRequestModel request,string token="")
+        public async Task<Result<CheckoutOptionsModel>> CheckoutAsync(CheckoutRequestModel request,string token="")
         {
             try
             {
                 var model = _mapper.Map<CheckoutOptions>(request);
                 var client = await GetApiClient(token);
 				var response = await client.CreateCheckoutAsync(model);
-                //var response = await Main(model);
 
-
-                var resModel = _mapper.Map<CheckoutResponseModel>(response);
-                return Result<CheckoutResponseModel>.Success(resModel);
+                var resModel = _mapper.Map<CheckoutOptionsModel>(response);
+                return Result<CheckoutOptionsModel>.Success(resModel);
 
             }
             catch (ApiException e)
             {
 
-                return Result<CheckoutResponseModel>.Fail(e.Response, httpCode: e.StatusCode);
+                return Result<CheckoutOptionsModel>.Fail(e.Response, httpCode: e.StatusCode);
 
             }
 

@@ -12,34 +12,66 @@
 
 <MudPaper Class="pa-4 w-100">
     <MudText Typo="Typo.h6" Align="Align.Center">@GetTranslation("Title")</MudText>
-    <MudForm Model="@newCard" @ref="form">
+    <MudForm Model="@newCard" @ref="form" IsValid="true">
+    
+
         <MudGrid Class="justify-space-between">
+
+            <MudItem xs="12">
+                <MudSelect T="string" @bind-Value="newCard.CardType" Label="@GetTranslation("CardType")" Required>
+                    <MudSelectItem Value=@("MasterCard")>MasterCard</MudSelectItem>
+                    <MudSelectItem Value=@("Visa")>Visa</MudSelectItem>
+                    <MudSelectItem Value=@("Amex")>Amex</MudSelectItem>
+                </MudSelect>
+            </MudItem>
+
             <MudItem xs="12">
                 <MudTextField Label="@GetTranslation("CardNumber")"
                               @bind-Value="newCard.CardNumber"
-                              Variant="Variant.Text" />
+                              Variant="Variant.Text"
+                              InputType="InputType.Number"
+                              Immediate="true"
+                              RequiredError="@GetTranslation("CardNumberError")"
+                              Error="@isCardNumberInvalid"
+                              ErrorText="@cardNumberErrorMessage"
+                              OnInternalInputChanged="ValidateCardNumber"
+                              Required />
             </MudItem>
-
+       
             <MudItem xs="6">
                 <MudTextField Label="@GetTranslation("ExpirationDate")"
                               @bind-Value="newCard.ExpirationDate"
-                              Variant="Variant.Text" />
+                              Variant="Variant.Text"
+                              Pattern="^(0[1-9]|1[0-2])\/?([0-9]{2})$"
+                             
+                              RequiredError="@GetTranslation("ExpirationDateError")"
+                              ErrorText="@GetTranslation("InvalidCardPatternError")"
+                              Immediate="true"
+                              Required/>
             </MudItem>
 
             <MudItem xs="6">
                 <MudTextField Label="@GetTranslation("CVC")"
                               @bind-Value="newCard.CVC"
                               Variant="Variant.Text"
-                              InputType="InputType.Password" />
+                              InputType="InputType.Password"
+                              RequiredError="@GetTranslation("CVVError")"
+                              Pattern="^\d{3,4}$"
+                              ErrorText="@GetTranslation("InvalidCVVPatternError")"
+                              Required />
             </MudItem>
 
+         
+
             <MudItem xs="12">
-                <MudSelect T="string" @bind-Value="newCard.CardType" Label="@GetTranslation("CardType")">
-                    <MudSelectItem Value=@("MasterCard")>MasterCard</MudSelectItem>
-                    <MudSelectItem Value=@("Visa")>Visa</MudSelectItem>
-                    <MudSelectItem Value=@("Visa")>Amex</MudSelectItem>
-                </MudSelect>
+                <MudTextField Label="@GetTranslation("CardHolder")"
+                              @bind-Value="newCard.HolderName"
+                              Variant="Variant.Text"
+                              InputType="InputType.Text"
+                              RequiredError="@GetTranslation("CardHolderNameError")" 
+                              Required />
             </MudItem>
+
 
             <MudItem xs="12" Class="mt-2">
                 <MudButton Class="w-100" Color="@AppColors.BASE_COLOR_ENUM" Variant="Variant.Filled" OnClick="Save">
@@ -50,59 +82,7 @@
     </MudForm>
 </MudPaper>
 
-@*     <MudPaper Class="pa-4 w-100"  >
 
-        <MudText Typo="Typo.h6" Align="Align.Center">@Title</MudText>
-        <MudForm Model="@newCard" @ref="form"  >
-            <MudGrid Class="justify-space-between">
-          
-
-                <MudItem xs="12">
-                    <MudTextField Label="Card Number"
-                        
-                                  @bind-Value="newCard.CardNumber"
-                                  Variant="Variant.Text"
-                                  />
-                </MudItem>
-
-                <MudItem xs="6">
-                    <MudTextField Label="Expiration Date (MM/YY)"
-                           
-                                  @bind-Value="newCard.ExpirationDate"
-                                  Variant="Variant.Text"
-                                   />
-                </MudItem>
-
-            
-                <MudItem xs="6">
-                    <MudTextField Label="CVC"
-                                  @bind-Value="newCard.CVC"
-                                  Variant="Variant.Text"
-                                  InputType="InputType.Password"
-                              
-                                   />
-                </MudItem>
-
-            
-                <MudItem xs="12">
-                    <MudSelect @bind-Value="newCard.CardType" Label="Card Type">
-                        <MudSelectItem Value=@("MasterCard")>MasterCard</MudSelectItem>
-                        <MudSelectItem Value=@("Visa")>Visa</MudSelectItem>
-                        <MudSelectItem Value=@("Visa")>Amex</MudSelectItem>
-                    </MudSelect>
-                </MudItem>
-
-
-
-           
-
-         
-                <MudItem xs="12" Class="mt-2">
-                    <MudButton Class="w-100" Color="@AppColors.BASE_COLOR_ENUM" Variant="Variant.Filled" OnClick="Save">@(IsUpdate?"Update":"Add Card")</MudButton>
-                </MudItem>
-            </MudGrid>
-    </MudForm>
-    </MudPaper> *@
 
  
 
@@ -125,11 +105,20 @@
         { "ExpirationDate", "Expiration Date (MM/YY)" },
         { "CVC", "CVC" },
         { "CardType", "Card Type" },
+        { "CardHolder", "Card Holder" },
         { "MasterCard", "MasterCard" },
         { "Visa", "Visa" },
         { "Amex", "Amex" },
         { "AddCard", "Add Card" },
-        { "Update", "Update" }
+        { "Update", "Update" },
+        { "SubmitButton", "Pay Now" },
+        { "CardNumberError", "Card Number is required" },
+        { "CardHolderNameError", "Name is required" },
+        { "ExpirationDateError", "Expiration Date is required" },
+        { "CVVError", "CVV is required" },
+        { "InvalidCardNumberError", "Invalid card number" },
+        { "InvalidCardPatternError", "Expiration date must be in MM/YY format" },
+        { "InvalidCVVPatternError", "CVV must be 3 or 4 digits" }
     };
 
     private Dictionary<string, string> TransAr = new Dictionary<string, string>()
@@ -139,18 +128,62 @@
         { "ExpirationDate", "تاريخ الانتهاء (MM/YY)" },
         { "CVC", "CVC" },
         { "CardType", "نوع البطاقة" },
+        { "CardHolder", "حامل البطاقة" },
         { "MasterCard", "ماستر كارد" },
         { "Visa", "فيزا" },
         { "Amex", "أميكس" },
         { "AddCard", "إضافة بطاقة" },
-        { "Update", "تحديث" }
+        { "Update", "تحديث" },
+        { "SubmitButton", "الدفع الآن" },
+        { "CardNumberError", "رقم البطاقة مطلوب" },
+        { "CardHolderNameError", "الاسم مطلوب" },
+        { "ExpirationDateError", "تاريخ الانتهاء مطلوب" },
+        { "CVVError", "رمز الأمان مطلوب" },
+        { "InvalidCardNumberError", "رقم البطاقة غير صالح" },
+        { "InvalidCardPatternError", "يجب إدخال تاريخ صحيح بصيغة MM/YY" },
+        { "InvalidCVVPatternError", "يجب أن يحتوي CVV على 3 أو 4 أرقام" }
     };
 
+    private bool isCardNumberInvalid = false;
+    private string cardNumberErrorMessage = "";
+
+
+    private void ValidateCardNumber(ChangeEventArgs e)
+    {
+        string cardNumber = e.Value.ToString().Replace(" ", "");
+        if (!IsValidLuhn(cardNumber))
+        {
+            isCardNumberInvalid = true;
+            cardNumberErrorMessage = GetTranslation("InvalidCardNumberError");
+        }
+        else
+        {
+            isCardNumberInvalid = false;
+            cardNumberErrorMessage = "";
+        }
+    }
+    private bool IsValidLuhn(string number)
+    {
+        int sum = 0;
+        bool alternate = false;
+        for (int i = number.Length - 1; i >= 0; i--)
+        {
+            int n = int.Parse(number[i].ToString());
+            if (alternate)
+            {
+                n *= 2;
+                if (n > 9) n -= 9;
+            }
+            sum += n;
+            alternate = !alternate;
+        }
+        return (sum % 10 == 0);
+    }
     protected override void OnInitialized()
     {
         languageService.OnLanguageChanged += ChangeLanguage;
         ChangeLanguage(CurrentLanguage);
-      
+
     }
     protected override async void OnAfterRender(bool firstRender)
     {
@@ -172,20 +205,18 @@
 
     private async Task Save()
     {
+       await form.Validate();
+   
+            if (form.IsValid)
+            {
+                newCard.IsSelected = true;
+                if (OnClickSave.HasDelegate && newCard != null)
+                {
+                    await OnClickSave.InvokeAsync(newCard);
 
-        try
-        {
-            newCard.IsSelected = true ;
-            if (OnClickSave.HasDelegate && newCard!=null)
-            {   
-                await OnClickSave.InvokeAsync(newCard);
-
+                }
             }
-        }
-        catch(Exception ex)
-        {
-            
-        }
+      
 
        
 

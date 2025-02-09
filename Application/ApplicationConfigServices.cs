@@ -1,4 +1,5 @@
 ﻿using Application.Services.Auth;
+using Application.Services.Checkout;
 using Application.Services.Plans;
 using Application.Services.Profile;
 using Application.Services.Prroduct;
@@ -77,8 +78,8 @@ namespace Infrastructure
 
 
             /// Payment
-            serviceCollection.AddScoped<GetCheckoutUseCase>();
-            serviceCollection.AddScoped<GetCheckoutManageUseCase>();
+            serviceCollection.AddScoped<CheckoutUseCase>();
+            serviceCollection.AddScoped<CheckoutManageUseCase>();
 
                
             /// Price
@@ -145,7 +146,7 @@ namespace Infrastructure
             serviceCollection.AddScoped<PlansService>();
             serviceCollection.AddScoped<WebAuthService>();
             serviceCollection.AddScoped<ProfileService>();
-            serviceCollection.AddScoped<PaymentService>();
+            serviceCollection.AddScoped<CheckoutService>();
             serviceCollection.AddScoped<PriceService>();
             serviceCollection.AddScoped<ProductService>();
             serviceCollection.AddScoped<SubscriptionService>();

@@ -2,7 +2,7 @@
 
 namespace Infrastructure.Models.Checkout.Response
 {
-    public class CheckoutResponseModel : CheckoutResponse
+    public class CheckoutOptionsModel: CheckoutOptions
     {
 
     }

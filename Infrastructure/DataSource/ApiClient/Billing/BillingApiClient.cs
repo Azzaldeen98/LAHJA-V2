@@ -63,7 +63,7 @@ namespace Infrastructure.DataSource.ApiClient.Billing
                 //var response = await client.ManageAsync(model);
 
 
-                //var resModel = _mapper.Map<CheckoutResponseModel>(response);
+                //var resModel = _mapper.Map<CheckoutOptionsModel>(response);
                 return Result<List<CardDetailsResponseModel>>.Success();
 
             }

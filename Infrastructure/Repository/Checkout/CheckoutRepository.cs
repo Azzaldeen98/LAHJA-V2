@@ -47,13 +47,13 @@ namespace Infrastructure.Repository.Plans
 		public async Task<Result<CheckoutResponse>> CheckoutAsync(CheckoutRequest request)
         {
             var model = _mapper.Map<CheckoutRequestModel>(request);
-			var response = await ExecutorAppMode.ExecuteAsync<Result<CheckoutResponseModel>>(
+			var response = await ExecutorAppMode.ExecuteAsync<Result<CheckoutOptionsModel>>(
 				 async () => await paymentApiClient.CheckoutAsync(model),
 				  async () => await paymentApiClient.CheckoutAsync(model));
 
 			if (response.Succeeded)
 			{
-				var result = (response.Data != null) ? _mapper.Map<CheckoutResponse>(response.Data) : null;
+				var result =  _mapper.Map<CheckoutResponse>(response.Data) ;
 				return Result<CheckoutResponse>.Success(result);
 			}
 			else

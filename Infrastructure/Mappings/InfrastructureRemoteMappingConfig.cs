@@ -69,8 +69,9 @@ namespace Infrastructure.Mappings.Plans
             CreateMap<DeletedResponse, Domain.ShareData.Base.DeleteResponse>().ReverseMap();
 
 
-            /// Payment
+            /// Checkout
             CreateMap<CheckoutRequestModel, CheckoutOptions>().ReverseMap();
+            CreateMap<CheckoutOptionsModel, CheckoutOptions>().ReverseMap();
             CreateMap<CheckoutResponseModel, CheckoutResponse>().ReverseMap();
             CreateMap<SessionCreateModel, SessionCreate>().ReverseMap();
 

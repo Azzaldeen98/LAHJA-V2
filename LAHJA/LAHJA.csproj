@@ -8,12 +8,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Data\UI\Templates\NewFolder1\**" />
     <Compile Remove="Infrastructure\**" />
     <Compile Remove="UI\Teamplat\**" />
+    <Content Remove="Data\UI\Templates\NewFolder1\**" />
     <Content Remove="Infrastructure\**" />
     <Content Remove="UI\Teamplat\**" />
+    <EmbeddedResource Remove="Data\UI\Templates\NewFolder1\**" />
     <EmbeddedResource Remove="Infrastructure\**" />
     <EmbeddedResource Remove="UI\Teamplat\**" />
+    <None Remove="Data\UI\Templates\NewFolder1\**" />
     <None Remove="Infrastructure\**" />
     <None Remove="UI\Teamplat\**" />
   </ItemGroup>
@@ -47,7 +51,6 @@
 	  <Folder Include="ApplicationLayer\ServiceMethod\" />
 	  <Folder Include="ApplicationLayer\Setting\" />
 	  <Folder Include="Data\UI\Components\Profile\" />
-	  <Folder Include="Data\UI\Templates\NewFolder1\" />
 	  <Folder Include="Data\UI\Templates\Request\" />
 	  <Folder Include="Data\UI\Templates\Setting\" />
 	  <Folder Include="UI\Components\FeatureServices\" />
