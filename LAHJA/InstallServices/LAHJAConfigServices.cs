@@ -25,6 +25,7 @@ using LAHJA.Helpers.Services;
 using Domain.ShareData;
 using LAHJA.ApplicationLayer.Request;
 using LAHJA.ApplicationLayer.Checkout;
+using Application.Services.Service;
 
 
 namespace LAHJA
@@ -142,6 +143,7 @@ namespace LAHJA
             serviceCollection.AddScoped<ProfileClientService>();
             serviceCollection.AddScoped<LAHJAClientService>();
             serviceCollection.AddScoped<RequestClientService>();
+            serviceCollection.AddScoped<SpaceClientService>();
            
            
         }

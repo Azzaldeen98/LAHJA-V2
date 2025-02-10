@@ -8,7 +8,7 @@ namespace Domain.Repository.Service
     public interface IServiceRepository
     {
         Task<List<ServiceResponse>> GetAllAsync();
-        Task<Result<ServiceResponse>> GetOneAsync(string id);
+        Task<ServiceResponse?> GetOneAsync(string id);
         Task<Result<ServiceResponse>> CreateAsync(ServiceRequest request);
         Task<Result<ServiceResponse>> UpdateAsync(ServiceRequest request);
         Task<Result<DeleteResponse>> DeleteAsync(string id);

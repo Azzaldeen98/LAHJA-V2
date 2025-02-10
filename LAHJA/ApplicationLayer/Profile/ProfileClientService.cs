@@ -1,23 +1,22 @@
 ﻿using Application.Services.Profile;
-using Application.UseCase.Plans;
 using AutoMapper;
+using Domain.Entities.AuthorizationSession;
 using Domain.Entities.Profile;
 using Domain.Entities.Profile.Response;
+using Domain.Entities.Space.Request;
 using Domain.Wrapper;
-using Infrastructure.DataSource.ApiClient.Profile;
-using Infrastructure.Nswag;
+
 using LAHJA.Helpers.Services;
-using LAHJA.UI.Components.ProFile.Settings;
 
 namespace LAHJA.ApplicationLayer.Profile
 {
     public class ProfileClientService
     {
-        private readonly ProfileApiClient profileService;
+        private readonly ProfileService profileService;
         private readonly TokenService tokenService;
         private readonly IMapper _mapper;
 
-        public ProfileClientService(ProfileApiClient profileService,
+        public ProfileClientService(ProfileService profileService,
             IMapper mapper,
             TokenService tokenService)
         {
@@ -28,6 +27,10 @@ namespace LAHJA.ApplicationLayer.Profile
         }
 
 
+        public async Task<Result<AuthorizationSessionWebResponse>> CreateSpaceAsync(SpaceRequest request)
+        {
+            return await profileService.CreateSpaceAsync(request);
+        }
         public async Task<Result<ProfileUserResponse>> GetProfileUserAsync()
         {
 

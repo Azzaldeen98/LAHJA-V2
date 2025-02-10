@@ -1,4 +1,6 @@
-﻿@using LAHJA.Data.UI.Components
+﻿@using Domain.Entities.AuthorizationSession
+@using Domain.Wrapper
+@using LAHJA.Data.UI.Components
 @using LAHJA.UI.Components.ServiceCard
 @using LAHJA.UI.Components.TabelCard
 @inject IDialogService DialogService
@@ -10,7 +12,17 @@
                                   ActionTabels="groupAction"
                                   BarTabel="TranslationsLST" />
 
+                                
+@* @if (!string.IsNullOrEmpty(urlCore))
+{
+    <iframe src="@urlCore" />
+} *@
+
+
 @code{
+
+    // [Parameter] public EventCallback<DataBuildSpace> SubmitCreateSpace { get; set; }
+    [Parameter] public Func<DataBuildSpace, Task<Result<AuthorizationSessionWebResponse>>> SubmitCreateSpace { get; set; }
 
     [Parameter] public List<DataBuildSpace>? DataBuild {
         get => _dataBuild;
@@ -26,12 +38,36 @@
     }
 
 
+    [Parameter] public DataAndEventBuildTabelCard<DataBuildSpace>? DataAndEventBuild { get => dataAndEvent; set => dataAndEvent = value; }
+
+
     DataAndEventBuildTabelCard<DataBuildSpace> dataAndEvent = null;
     private string lg = "ar";
+    private string srcIframe = "https://lahja-core.onrender.com/createspace";
 
     private List<DataBuildSpace>? _dataBuild=new();
 
 
+    private async Task OnSubmitCreateSpace()
+    {
+        // if (SubmitCreateSpace.HasDelegate)
+        // {
+        //     await SubmitCreateSpace.InvokeAsync(new DataBuildSpace());
+
+        // }
+
+        if (SubmitCreateSpace != null)
+        {
+            var response = await SubmitCreateSpace(new DataBuildSpace());
+
+            if (response.Succeeded)
+            {
+                 srcIframe = $"{response.Data.UrlCore}/?token={response.Data.SessionToken}";
+                OpenDialog(srcIframe);
+                
+            }
+        }
+    }
 
 
     protected override void OnInitialized()
@@ -79,7 +115,8 @@
                 ,
                 Tag="create"
                 ,
-                Name="انشاء"
+                Name="انشاء",
+
             },
             new()
             {
@@ -90,13 +127,15 @@
             }
         };
         groupAction.ChipClicked += OnChipClicked;
+
+        // groupAction.CreateSpaceClicked = OnSubmitCreateSpace;
     }
 
     List<CardStateCount<string>>? cardStates = null;
 
     GroupActionTabels groupAction = new GroupActionTabels();
 
-    private Task OnChipClicked(CardActionTabel action)
+    private async Task OnChipClicked(CardActionTabel action)
     {
         if (action.Tag == "delete")
         {
@@ -105,14 +144,15 @@
         }
         else if(action.Tag=="create")
         {
-            OpenDialog();
+            await OnSubmitCreateSpace();
+           
         }
 
-        return Task.CompletedTask;
+        // await Task.CompletedTask;
 
     }
 
-    private void OpenDialog()
+    private void OpenDialog(string srcIframe)
     {
 
 
@@ -124,9 +164,8 @@
         {
 
             { x =>x.DataBuild1,null },
-
             {x => x.DataBuildCheck,null},
-            {x=>x.SrcIframe,"https://lahja-core.onrender.com/createspace"}
+            {x=>x.SrcIframe,srcIframe}
         };
 
         DialogService.Show<DialogContent>("", parameters, options);

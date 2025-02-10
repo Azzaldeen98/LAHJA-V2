@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.Service.Response;
+using Domain.Exceptions;
 using Domain.Repository.Service;
 using Domain.Wrapper;
 
@@ -15,7 +16,22 @@ namespace Application.UseCase.Service
 
         public async Task<Result<ServiceResponse>> ExecuteAsync(string id)
         {
-            return await repository.GetOneAsync(id);
+            try
+            {
+                var response= await repository.GetOneAsync(id);
+                if(response == null)
+                    return Result<ServiceResponse>.Fail("null");
+                return Result<ServiceResponse>.Success(response);
+            }
+            catch (ServerException e)
+            {
+
+                return Result<ServiceResponse>.Fail(e.Message, e.StatusCode);
+            }
+            catch (Exception e)
+            {
+                return Result<ServiceResponse>.Fail(e.Message);
+            }
         }
     }
 

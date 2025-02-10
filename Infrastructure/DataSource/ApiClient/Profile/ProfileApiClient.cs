@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using Domain.Entities.Profile;
 using Domain.Entities.Profile.Response;
+using Domain.Exceptions;
 using Domain.Wrapper;
 using Infrastructure.DataSource.ApiClient.Base;
 using Infrastructure.DataSource.ApiClientFactory;
 using Infrastructure.Models.Plans;
 using Infrastructure.Models.Profile.Response;
+using Infrastructure.Models.Request.Response;
 using Infrastructure.Nswag;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -80,88 +82,143 @@ namespace Infrastructure.DataSource.ApiClient.Profile
 
         public  async  Task<ICollection<ProfileSubscriptionResponse>> SubscriptionsAsync()
         {
-            var client = await GetApiClient();
+            try
+            {
+                var client = await GetApiClient();
 
-            var response = await client.SubscriptionsAsync();
-            var resModel = _mapper.Map<ICollection<ProfileSubscriptionResponse>>(response);
+                var response = await client.SubscriptionsAsync();
+                var resModel = _mapper.Map<ICollection<ProfileSubscriptionResponse>>(response);
 
-            return resModel;
+                return resModel;
+            }
+            catch (ApiException e)
+            {
+                throw new ServerException(e.Message, e.StatusCode);
+            }
+      
 
         }
 
         public async Task<ICollection<ProfileModelAiResponse>> ModelAisAsync()
         {
-            var client = await GetApiClient();
+            try
+            {
+                var client = await GetApiClient();
 
-            var response = await client.ModelAisAsync(); 
-            var resModel = _mapper.Map<ICollection<ProfileModelAiResponse>>(response);
+                var response = await client.ModelAisAsync();
+                var resModel = _mapper.Map<ICollection<ProfileModelAiResponse>>(response);
 
-            return resModel;
+                return resModel;
+            }
+            catch (ApiException e)
+            {
+                throw new ServerException(e.Message, e.StatusCode);
+            }
+        
 
         }
 
         public async Task<ICollection<ProfileServiceResponse>> ServicesAsync()
         {
-            var client = await GetApiClient();
+            try
+            {
+                var client = await GetApiClient();
 
-            var response = await client.ServicesAsync();
-            var resModel = _mapper.Map<ICollection<ProfileServiceResponse>>(response);
+                var response = await client.ServicesAsync();
+                var resModel = _mapper.Map<ICollection<ProfileServiceResponse>>(response);
 
-            return resModel;
+                return resModel;
+            }
+            catch (ApiException e)
+            {
+                throw new ServerException(e.Message, e.StatusCode);
+            }
+     
          
 
         }
 
         public async Task<ICollection<ProfileServiceResponse>> ServicesModelAiAsync(string modelAiId)
         {
-            var client = await GetApiClient();
 
-            var response = await client.ServicesModelAiAsync(modelAiId);
-            var resModel = _mapper.Map<ICollection<ProfileServiceResponse>>(response);
+            try 
+            { 
+
+                var client = await GetApiClient();
+                var response = await client.ServicesModelAiAsync(modelAiId);
+                var resModel = _mapper.Map<ICollection<ProfileServiceResponse>>(response);
 
             return resModel;
+            }
+            catch (ApiException e)
+            {
+                throw new ServerException(e.Message, e.StatusCode);
+            }
+
+
+    
        
 
         }
 
         public async Task<ICollection<ProfileSpaceResponse>> SpacesSubscriptionAsync(string subscriptionId)
         {
-    
+
+            try
+            {
+
                 var client = await GetApiClient();
 
                 var response = await client.SpacesSubscriptionAsync(subscriptionId);
                 var resModel = _mapper.Map<ICollection<ProfileSpaceResponse>>(response);
 
                 return resModel;
-           
-      
+            }
+            catch (ApiException e)
+            {
+                throw new ServerException(e.Message, e.StatusCode);
+            }
 
         }
 
 
         public async Task<ProfileSpaceResponse> SpaceSubscriptionAsync(string subscriptionId, string spaceId)
         {
-            var client = await GetApiClient();
 
-            var response = await client.SpaceSubscriptionAsync(subscriptionId, spaceId);
-            var resModel = _mapper.Map<ProfileSpaceResponse>(response);
+            try
+            {
+                var client = await GetApiClient();
 
-            return resModel;
-           
+                var response = await client.SpaceSubscriptionAsync(subscriptionId, spaceId);
+                var resModel = _mapper.Map<ProfileSpaceResponse>(response);
+
+                return resModel;
+            }
+            catch (ApiException e)
+            {
+                throw new ServerException(e.Message, e.StatusCode);
+            }
+
         }
 
 
 
-        public async Task<ICollection<RequestResponse>> RequestsServiceAsync(string serviceId)
+        public async Task<ICollection<RequestResponseModel>> RequestsServiceAsync(string serviceId)
         {
-            var client = await GetApiClient();
 
-            var response = await client.RequestsServiceAsync(serviceId);
-            return response;
+            try
+            {
+                var client = await GetApiClient();
+
+                var response = await client.RequestsServiceAsync(serviceId);
+                return _mapper.Map<ICollection<RequestResponseModel>>(response);
+            }
+            catch (ApiException e)
+            {
+                throw new ServerException(e.Message, e.StatusCode);
+            }
 
         }
-
-
 
     }
 }

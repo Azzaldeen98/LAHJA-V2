@@ -11,6 +11,7 @@ using Application.UseCase.Plans;
 using Application.UseCase.Plans.Get;
 using Application.UseCase.Request;
 using Application.UseCase.Service;
+using Application.UseCase.Space;
 using Infrastructure.DataSource.ApiClient.Plans;
 using Infrastructure.Mappings.Plans;
 using Microsoft.Extensions.DependencyInjection;
@@ -138,6 +139,11 @@ namespace Infrastructure
             serviceCollection.AddScoped<CreateEventUseCase>();
             serviceCollection.AddScoped<ResultRequestUseCase>();
 
+
+            // Space
+            serviceCollection.AddScoped<CreateSpaceAuthorizationUseCase>();
+      
+
         }
 
         private static void InstallServices(this IServiceCollection serviceCollection)
@@ -154,6 +160,7 @@ namespace Infrastructure
             serviceCollection.AddScoped<CreditCardService>();
             serviceCollection.AddScoped<LAHJAService>();
             serviceCollection.AddScoped<RequestService>();
+            serviceCollection.AddScoped<SpaceService>();
 
         }
 

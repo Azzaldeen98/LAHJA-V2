@@ -3,6 +3,7 @@ using Domain.Entities.Billing.Response;
 using Domain.Entities.Plans.Response;
 using Domain.Entities.Profile;
 using Domain.Entities.Profile.Response;
+using Domain.Entities.Request.Response;
 using Domain.Entities.Subscriptions.Response;
 using Domain.Repository.Profile;
 using Domain.ShareData;
@@ -186,4 +187,70 @@ public class ProfileRepository :IProfileRepository
     {
         throw new NotImplementedException();
     }
+
+    public async Task<ICollection<ProfileSubscriptionResponse>> SubscriptionsAsync()
+    {
+
+        var response = await profileApiClient.SubscriptionsAsync();
+        return response;
+
+    }
+
+    public async Task<ICollection<ProfileModelAiResponse>> ModelAisAsync()
+    {
+      
+
+        var response = await profileApiClient.ModelAisAsync();
+        return response;
+
+    }
+
+    public async Task<ICollection<ProfileServiceResponse>> ServicesAsync()
+    {
+      
+
+        var response = await profileApiClient.ServicesAsync();
+        return response;
+
+
+    }
+
+    public async Task<ICollection<ProfileServiceResponse>> ServicesModelAiAsync(string modelAiId)
+    {
+  
+
+        var response = await profileApiClient.ServicesModelAiAsync(modelAiId);
+        return response;
+
+
+    }
+
+    public async Task<ICollection<ProfileSpaceResponse>> SpacesSubscriptionAsync(string subscriptionId)
+    {
+
+        var response = await profileApiClient.SpacesSubscriptionAsync(subscriptionId);
+        return response;
+
+    }
+
+
+    public async Task<ProfileSpaceResponse> SpaceSubscriptionAsync(string subscriptionId, string spaceId)
+    {
+    
+
+        var response = await profileApiClient.SpaceSubscriptionAsync(subscriptionId, spaceId);
+        return response;
+
+    }
+
+
+
+    public async Task<List<RequestResponse>> RequestsServiceAsync(string serviceId)
+    {
+        
+        var response = await profileApiClient.RequestsServiceAsync(serviceId);
+        return _mapper.Map<List<RequestResponse>>(response);
+
+    }
+
 }

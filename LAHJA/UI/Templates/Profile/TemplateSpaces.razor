@@ -12,15 +12,9 @@
 
 
 
-
-
-
 @if (Template != null && dataAndEvent != null)
 {
-    <TabelDashCard T="DataBuildSpace" DataAndEventBuildTabel="dataAndEvent"
-                   StateCounts="cardStates"
-                   ActionTabels="groupAction"
-                   BarTabel="TranslationsLST" />
+    <Spaces DataBuild="dataBuild" SubmitCreateSpace="Template.BuilderComponents.SubmitCreateSpace" />
 }
 
 
@@ -28,10 +22,10 @@
 
 
 
-    DataAndEventBuildTabelCard<DataBuildSpace> dataAndEvent = null;
+    private  DataAndEventBuildTabelCard<DataBuildSpace> dataAndEvent = null;
     private string lg = "ar";
 
-
+    private List<DataBuildSpace> dataBuild = new();
 
     [Parameter] public string subscriptionId{ set; get; }
 
@@ -42,7 +36,7 @@
 
         if (firstRender)
         {
-            List<DataBuildSpace> dataBuild=new();
+       
 
             if (!string.IsNullOrEmpty(subscriptionId))
             {
@@ -57,9 +51,12 @@
                 {
                     DataBuild = dataBuild,
                     LabelColumns = ColomsTrans[lg].ToList(),
-
                     Events = new()
+                    // {
+                    //     OnCreateClicked = OnSubmitCreateSpace
+                    // }
                 };
+
 
             cardStates = new()
         {
@@ -107,6 +104,23 @@
     List<CardStateCount<string>>? cardStates = null;
 
     GroupActionTabels groupAction = new GroupActionTabels();
+
+
+    // private async Task OnSubmitCreateSpace(DataBuildSpace action)
+    // {
+    //     if (Template.BuilderComponents.SubmitCreateSpace != null)
+    //     {
+    //         var response = await Template.BuilderComponents.SubmitCreateSpace(action);
+
+    //         if (response.Succeeded)
+    //         {
+                
+    //         }
+    //     }
+      
+
+    // }
+
 
     private Task OnChipClicked(CardActionTabel action)
     {

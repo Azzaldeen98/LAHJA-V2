@@ -24,7 +24,11 @@
 <div class="p-5">
     <div class="p-1 RCardP">
 
-        <CardShowExperience IsShowImage="false" Translations="BarTabel" />
+        @if (BarTabel != null && BarTabel.Any())
+        {
+            <CardShowExperience IsShowImage="false" Translations="BarTabel" />
+        }
+       
 
      <StateCountCard  Params="StateCounts" />
   

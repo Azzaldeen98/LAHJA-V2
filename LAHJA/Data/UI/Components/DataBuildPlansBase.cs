@@ -83,6 +83,7 @@ namespace LAHJA.Data.UI.Components
 
         public List<CardActionTabel>? Actions { get;set; }
         public Func<CardActionTabel, Task>? ChipClicked { get; set; }
+        public Func<Task>? CreateSpaceClicked { get; set; }
 
     }
     public class DataBuildSpace
@@ -96,6 +97,7 @@ namespace LAHJA.Data.UI.Components
         public bool IsGpu { get; set; }
         public bool IsGlobal { get; set; }
         public int Bandwidth { get; set; }
+        public string? ServiceId { get; set; }
 
         public RenderFragment Dash { get; set; } = builder => builder.AddContent(0, (RenderFragment)(b =>
             {
@@ -153,6 +155,7 @@ namespace LAHJA.Data.UI.Components
      public  class EventBuildTabelCard<T>
     {
         public EventCallback<T> OnRowClicked { get; set; }
+  
         public EventCallback<HashSet<T>> OnSelectedItemsChanged { get; set; }
         public EventCallback<string> OnSearch { get; set; }
         public EventCallback<SortDirection> OnSortChanged { get; set; }

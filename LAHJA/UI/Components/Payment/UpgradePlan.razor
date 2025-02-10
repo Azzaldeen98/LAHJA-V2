@@ -44,16 +44,14 @@
     <MudText Typo="Typo.h5" Class="mb-3">
         @LocalizedContent["UpgradeYourAccountTitle"]
     </MudText>
-    <MudLink Href="/BillingSummary" Color="@AppColors.BASE_COLOR_ENUM" Class="m-3" Target="_self">
-        ← @LocalizedContent["BackToBilling"]
-    </MudLink>
+
+    <MudLink Href="/BillingSummary" Color="@AppColors.BASE_COLOR_ENUM" Class="m-3" Target="_self">@LocalizedContent["BackToBilling"]</MudLink>
 
     <hr class="py-1 my-3" />
 
     <div class="container_flex_wrap align-items-center mt-5">
 
         @if (@BuildData != null)
-
         {
 
 

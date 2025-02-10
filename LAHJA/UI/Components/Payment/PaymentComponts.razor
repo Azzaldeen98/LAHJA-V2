@@ -27,9 +27,8 @@
             <div style="padding:0% 10%">
             <UpgradePlan BuildData="@BuildPlanData" SubmitConfirm="OnSubmitConfirmPlan" SubmitUpgrade="OnSubmitUpgradePlan" SubmitCancel="OnSubmitCancelPlan" />
             </div>
-
-
         </MudStep>
+
         <MudStep CompletedStepColor="@AppColors.BASE_COLOR_ENUM" Title="Step 2" SecondaryText="Enter some text" HasError="@(_step2TextInput=="")">
 
        
@@ -40,7 +39,7 @@
                      </div>
 
                      <div class="w40 mt-3">
-                            <CardsMethodsSection SelectedCard="OnSelectedCardData" BuildData="BuildCreditCardData" EditCard="OnEditCard" CreateCard="OnCreateCard" />
+                         <CardsMethodsSection SelectedCard="OnSelectedCardData" BuildData="BuildCreditCardData" EditCard="OnEditCard" CreateCard="OnCreateCard" />
                     </div>
                
             </MudPaper>

@@ -1,8 +1,10 @@
 ﻿using Application.Services.Profile;
 using AutoMapper;
+using Domain.Entities.AuthorizationSession;
 using Domain.Entities.Plans.Response;
 using Domain.Entities.Profile;
 using Domain.Entities.Profile.Response;
+using Domain.Entities.Space.Request;
 using Domain.ShareData.Base;
 using Domain.Wrapper;
 using LAHJA.ApplicationLayer.Profile;
@@ -15,6 +17,7 @@ using LAHJA.Data.UI.Templates.Profile;
 using LAHJA.Helpers.Services;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using System;
 using static MudBlazor.Colors;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -35,7 +38,7 @@ namespace LAHJA.Data.UI.Templates.Profile
         public Func<T, Task> SubmitCreate { get; set; }
         public Func<T, Task> SubmitDelete { get; set; }
         public Func<T, Task> SubmitUpdate { get; set; }
-
+        public Func<DataBuildSpace,Task<Result<AuthorizationSessionWebResponse>>> SubmitCreateSpace { get; set; }
 
     }
 
@@ -50,6 +53,7 @@ namespace LAHJA.Data.UI.Templates.Profile
         Task<Result<DeleteResponse>> DeleteAsync(T data);
         Task<Result<ProfileResponse>> UpdateAsync(T data);
 
+        Task<Result<AuthorizationSessionWebResponse>> CreateSpaceAsync(SpaceRequest request);
         Task<ICollection<ProfileSubscriptionResponse>> SubscriptionsAsync();
 
         Task<ICollection<ProfileModelAiResponse>> ModelAisAsync();
@@ -76,6 +80,7 @@ namespace LAHJA.Data.UI.Templates.Profile
         }
 
         public abstract Task<Result<ProfileResponse>> CreateAsync(E data);
+        public abstract Task<Result<AuthorizationSessionWebResponse>> CreateSpaceAsync(SpaceRequest data);
 
 
         public abstract Task<Result<DeleteResponse>> DeleteAsync(E dataId);
@@ -107,6 +112,7 @@ namespace LAHJA.Data.UI.Templates.Profile
 
         public Func<T, Task> SubmitSearch { get; set; }
         public Func<T, Task> SubmitCreate { get; set; }
+        public Func<DataBuildSpace, Task<Result<AuthorizationSessionWebResponse>>> SubmitCreateSpace { get; set; }
         public Func<T, Task> SubmitDelete { get; set; }
         public Func<T, Task> SubmitUpdate { get; set; }
 
@@ -163,16 +169,14 @@ namespace LAHJA.Data.UI.Templates.Profile
 
         }
 
-        public override Task<Result<ProfileResponse>> CreateAsync(DataBuildUserProfile data)
+   
+
+        public override async Task<Result<AuthorizationSessionWebResponse>> CreateSpaceAsync(SpaceRequest data)
         {
-            throw new NotImplementedException();
+            return await Service.CreateSpaceAsync(data);
         }
 
-        public override Task<Result<DeleteResponse>> DeleteAsync(DataBuildUserProfile dataId)
-        {
-            throw new NotImplementedException();
-        }
-
+  
         //public override  async Task<ProfileSpaceResponse> SpaceSubscriptionAsync(string subscriptionId, string spaceId)
         //{
 
@@ -203,11 +207,21 @@ namespace LAHJA.Data.UI.Templates.Profile
 
         }
 
+        public async override Task<Result<ProfileUserResponse>> GetProfileUserAsync()
+        {
+            return await Service.GetProfileUserAsync();
+        }
 
+        public override async Task<ICollection<ProfileServiceResponse>> ServicesAsync()
+        {
+            return await Service.ServicesAsync();
+        }
         public override async Task<ICollection<ProfileSubscriptionResponse>> SubscriptionsAsync()
         {
             return await Service.SubscriptionsAsync();
         }
+
+
 
         public override Task<Result<ProfileResponse>> UpdateAsync(DataBuildUserProfile data)
         {
@@ -218,17 +232,15 @@ namespace LAHJA.Data.UI.Templates.Profile
         {
             throw new NotImplementedException();
         }      
-        
-        public async override Task<Result<ProfileUserResponse>> GetProfileUserAsync()
-        {
-            return await Service.GetProfileUserAsync();
-        }
 
-        public override async Task<ICollection<ProfileServiceResponse>> ServicesAsync()
+        public override Task<Result<DeleteResponse>> DeleteAsync(DataBuildUserProfile dataId)
         {
-            return await Service.ServicesAsync();
+            throw new NotImplementedException();
         }
-
+        public override Task<Result<ProfileResponse>> CreateAsync(DataBuildUserProfile data)
+        {
+            throw new NotImplementedException();
+        }
 
 
         //public override async Task<Result<ProfileResponse>> CreateAsync(DataBuildUserProfile data)
@@ -352,6 +364,7 @@ namespace LAHJA.Data.UI.Templates.Profile
             this.BuilderComponents.SubmitCreate = OnSubmitCreateProfile;
             this.BuilderComponents.SubmitUpdate = OnSubmitUpdateProfile;
             this.BuilderComponents.SubmitDelete = OnSubmitDeleteProfile;
+            this.BuilderComponents.SubmitCreateSpace = OnSubmitCreateSpaceAsync;
             
 
 
@@ -435,6 +448,23 @@ namespace LAHJA.Data.UI.Templates.Profile
             else
             {
                 return Result<DataBuildUserProfile>.Fail(response.Messages);
+            }
+
+
+        }   
+        
+        private async Task<Result<AuthorizationSessionWebResponse>> OnSubmitCreateSpaceAsync(DataBuildSpace data)
+        {
+
+                var response = await builderApi.CreateSpaceAsync(new SpaceRequest { ServiceId= data.ServiceId });
+            if (response.Succeeded)
+            {
+                //var tm = mapper.Map<AuthorizationSessionWebResponse>(response.Data);
+                return Result<AuthorizationSessionWebResponse>.Success(response.Data);
+            }
+            else
+            {
+                return Result<AuthorizationSessionWebResponse>.Fail(response.Messages);
             }
 
 

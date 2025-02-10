@@ -58,23 +58,20 @@ namespace Infrastructure.Repository.Services
 
 
         }
-        public async Task<Result<ServiceResponse>> GetOneAsync(string id)
+        public async Task<ServiceResponse?> GetOneAsync(string id)
         {
             var response = await ExecutorAppMode.ExecuteAsync<ServiceResponseModel>(
                  async () => await _servicesApiClient.GetOneAsync(id),
                   async () => await _servicesApiClient.GetOneAsync(id));
 
-
-         
-
             if (response!=null)
             {
-                var result =  _mapper.Map<ServiceResponse>(response);
-                return Result<ServiceResponse>.Success(result);
+                return  _mapper.Map<ServiceResponse>(response);
+               
             }
             else
             {
-                return Result<ServiceResponse>.Fail();
+                return null;
             }
 
 

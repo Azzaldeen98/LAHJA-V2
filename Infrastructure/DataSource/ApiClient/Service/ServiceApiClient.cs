@@ -40,7 +40,6 @@ namespace Infrastructure.DataSource.ApiClient.Service
 
 
         }
-
         public async Task<ServiceResponseModel> GetOneAsync(string id)
         {
             try
