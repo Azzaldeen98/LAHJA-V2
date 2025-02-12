@@ -49,15 +49,13 @@ namespace Application.UseCase.Space
 
                 if (service != null)
                 {
-
-                    //TODO :   EncryptFromWebAsync
-                    //var encrypt = await authorizationSessionRepository.EncryptFromWebAsync();
-                    //if (encrypt != null)
+                    var encrypt = await authorizationSessionRepository.EncryptFromWebAsync();
+                    if (encrypt != null)
                     {
                         var response = await authorizationSessionRepository.CreateAuthorizationSessionAsync(new AuthorizationWebRequest
                         {
                             ServiceId = service.Id,
-                            Token = "eyJhbGciOiJBMTI4Q0JDLUhTMjU2IiwidHlwIjoiSldUIn0.eyJ3ZWIiOiJXZWIiLCJleHAiOjE3MzkzMDM4MTYsImlzcyI6Imlzc3VlciIsImF1ZCI6Imh0dHBzOi8vbG9jYWxob3N0OjcwMDMifQ.WcVP1hp6DX4Stjw_aAPrY87TdINsfHURisTvtR1w_QQ" //encrypt.EncrptedToken
+                            Token = encrypt.EncrptedToken
                         });
                         if (response != null)
                         {

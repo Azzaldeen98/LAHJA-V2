@@ -2,21 +2,44 @@
 @using Domain.ShareData
 @using LAHJA.Data.UI.Components
 
+@using LAHJA.UI.Components.ProFile.USettings
 @using LAHJA.UI.Components.ServiceCard
 @using LAHJA.UI.Components.TabelCard
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @inject NavigationManager Navigation;
+@inject IManageLanguageService _manageLanguageService
 
-
-<TabelDashCard T="DataBuildUserSubscriptionInfo" DataAndEventBuildTabel="dataAndEvent" 
-StateCounts="cardStates"
-ActionTabels="groupAction"
-BarTabel="TranslationsLST" />
+<TabelDashCard T="DataBuildUserSubscriptionInfo" 
+    DataAndEventBuildTabel="dataAndEvent" 
+    
+    StateCounts="cardStates"
+    ActionTabels="groupAction"
+    BarTabel="TranslationsLST" />
 
 
 @code{
     [Parameter]public  List<DataBuildUserSubscriptionInfo>? DataBuild{ set; get; }
+   
+    [Parameter]
+    public string Language
+    {
+        get => lg;
+        set
+        {
+            if (!string.IsNullOrEmpty(value) && value != lg)
+            {
+                lg = value;
+                StateHasChanged();
+            }
+        }
+    }
+
+    [Parameter] public EventCallback<DataBuildUserSubscriptionInfo> SubmitPause { get; set; }
+    [Parameter] public EventCallback<DataBuildUserSubscriptionInfo> SubmitResume { set; get; }
+    [Parameter] public EventCallback<DataBuildUserSubscriptionInfo> SubmitDelete { set; get; }
+    [Parameter] public EventCallback<DataBuildUserSubscriptionInfo> SubmitCancel { set; get; }
+    [Parameter] public EventCallback SubmitCheckoutManage { set; get; }
 
     private static readonly Dictionary<string, Dictionary<string, string>> TranslationsLST = new()
         {
@@ -42,8 +65,6 @@ BarTabel="TranslationsLST" />
     protected override void OnInitialized()
     {
 
-
-
         dataAndEvent = new()
             {
                 DataBuild = DataBuild,
@@ -54,7 +75,6 @@ BarTabel="TranslationsLST" />
                     OnRowClicked = EventCallback.Factory.Create<DataBuildUserSubscriptionInfo>(this, OnRowClicked)
                 }
             };
-
         cardStates = new()
         {
 
@@ -88,30 +108,17 @@ BarTabel="TranslationsLST" />
         };
         groupAction.Actions = new()
         {
-             new()
-            {
-                Icon=@Icons.Material.Filled.AddCircle
-                ,
-
-            },
-              new()
-            {
-                Icon=@Icons.Material.Filled.AddCircle
-                ,
-
-            }
-            ,
+          
 
             new()
             {
-                Icon=@Icons.Material.Filled.AddCircle
-                ,
-                Tag="create"
+                Icon=@Icons.Material.Filled.AddCircle,
+                Tag="create",
+                Name="create"
             },
             new()
             {
-                Icon=@Icons.Material.Filled.Delete
-                ,
+                Icon=@Icons.Material.Filled.Delete,
                 IsMudChip=false,
                 Tag="delete"
             }
@@ -126,12 +133,31 @@ BarTabel="TranslationsLST" />
 
     private Task OnRowClicked(DataBuildUserSubscriptionInfo data)
     {
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth =false };
 
-        Navigation.NavigateTo($"/settings/spaces/{data.Id}");
+        var parameters = new DialogParameters<SubscriptionDetails>
+        {
+            { x =>x.DataBuild,data },
+            { x =>x.Language,lg},
+            { x =>x.SubmitPause,SubmitPause},
+            { x =>x.SubmitResume,SubmitResume},
+            { x =>x.SubmitDelete,SubmitDelete},
+            { x =>x.SubmitCheckoutManage,SubmitCheckoutManage},
+        };
+
+        DialogService.Show<SubscriptionDetails>("", parameters, options);
+        // Navigation.NavigateTo($"/settings/spaces/{data.Id}");
         return Task.CompletedTask;
 
     }
+    private async Task OnSubmitCheckoutManage()
+    {
 
+        if (SubmitCheckoutManage.HasDelegate)
+        {
+            await SubmitCheckoutManage.InvokeAsync();
+        }
+    }
     private Task OnChipClicked(CardActionTabel action)
     {
         if (action.Tag == "delete")
@@ -141,18 +167,18 @@ BarTabel="TranslationsLST" />
         }
         else if(action.Tag=="create")
         {
-            OpenDialog();
+            Navigation.NavigateTo("Plans", true);
         }
 
         return Task.CompletedTask;
 
     }
+ 
 
     private void OpenDialog()
     {
 
 
-        
         var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Large, FullWidth = true };
 
 

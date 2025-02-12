@@ -54,6 +54,7 @@ namespace LAHJA
         {
             serviceCollection.AddTransient<IManageLanguageService,ManageLanguageService>();
             serviceCollection.AddScoped<LanguageService>();
+            serviceCollection.AddScoped<MessageBox>();
 
 
         }  
@@ -96,9 +97,9 @@ namespace LAHJA
 
 
             ///Subscription
-            serviceCollection.AddScoped<IBuilderSubscriptionApi<DataBuildSubscriptionBase>, BuilderSubscriptionApiClient>();
-            serviceCollection.AddScoped<IBuilderSubscriptionComponent<DataBuildSubscriptionBase>, BuilderSubscriptionComponent<DataBuildSubscriptionBase>>();
-            serviceCollection.AddScoped<TemplateSubscriptionShare<SubscriptionClientService, DataBuildSubscriptionBase>>();
+            serviceCollection.AddScoped<IBuilderSubscriptionApi<DataBuildUserSubscriptionInfo>, BuilderSubscriptionApiClient>();
+            serviceCollection.AddScoped<IBuilderSubscriptionComponent<DataBuildUserSubscriptionInfo>, BuilderSubscriptionComponent<DataBuildUserSubscriptionInfo>>();
+            serviceCollection.AddScoped<TemplateSubscriptionShare<SubscriptionClientService, DataBuildUserSubscriptionInfo>>();
             serviceCollection.AddScoped<TemplateSubscription>();
 
             //// CreditCard

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Newtonsoft.Json.Linq;
 using Shared.Constants;
+using Shared.Constants.Router;
 
 
 namespace LAHJA
@@ -18,9 +19,6 @@ namespace LAHJA
 
         public bool IsAuth { get  => (_isAuth) ? getAuthAsync().Result : true; }
                 
-              
-               
-
 
         private bool _isAuth = false;
        
@@ -84,14 +82,21 @@ namespace LAHJA
             {
                 try
                 {
-                //    var token = await firstAuthAsync();
-                 
+
+                    //if (!await getAuthAsync())
+                    //{
+                    //    Navigation.NavigateTo(RouterPage.LOGIN, true);
+                    //}
+
+
+                    //    var token = await firstAuthAsync();
+
                     //if (string.IsNullOrEmpty(token))
                     //{
                     //    await ProtectedSessionStorage.SetAsync("accessToken", token);
-      
+
                     //}
-      
+
                 }
                 catch
                 {

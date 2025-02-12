@@ -2,8 +2,10 @@
 {
     public interface IManageLanguageService
     {
+        Task<string> InitAsync();
         Task<string> GetLanguageAsync();
-        //Task SetLanguageAsync(string languageCode);
+        Task<string> GetLanguageFromSessionAsync();
+        Task SetLanguageInSessionAsync(LanguagesCode code);
         Task<bool> CheckIsLanguage(LanguagesCode code);
         Task SetLanguageAsync(LanguagesCode code);
     }

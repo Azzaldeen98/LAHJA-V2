@@ -6,11 +6,6 @@ namespace LAHJA.Data.UI.Components.ServiceCard
 
     public class ModelProperties
     {
-
-
-
-
-
         public string Id { get; set; }
         public string Type { get; set; }
         public string Voice { get; set; }

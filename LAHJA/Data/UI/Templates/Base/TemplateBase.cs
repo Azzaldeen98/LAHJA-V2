@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using LAHJA.Helpers;
 using LAHJA.Helpers.Services;
 
 namespace LAHJA.Data.UI.Templates.Base;
@@ -31,6 +32,7 @@ public class BuilderApi<T,E> : IBuilderApi<E>
     public BuilderApi(IMapper mapper, T service) { 
         Mapper = mapper;
         this.Service = service;
+      
     }
 
     public object GetInstance()
@@ -77,6 +79,7 @@ public abstract class TemplateBase<T,E> : ITemplateBase<T, E>
         _errors = new List<string>();
         this.authService = authService;
         this.client = client;
+      
         //this.PSession = PSession;
         //_isAuth = authService.isAuth().Result;
         //this.customAuthenticationStateProvider = customAuthenticationStateProvider;

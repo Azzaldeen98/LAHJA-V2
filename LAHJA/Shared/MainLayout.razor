@@ -445,7 +445,8 @@
             {
 
                 tokenn = await _tokenService.GetTokenAsync();
-                CurrentLanguage = await _manageLanguageService.GetLanguageAsync();
+                CurrentLanguage = await _manageLanguageService.InitAsync();
+                // CurrentLanguage = await _manageLanguageService.GetLanguageAsync();
                 _rightToLeft = CurrentLanguage == LanguagesCode.AR.ToString().ToLower();
                 _isDarkMode = await _mudThemeProvider.GetSystemPreference();
                 if (_isDarkMode)

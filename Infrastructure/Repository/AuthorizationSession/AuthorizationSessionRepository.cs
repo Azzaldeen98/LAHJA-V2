@@ -29,7 +29,8 @@ namespace Infrastructure.Repository.AuthorizationSession
                  async () => await _apiClient.CreateAuthorizationSessionAsync(model),
                   async () => await _apiClient.CreateAuthorizationSessionAsync(model));
 
-            return response;
+            return _mapper.Map<AuthorizationSessionWebResponse>(response);
+
         }
         public async Task<AuthorizationSessionCoreResponse> AuthorizationSessionAsync(ValidateTokenRequest request) {
            
@@ -38,7 +39,7 @@ namespace Infrastructure.Repository.AuthorizationSession
                  async () => await _apiClient.AuthorizationSessionAsync(model),
                   async () => await _apiClient.AuthorizationSessionAsync(model));
 
-            return response;
+            return _mapper.Map<AuthorizationSessionCoreResponse>(response);
         }
         public async Task ValidateSessionTokenAsync(string token) {
 
@@ -50,21 +51,21 @@ namespace Infrastructure.Repository.AuthorizationSession
         }
         public async Task<AuthorizationSessionEncryptResponse> EncryptFromWebAsync() {
 
-               var  res= await ExecutorAppMode.ExecuteAsync(
-                    async () => _apiClient.EncryptFromWebAsync(),
-                    async () => _apiClient.EncryptFromWebAsync()
+               var  res= await ExecutorAppMode.ExecuteAsync<AuthorizationSessionEncryptResponseModel>(
+                    async () =>await _apiClient.EncryptFromWebAsync(),
+                    async () =>await _apiClient.EncryptFromWebAsync()
                 );
 
             return _mapper.Map<AuthorizationSessionEncryptResponse>(res);
         }
         public async Task<AuthorizationSessionEncryptResponse> EncryptFromCoreAsync(string sessionToken) {
 
-            await ExecutorAppMode.ExecuteAsync(
-                  async () => _apiClient.EncryptFromCoreAsync(sessionToken),
-                  async () => _apiClient.EncryptFromCoreAsync(sessionToken)
+            var res =  await ExecutorAppMode.ExecuteAsync<AuthorizationSessionEncryptResponseModel>(
+                  async () => await _apiClient.EncryptFromCoreAsync(sessionToken),
+                  async () => await _apiClient.EncryptFromCoreAsync(sessionToken)
               );
 
-            return new();
+            return _mapper.Map<AuthorizationSessionEncryptResponse>(res);
         }
         public async Task<DeleteResponse> DeleteAuthorizationSessionAsync(string sessionId) {
 

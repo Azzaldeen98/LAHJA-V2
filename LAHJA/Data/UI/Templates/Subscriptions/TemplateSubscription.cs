@@ -5,6 +5,7 @@ using Domain.ShareData.Base;
 using Domain.Wrapper;
 using LAHJA.ApplicationLayer.Subscription;
 using LAHJA.ApplicationLayer.Subscription;
+using LAHJA.Data.UI.Components;
 using LAHJA.Data.UI.Components.Subscription;
 using LAHJA.Data.UI.Templates.Base;
 using LAHJA.Data.UI.Templates.Subscription;
@@ -17,18 +18,18 @@ using MudBlazor;
 namespace LAHJA.Data.UI.Templates.Subscription
 {
 
-    public class DataBuildSubscriptionBase
-    {
+    //public class DataBuildUserSubscriptionInfo
+    //{
    
-        public string? Id { get; set; }
-        public string? UserId { get; set; }
-        public string? PlanId { get; set; }
-        public string? CustomerId { get; set; }
-        public string? BillingPeriod { get; set; }
-        public DateTimeOffset? StartDate { get; set; }
-        public string? Status { get; set; }
-        public bool? CancelAtPeriodEnd { get; set; }
-    }
+    //    public string? Id { get; set; }
+    //    public string? UserId { get; set; }
+    //    public string? PlanId { get; set; }
+    //    public string? CustomerId { get; set; }
+    //    public string? BillingPeriod { get; set; }
+    //    public DateTimeOffset? StartDate { get; set; }
+    //    public string? Status { get; set; }
+    //    public bool? CancelAtPeriodEnd { get; set; }
+    //}
 
 
 
@@ -55,8 +56,7 @@ namespace LAHJA.Data.UI.Templates.Subscription
         //Task<Result<SubscriptionResponse>> CreateAsync(T data);
         Task<Result<UserSubscription>> ResumeAsync(T data);
         Task<Result<UserSubscription>> PauseAsync(T data);
-        Task<Result<DeleteResponse
-            >> DeleteAsync(T data);
+        Task<Result<DeleteResponse>> DeleteAsync(T data);
         Task<Result<UserSubscription>> UpdateAsync(T data);
 
 
@@ -138,14 +138,14 @@ namespace LAHJA.Data.UI.Templates.Subscription
     }
 
 
-    public class BuilderSubscriptionApiClient : BuilderSubscriptionApi<SubscriptionClientService, DataBuildSubscriptionBase>, IBuilderSubscriptionApi<DataBuildSubscriptionBase>
+    public class BuilderSubscriptionApiClient : BuilderSubscriptionApi<SubscriptionClientService, DataBuildUserSubscriptionInfo>, IBuilderSubscriptionApi<DataBuildUserSubscriptionInfo>
     {
         public BuilderSubscriptionApiClient(IMapper mapper, SubscriptionClientService service) : base(mapper, service)
         {
 
         }
 
-        public override async Task<Result<UserSubscription>> PauseAsync(DataBuildSubscriptionBase data)
+        public override async Task<Result<UserSubscription>> PauseAsync(DataBuildUserSubscriptionInfo data)
         {
             //var model = Mapper.Map<SubscriptionCreate>(data);
             var res = await Service.PauseAsync(data.Id);
@@ -168,7 +168,7 @@ namespace LAHJA.Data.UI.Templates.Subscription
             }
         }
 
-        public override async Task<Result<DeleteResponse>> DeleteAsync(DataBuildSubscriptionBase data)
+        public override async Task<Result<DeleteResponse>> DeleteAsync(DataBuildUserSubscriptionInfo data)
         {
 
             var res = await Service.DeleteAsync(data.Id);
@@ -214,7 +214,7 @@ namespace LAHJA.Data.UI.Templates.Subscription
 
         }
 
-        public override async Task<Result<UserSubscription>> ResumeAsync(DataBuildSubscriptionBase data)
+        public override async Task<Result<UserSubscription>> ResumeAsync(DataBuildUserSubscriptionInfo data)
         {
             //var model = Mapper.Map<SubscriptionSearchRequest>(data);
             var res = await Service.ResumeAsync(data.Id);
@@ -237,7 +237,7 @@ namespace LAHJA.Data.UI.Templates.Subscription
             }
         }
 
-        public override async Task<Result<UserSubscription>> CreateAsync(DataBuildSubscriptionBase data)
+        public override async Task<Result<UserSubscription>> CreateAsync(DataBuildUserSubscriptionInfo data)
         {
             var model = Mapper.Map<SubscriptionRequest>(data);
             var res = await Service.CreateAsync(model);
@@ -261,7 +261,7 @@ namespace LAHJA.Data.UI.Templates.Subscription
         }
 
 
-        public override async Task<Result<UserSubscription>> UpdateAsync(DataBuildSubscriptionBase data)
+        public override async Task<Result<UserSubscription>> UpdateAsync(DataBuildUserSubscriptionInfo data)
         {
             var model = Mapper.Map<SubscriptionRequest>(data);
             var res = await Service.UpdateAsync(model);
@@ -291,7 +291,7 @@ namespace LAHJA.Data.UI.Templates.Subscription
     }
 
 
-    public class TemplateSubscription : TemplateSubscriptionShare<SubscriptionClientService, DataBuildSubscriptionBase>
+    public class TemplateSubscription : TemplateSubscriptionShare<SubscriptionClientService, DataBuildUserSubscriptionInfo>
     {
    
         public List<UserSubscription> Subscriptions { get => _Subscriptions; }
@@ -306,16 +306,19 @@ namespace LAHJA.Data.UI.Templates.Subscription
             IMapper mapper,
             AuthService AuthService,
             SubscriptionClientService client,
-            IBuilderSubscriptionComponent<DataBuildSubscriptionBase> builderComponents,
+            IBuilderSubscriptionComponent<DataBuildUserSubscriptionInfo> builderComponents,
             NavigationManager navigation,
             IDialogService dialogService,
             ISnackbar snackbar) : base(mapper, AuthService, client, builderComponents, navigation, dialogService, snackbar)
         {
             //this.BuilderComponents.SubmitCreate = OnSubmitCreateSubscription;
-            this.BuilderComponents.SubmitPause = OnSubmitPauseSubscription;
+
             this.BuilderComponents.SubmitGetAll = OnSubmitGetAllSubscriptions;
+
+            this.BuilderComponents.SubmitPause = OnSubmitPauseSubscription;
+            this.BuilderComponents.SubmitResume = OnSubmitUResumeSubscription;
             this.BuilderComponents.SubmitDelete = OnSubmitDeleteSubscription;
-            this.BuilderComponents.SubmitResume= OnSubmitUResumeSubscription;
+        
 
 
             this.builderApi = new BuilderSubscriptionApiClient(mapper, client);
@@ -327,12 +330,12 @@ namespace LAHJA.Data.UI.Templates.Subscription
 
 
      
-        private async Task OnSubmitDeleteSubscription(DataBuildSubscriptionBase dataBuildSubscriptionBase)
+        private async Task OnSubmitDeleteSubscription(DataBuildUserSubscriptionInfo DataBuildUserSubscriptionInfo)
         {
 
-            if (dataBuildSubscriptionBase != null)
+            if (DataBuildUserSubscriptionInfo != null)
             {
-                var response = await builderApi.DeleteAsync(dataBuildSubscriptionBase);
+                var response = await builderApi.DeleteAsync(DataBuildUserSubscriptionInfo);
                 if (response.Succeeded)
                 {
 
@@ -344,12 +347,12 @@ namespace LAHJA.Data.UI.Templates.Subscription
             }
 
         }
-        private async Task OnSubmitPauseSubscription(DataBuildSubscriptionBase dataBuildSubscriptionBase)
+        private async Task OnSubmitPauseSubscription(DataBuildUserSubscriptionInfo DataBuildUserSubscriptionInfo)
         {
 
-            if (dataBuildSubscriptionBase != null)
+            if (DataBuildUserSubscriptionInfo != null)
             {
-                var response = await builderApi.PauseAsync(dataBuildSubscriptionBase);
+                var response = await builderApi.PauseAsync(DataBuildUserSubscriptionInfo);
                 if (response.Succeeded)
                 {
 
@@ -361,12 +364,12 @@ namespace LAHJA.Data.UI.Templates.Subscription
             }
 
         }
-        private async Task OnSubmitUResumeSubscription(DataBuildSubscriptionBase dataBuildSubscriptionBase)
+        private async Task OnSubmitUResumeSubscription(DataBuildUserSubscriptionInfo DataBuildUserSubscriptionInfo)
         {
 
-            if (dataBuildSubscriptionBase != null)
+            if (DataBuildUserSubscriptionInfo != null)
             {
-                var response = await builderApi.ResumeAsync(dataBuildSubscriptionBase);
+                var response = await builderApi.ResumeAsync(DataBuildUserSubscriptionInfo);
                 if (response.Succeeded)
                 {
 

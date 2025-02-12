@@ -12,7 +12,7 @@
 
 
 
-@if (Template != null && dataAndEvent != null)
+@if (Template != null )
 {
     <Spaces DataBuild="dataBuild" SubmitCreateSpace="Template.BuilderComponents.SubmitCreateSpace" />
 }
@@ -31,8 +31,6 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-
-
 
         if (firstRender)
         {
@@ -56,8 +54,6 @@
                     //     OnCreateClicked = OnSubmitCreateSpace
                     // }
                 };
-
-
             cardStates = new()
         {
 
@@ -97,6 +93,7 @@
         };
             groupAction.ChipClicked += OnChipClicked;
         }
+
         StateHasChanged();
     }
 

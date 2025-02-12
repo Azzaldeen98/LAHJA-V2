@@ -1,5 +1,7 @@
-﻿using Blazorise;
+﻿using ApexCharts;
+using Blazorise;
 using Domain.ShareData;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.JSInterop;
 using Shared.Constants;
 using System.ComponentModel;
@@ -49,15 +51,29 @@ namespace LAHJA.Helpers.Services
 
 
 
-    public class ManageLanguageService: IManageLanguageService
-    {
+    public class ManageLanguageService: IManageLanguageService { 
+
+       private readonly ProtectedSessionStorage PSession;
+   
         private readonly IJSRuntime _jsRuntime;
         private Semaphore semaphore = new Semaphore(1, 1);
-        public ManageLanguageService(IJSRuntime jsRuntime)
+        public ManageLanguageService(IJSRuntime jsRuntime, ProtectedSessionStorage pSession)
         {
             _jsRuntime = jsRuntime;
+            PSession = pSession;
         }
 
+        public  async Task SetLanguageInSessionAsync(LanguagesCode code)
+        {
+            await PSession.SetAsync(ConstantsApp.LANGUAGE_STORAGE, (code.ToString().ToLower()));
+        }
+        public  async Task<string> GetLanguageFromSessionAsync()
+        {
+
+            var response = await PSession.GetAsync<string>(ConstantsApp.LANGUAGE_STORAGE);
+           return response.Value??"ar";
+
+        }
         public  async Task<string> GetLanguageAsync()
         {
 
@@ -97,9 +113,9 @@ namespace LAHJA.Helpers.Services
                 try
                 {
                     semaphore.WaitOne();
-
-                    changeLanguageApp(code);
+                    await SetLanguageInSessionAsync(code);
                     await _jsRuntime.InvokeVoidAsync("localStorageHelper.setItem", ConstantsApp.LANGUAGE_STORAGE, (code.ToString().ToLower()));
+                    changeLanguageApp(code);
                     await _jsRuntime.InvokeVoidAsync("reloadPage");
                 }
                 catch (Exception ex)
@@ -113,9 +129,13 @@ namespace LAHJA.Helpers.Services
             }
         }
 
-            private void changeLanguageApp(LanguagesCode code)
+        private void changeLanguageApp(LanguagesCode code)
             {
-                if (code == LanguagesCode.AR)
+
+
+         
+
+            if (code == LanguagesCode.AR)
                 {
                     CultureInfo.CurrentCulture = new CultureInfo("ar");
                     CultureInfo.CurrentUICulture = new CultureInfo("ar");
@@ -126,6 +146,18 @@ namespace LAHJA.Helpers.Services
                     CultureInfo.CurrentUICulture = new CultureInfo("en");
                 }
             }
-        
+
+        public async Task<string> InitAsync()
+        {
+            var lang = await GetLanguageAsync();
+            if (!string.IsNullOrEmpty(lang))
+            {
+                var lg = lang == "ar" ? LanguagesCode.AR : LanguagesCode.EN;
+                await SetLanguageInSessionAsync(lg);
+
+            }
+
+            return lang;
+        }
     }
 }

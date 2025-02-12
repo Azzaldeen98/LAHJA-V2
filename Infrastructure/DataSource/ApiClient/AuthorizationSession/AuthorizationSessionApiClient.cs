@@ -57,19 +57,17 @@ namespace Infrastructure.DataSource.ApiClient.AuthorizationSession
         {
       
                 var client = await GetApiClient();
-
-                ///TODO : this must  will be have return value 
-                await client.EncryptFromWebAsync(); 
-               /// Not added now to mapping
-               return _mapper.Map<AuthorizationSessionEncryptResponseModel>(client);
+            //// TODO : must be return object class not string value
+               var url= await client.EncryptFromWebAsync(); 
+               return new AuthorizationSessionEncryptResponseModel(){ EncrptedToken=url };
         }
 
-        public async Task EncryptFromCoreAsync(string sessionToken)
+        public async Task<AuthorizationSessionEncryptResponseModel> EncryptFromCoreAsync(string sessionToken)
         {
          
-                var client = await GetApiClient(); 
-                 await client.EncryptFromCoreAsync(sessionToken);  
-
+                var client = await GetApiClient();
+                var url = await client.EncryptFromCoreAsync(sessionToken);
+               return new AuthorizationSessionEncryptResponseModel() { EncrptedToken = url };
         }
 
         public async Task<DeleteResponse> DeleteAuthorizationSessionAsync(string sessionId)

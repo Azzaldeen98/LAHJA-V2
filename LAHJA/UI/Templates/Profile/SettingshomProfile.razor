@@ -1,6 +1,7 @@
 ﻿
 @page "/settings/{*Url}"
 
+@using LAHAJ.Loading
 @using LAHJA.UI.Components.ProFile
 @using MudBlazor
 @using Domain.ShareData
@@ -10,10 +11,12 @@
 @using LAHJA.UI.Components.ProFile.Settings
 @using LAHJA.UI.Components.ProFile.USettings
 @using LAHJA.UI.Templates.Subscription
+@using global::Shared.Constants.Router
   
-@inherits ComponentBase
+@inherits BaseInitializationComponent
 @inject NavigationManager NavigationManager
 @inject LanguageService languageService
+@inject AuthService AuthService
 @inject IManageLanguageService _manageLanguageService
   
 @inject LAHJA.Data.UI.Templates.Profile.TemplateProfile Template
@@ -22,113 +25,121 @@
 
 @* <ResendConfirmationemail />   *@
 
-
+@if (_isAuth){
 
     @if(DataBuild!=null)
     {
 
-    <div style="" class="cont-plan-RenderComponent">
+
+        <div style="" class="cont-plan-RenderComponent">
 
 
-        <div class="plan-RenderComponent-nav">
+            <div class="plan-RenderComponent-nav">
 
-            <MudContainer  Class="w-100" >
-                <MudContainer Class="pt-1 border px-3 border-gray-100 rounded-xl bg-gradient-to-l  p-0" style="background-color:none!important">
+                <MudContainer  Class="w-100" >
+                    <MudContainer Class="pt-1 border px-3 border-gray-100 rounded-xl bg-gradient-to-l  p-0" style="background-color:none!important">
           
-                    <UserAvaterCard Name="@data.Name" PhoneNumber="@data.PhoneNumber" ImageUrl="@data.Image" />
+                        <UserAvaterCard Name="@data.Name" PhoneNumber="@data.PhoneNumber" ImageUrl="@data.Image" />
        
-                    <MudDivider Class="my-3 py-1" />
-                    <MudList T="string" >
-                        @foreach (var item in NavItems)
-                        {
+                        <MudDivider Class="my-3 py-1" />
+                        <MudList T="string" >
+                            @foreach (var item in NavItems)
+                            {
                          
-                            <MudNavLink style="padding:0% !important; margin:0px !important" Icon="@item.Icon"  Href="@item.Url" Match="NavLinkMatch.All" OnClick="() => SetActiveTab(item.Url)">
+                                <MudNavLink style="padding:0% !important; margin:0px !important" Icon="@item.Icon"  Href="@item.Url" Match="NavLinkMatch.All" OnClick="() => SetActiveTab(item.Url)">
+                                        <MudText Typo="Typo.body2">@item.Label</MudText>
+                                        @if (!string.IsNullOrEmpty(item.Badge))
+                                        {
+                                            <MudText Typo="Typo.caption" Class="ml-auto mr-1.5 rounded text-xs font-semibold leading-tight bg-blue-500/10 text-blue-700 dark:text-blue-200">@item.Badge</MudText>
+                                        }
+                                </MudNavLink>
+                        
+                            }
+                        </MudList>
+             
+
+       
+                    </MudContainer>
+                    <MudContainer Class="mt-3 flex items-center gap-2 text-sm text-gray-400">
+                        Upgrade to
+                        <MudLink Href="/settings/billing/subscription#subscribe" Class="flex items-center">
+                            <MudIcon Icon="mdi-crown" Class="mr-1" />
+                            Pro
+                        </MudLink>
+                </MudContainer>
+               </MudContainer>
+            </div>
+
+            <div class="nav-menu-continer-items-sm w-100" style="overflow: auto !important;">
+                <div class="d-flex flex-row justify-content-start align-items-start w-100" style="position:fixed;z-index:200; justify-content:end !important;">
+                    <MudIconButton Icon="@Icons.Material.Filled.Menu" OnClick="ToggleMenu" />
+                </div>
+                    <!-- المحتوى داخل هذا العنصر -->
+
+           
+                 <MudMainContent Class="nav-profile-menu-continer-items-sm w-100 ">
+           
+                    <MudDrawer @bind-Open="@_open" Fixed="true" Elevation="0" Class="h-100" Anchor="Anchor.End" Variant="@DrawerVariant.Temporary">
+
+                        <MudNavMenu Class="font-size-nav-v2" >
+
+                            <UserAvaterCard Name="@data.Name" PhoneNumber="@data.PhoneNumber" ImageUrl="@data.Image" />
+                            <MudDivider Class="my-3 py-1" />
+                            @foreach (var item in NavItems)
+                            {
+                                <MudNavLink Icon="@item.Icon" Match="NavLinkMatch.All"  OnClick="() => SetActiveTab(item.Url)">
                                     <MudText Typo="Typo.body2">@item.Label</MudText>
                                     @if (!string.IsNullOrEmpty(item.Badge))
                                     {
                                         <MudText Typo="Typo.caption" Class="ml-auto mr-1.5 rounded text-xs font-semibold leading-tight bg-blue-500/10 text-blue-700 dark:text-blue-200">@item.Badge</MudText>
                                     }
-                            </MudNavLink>
-                        
-                        }
-                    </MudList>
-             
+                                </MudNavLink>
 
-       
-                </MudContainer>
-                <MudContainer Class="mt-3 flex items-center gap-2 text-sm text-gray-400">
-                    Upgrade to
-                    <MudLink Href="/settings/billing/subscription#subscribe" Class="flex items-center">
-                        <MudIcon Icon="mdi-crown" Class="mr-1" />
-                        Pro
-                    </MudLink>
-            </MudContainer>
-           </MudContainer>
-        </div>
-
-        <div class="nav-menu-continer-items-sm w-100" style="overflow: auto !important;">
-            <div class="d-flex flex-row justify-content-start align-items-start w-100" style="position:fixed;z-index:200; justify-content:end !important;">
-                <MudIconButton Icon="@Icons.Material.Filled.Menu" OnClick="ToggleMenu" />
-            </div>
-                <!-- المحتوى داخل هذا العنصر -->
-
-           
-             <MudMainContent Class="nav-profile-menu-continer-items-sm w-100 ">
-           
-                <MudDrawer @bind-Open="@_open" Fixed="true" Elevation="0" Class="h-100" Anchor="Anchor.End" Variant="@DrawerVariant.Temporary">
-
-                    <MudNavMenu Class="font-size-nav-v2" >
-
-                        <UserAvaterCard Name="@data.Name" PhoneNumber="@data.PhoneNumber" ImageUrl="@data.Image" />
+                            }
+                        </MudNavMenu>
                         <MudDivider Class="my-3 py-1" />
-                        @foreach (var item in NavItems)
-                        {
-                            <MudNavLink Icon="@item.Icon" Match="NavLinkMatch.All"  OnClick="() => SetActiveTab(item.Url)">
-                                <MudText Typo="Typo.body2">@item.Label</MudText>
-                                @if (!string.IsNullOrEmpty(item.Badge))
-                                {
-                                    <MudText Typo="Typo.caption" Class="ml-auto mr-1.5 rounded text-xs font-semibold leading-tight bg-blue-500/10 text-blue-700 dark:text-blue-200">@item.Badge</MudText>
-                                }
-                            </MudNavLink>
-
-                        }
-                    </MudNavMenu>
-                    <MudDivider Class="my-3 py-1" />
-                    <MudContainer Class="mt-3 flex items-center gap-2 text-sm text-gray-400">
-                    Upgrade to
-                    <MudLink Href="/settings/billing/subscription#subscribe" Class="flex items-center">
-                        <MudIcon Icon="mdi-crown" Class="mr-1" />
-                        Pro
-                    </MudLink>
-            </MudContainer>
-                </MudDrawer>
-            </MudMainContent>
-            </div>
-
-        <div class="plan-RenderComponent" >
-            
-                    @if (!string.IsNullOrEmpty(Url))
-                    {
-                        @RenderComponentBasedOnUrl
-                    }
-                    else
-                    {
-                        <Dashboard />
-                    }
+                        <MudContainer Class="mt-3 flex items-center gap-2 text-sm text-gray-400">
+                        Upgrade to
+                        <MudLink Href="/settings/billing/subscription#subscribe" Class="flex items-center">
+                            <MudIcon Icon="mdi-crown" Class="mr-1" />
+                            Pro
+                        </MudLink>
+                </MudContainer>
+                    </MudDrawer>
+                </MudMainContent>
                 </div>
+
+            <div class="plan-RenderComponent" >
+            
+                        @if (!string.IsNullOrEmpty(Url))
+                        {
+                            @RenderComponentBasedOnUrl
+                        }
+                        else
+                        {
+                            <Dashboard />
+                        }
+                    </div>
         
 
-    </div>
-}
+        </div>
+    }
+    else
+    {
+            <h1>Error the element !!</h1>
+        }
+
+    }
 else
 {
-    <h1>Error the element !!</h1>
+    <Loading IsLoading="@(!_isAuth)" />
 }
 
 
 @code
 {
 
+    private bool _isAuth = false;
     private bool _open = false;
     [Parameter] public string Url { get; set; } = "profile"; 
     [Parameter] public string Filter { get; set; } = "profile";
@@ -165,15 +176,25 @@ else
 
         if (firstRender)
         {
+
+            // base.OnAfterRender(firstRender);
+
+            _isAuth =await AuthService.isAuth();
+
+            if (!_isAuth)
+            {
+                Navigation.NavigateTo(RouterPage.LOGIN, true);
+            }
+
             CurrentLanguage = await _manageLanguageService.GetLanguageAsync();
             var result = await Template.GetProfileUserAsync();
 
             if (result.Succeeded)
             {
                 data = result.Data;
-
+               await InvokeAsync(StateHasChanged);
             }
-            InvokeAsync(StateHasChanged);
+           
         }
 
 

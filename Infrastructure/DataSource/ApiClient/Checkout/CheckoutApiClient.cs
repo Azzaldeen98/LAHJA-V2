@@ -25,22 +25,22 @@ namespace Infrastructure.DataSource.ApiClient.Payment
             return client;
         }
        
-        public async Task<Result<CheckoutOptionsModel>> CheckoutAsync(CheckoutRequestModel request,string token="")
+        public async Task<Result<CheckoutResponseModel>> CheckoutAsync(CheckoutRequestModel request)
         {
             try
             {
                 var model = _mapper.Map<CheckoutOptions>(request);
-                var client = await GetApiClient(token);
+                var client = await GetApiClient();
 				var response = await client.CreateCheckoutAsync(model);
 
-                var resModel = _mapper.Map<CheckoutOptionsModel>(response);
-                return Result<CheckoutOptionsModel>.Success(resModel);
+                var resModel = _mapper.Map<CheckoutResponseModel>(response);
+                return Result<CheckoutResponseModel>.Success(resModel);
 
             }
             catch (ApiException e)
             {
 
-                return Result<CheckoutOptionsModel>.Fail(e.Response, httpCode: e.StatusCode);
+                return Result<CheckoutResponseModel>.Fail(e.Response, httpCode: e.StatusCode);
 
             }
 

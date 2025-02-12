@@ -37,7 +37,15 @@ namespace LAHJA.Data.UI.Components
 		public string ProductName { get; set; }
 		public int NumberRequests { get; set; }
 		public decimal Amount { get; set; }
-		//public bool Active { get; set; }
+
+
+        //private bool _active;
+
+        public bool Active { get=> Status.ToLower()=="active"; set
+            {
+                Status = value ? "Active" : "UnActive";
+            }
+        }
         public string Description { get; set; } = "";
 		//public DateTime UpdatedAt { get; set; }
 		//public DateTime CreatedAt { get; set; }
@@ -67,9 +75,6 @@ namespace LAHJA.Data.UI.Components
         public string? Tag { set; get; }
 
         public string? Icon { set; get; }
-
-
-          
         public bool IsMudChip { set; get; }=true;
         
 

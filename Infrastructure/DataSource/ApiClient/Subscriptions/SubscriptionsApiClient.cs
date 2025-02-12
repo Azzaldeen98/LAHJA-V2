@@ -90,11 +90,35 @@ namespace Infrastructure.DataSource.ApiClient.Payment
 
         }
 
-        public async Task<Result<SubscriptionResponseModel>> DeleteAsync(string id)
+        public async Task<Result<SubscriptionResponseModel>> CancelAsync(string id)
         {
             try
             {
               
+                var client = await GetApiClient();
+                var response = await client.CancelSubscriptionAsync(id);
+
+
+                var resModel = _mapper.Map<SubscriptionResponseModel>(response);
+                return Result<SubscriptionResponseModel>.Success(resModel);
+
+            }
+            catch (ApiException e)
+            {
+
+                return Result<SubscriptionResponseModel>.Fail(e.Response, httpCode: e.StatusCode);
+
+            }
+
+
+
+        }
+
+        public async Task<Result<SubscriptionResponseModel>> DeleteAsync(string id)
+        {
+            try
+            {
+
                 var client = await GetApiClient();
                 var response = await client.CancelSubscriptionAsync(id);
 

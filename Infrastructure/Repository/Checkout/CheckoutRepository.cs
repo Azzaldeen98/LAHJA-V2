@@ -47,7 +47,7 @@ namespace Infrastructure.Repository.Plans
 		public async Task<Result<CheckoutResponse>> CheckoutAsync(CheckoutRequest request)
         {
             var model = _mapper.Map<CheckoutRequestModel>(request);
-			var response = await ExecutorAppMode.ExecuteAsync<Result<CheckoutOptionsModel>>(
+			var response = await ExecutorAppMode.ExecuteAsync<Result<CheckoutResponseModel>>(
 				 async () => await paymentApiClient.CheckoutAsync(model),
 				  async () => await paymentApiClient.CheckoutAsync(model));
 

@@ -1,5 +1,5 @@
 ﻿@page "/payment"
-@page "/payment/{planId}"
+@page "/payment/{PlanId}"
 @using LAHAJ.Loading
 @using LAHJA.Data.UI.Components
 @using LAHJA.Data.UI.Components.Payment.DataBuildBillingBase
@@ -37,7 +37,8 @@
 
 @code{
 
-    [Parameter] public string planId { get; set; }
+    [Parameter] public string PlanId { get; set; }
+
     private bool isLoading = true;
     private SubscriptionPlanInfo buildPlanData;
     private DataBuildBillingBase? buildBillingData;
@@ -51,7 +52,7 @@
             var isLogin = await AuthService.isAuth();
             if (isLogin)
             {
-                if (planId != null)
+                if (PlanId != null)
                 {
                     await initializePlanAsync();
                     // await initializeBillingDetailsAsync();
@@ -64,14 +65,14 @@
             }
         }
 
-        StateHasChanged();
+     
 
     }
     private async Task initializePlanAsync()
     {
-        if (planId != null)
+        if (PlanId != null)
         {
-            var planResult = await TemplatePlan.GetSubmitSubscriptionPlan(new DataBuildPlansBase { PlanId = planId });
+            var planResult = await TemplatePlan.GetSubmitSubscriptionPlan(new DataBuildPlansBase { PlanId = PlanId });
             if (planResult.Succeeded)
             {
                 buildPlanData = planResult.Data;
@@ -124,6 +125,7 @@
 
         if (templatePayment.BuilderComponents.SubmitCheckout != null && plan!=null)
             await templatePayment.BuilderComponents.SubmitCheckout(new DataBuildPaymentBase { PlanId = plan.Id });
+
     }
     private async Task onSubmitActiveCreditCard(CardDetails card)
     {
@@ -135,7 +137,7 @@
     private async Task CheckoutAsync()
     {
 
-        var res = await templatePayment.CheckoutAsync(new DataBuildPaymentBase { PlanId = planId });
+        var res = await templatePayment.CheckoutAsync(new DataBuildPaymentBase { PlanId = PlanId });
 
         if (res.Data != null)
 

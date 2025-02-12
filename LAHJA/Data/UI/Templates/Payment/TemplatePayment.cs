@@ -5,9 +5,13 @@ using Domain.Entities.Checkout.Response;
 using Domain.Wrapper;
 using LAHJA.ApplicationLayer.Checkout;
 using LAHJA.Data.UI.Templates.Base;
+using LAHJA.Helpers;
 using LAHJA.Helpers.Services;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using Newtonsoft.Json;
+using Shared.Constants;
+using Shared.Constants.Router;
 
 namespace LAHJA.Data.UI.Templates.Payment
 {
@@ -130,7 +134,8 @@ namespace LAHJA.Data.UI.Templates.Payment
             }
             else
             {
-                return Result<CheckoutResponse>.Fail(res.Messages);
+        
+                    return Result<CheckoutResponse>.Fail(res.Messages);
             }
         }    
         public override async Task<Result<CheckoutResponse>> CheckoutManageAsync(DataBuildPaymentBase data)
@@ -172,7 +177,7 @@ namespace LAHJA.Data.UI.Templates.Payment
             this.BuilderComponents.SubmitCheckout = onSubmitCheckout;
             this.BuilderComponents.SubmitCheckoutManage = onSubmitCheckoutManage;
             this.builderApi = new BuilderCheckoutApiClient(mapper, client);
-
+            Helper.Init(navigation);
 
         }
 
@@ -180,22 +185,62 @@ namespace LAHJA.Data.UI.Templates.Payment
 
         private async Task onSubmitCheckout(DataBuildPaymentBase data) {
             
-            data.SuccessUrl = $"{navigation.BaseUri}settings";
-            data.CancelUrl = $"{navigation.BaseUri}settings/billing";
+            data.SuccessUrl = Helper.GetInstance().GetFullPath("settings/SubscriptionTemplate");
+            data.CancelUrl = Helper.GetInstance().GetFullPath($"payment/{data.PlanId}");
+            
 			var res=await  builderApi.CheckoutAsync(data);
-            if (res.Succeeded && res.Data!=null && !string.IsNullOrEmpty(res.Data.Url)) {
-                navigation.NavigateTo(res.Data.Url,true);
+            if (res.Succeeded) 
+            {
+                if(res.Data != null && !string.IsNullOrEmpty(res.Data.Url))
+                {
+                    navigation.NavigateTo(res.Data.Url, true);
+                }
+                else
+                {
+                    navigation.NavigateTo("settings/SubscriptionTemplate", true);
+                }
+              
             }
             else
             {
-                Snackbar.Add("Field Option ! Please try anther once or again login ", Severity.Error);
+
+                if (res.Messages?.Count() > 0)
+                {
+                    dynamic? response = JsonConvert.DeserializeObject<dynamic>(res.Messages[0]);
+
+                    if (response?.status == 409)
+                    {
+
+                        string msg = (string)response.detail;
+                        Snackbar.Add(msg ?? "Error", Severity.Warning);
+                    }
+                    else if (response?.status == 401)
+                    {
+                        navigation.NavigateTo($"{RouterPage.LOGOUT}/?InBackend={true}");
+                    }
+                    else
+                    {
+                        Snackbar.Add("Field Option ! Please try anther once or again login ", Severity.Error);
+                    }
+                }
+                else
+                {
+              
+                    Snackbar.Add("Field Option ! Please try anther once or again login ", Severity.Error);
+                    
+                }
+             
+                
+
+            
+
             }
 
         }
         private async Task onSubmitCheckoutManage(DataBuildPaymentBase data)
         {
 
-     
+            data.ReturnUrl = Helper.GetInstance().GetFullPath("settings/SubscriptionTemplate");
             var res = await builderApi.CheckoutManageAsync(data);
             if (res.Succeeded  && !string.IsNullOrEmpty(res.Data.Url))
             {
@@ -203,7 +248,32 @@ namespace LAHJA.Data.UI.Templates.Payment
             }
             else
             {
-                Snackbar.Add("Field Option ! Please try anther once or again login ", Severity.Error);
+                if (res.Messages?.Count() > 0)
+                {
+                    dynamic? response = JsonConvert.DeserializeObject<dynamic>(res.Messages[0]);
+
+                    if (response?.status == 409)
+                    {
+
+                        string msg = (string)response.detail;
+                        Snackbar.Add(msg ?? "Error", Severity.Warning);
+                    }
+                    else if (response?.status == 401)
+                    {
+                        navigation.NavigateTo($"{RouterPage.LOGOUT}/?InBackend={true}");
+                    }
+                    else
+                    {
+                        Snackbar.Add("Field Option ! Please try anther once or again login ", Severity.Error);
+                    }
+                }
+                else
+                {
+
+                    Snackbar.Add("Field Option ! Please try anther once or again login ", Severity.Error);
+
+                }
+
             }
 
         }
