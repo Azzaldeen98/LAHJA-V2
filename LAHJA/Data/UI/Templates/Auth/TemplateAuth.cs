@@ -132,37 +132,33 @@ public class TemplateAuthShare<T,E> : TemplateBase<T,E>
     protected readonly IDialogService dialogService;
     protected readonly ISnackbar Snackbar;
     protected IBuilderAuthApi<E> builderApi;
-    protected AppCustomAuthenticationStateProvider customAuthenticationStateProvider;
+    protected readonly CustomAuthenticationStateProvider AuthStateProvider;
     //protected readonly ProtectedSessionStorage  PSession;
 
     private readonly IBuilderAuthComponent<E> builderComponents;
     public  IBuilderAuthComponent<E> BuilderComponents { get => builderComponents; }
     public TemplateAuthShare(
-        
-           IMapper mapper, 
+
+           IMapper mapper,
+           CustomAuthenticationStateProvider authStateProvider,
            AuthService authService,
             //ProtectedSessionStorage PSession,
             T client,
-            AppCustomAuthenticationStateProvider customAuthenticationStateProvider,
             IBuilderAuthComponent<E> builderComponents,
             NavigationManager navigation,
             IDialogService dialogService,
-            ISnackbar snackbar
-
-
-        ) : base(mapper, authService, client)
+            ISnackbar snackbar ) : base(mapper, authService, client)
     {
 
 
-        
+
         builderComponents = new BuilderAuthComponent<E>();
         this.navigation = navigation;
         this.dialogService = dialogService;
         this.Snackbar = snackbar;
         //this.builderApi = builderApi;
         this.builderComponents = builderComponents;
-
-        
+        AuthStateProvider = authStateProvider;
     }
 
 }
@@ -257,12 +253,12 @@ public class TemplateAuth: TemplateAuthShare<ClientAuthService, DataBuildAuthBas
     public TemplateAuth(IMapper mapper,
         AuthService authService,
         ClientAuthService client,
-        AppCustomAuthenticationStateProvider customAuthenticationStateProvider,
+        CustomAuthenticationStateProvider AuthStateProvider,
         IBuilderAuthComponent<DataBuildAuthBase> builderComponents,
         NavigationManager navigation,
         IDialogService dialogService,
         ISnackbar snackbar,
-        ISessionUserManager sessionUserManager) : base(mapper, authService, client, customAuthenticationStateProvider, builderComponents, navigation, dialogService, snackbar)
+        ISessionUserManager sessionUserManager) : base(mapper, AuthStateProvider, authService, client, builderComponents, navigation, dialogService, snackbar)
     {
         this.BuilderComponents.SubmitExternalLogin = OnSubmitExternalLogin;
         this.BuilderComponents.Submit = OnSubmit;
@@ -320,6 +316,10 @@ public class TemplateAuth: TemplateAuthShare<ClientAuthService, DataBuildAuthBas
         catch(Exception e)
         {
             //Snackbar.Add();
+        }
+        finally
+        {
+            await AuthStateProvider.InitializeAsync();
         }
     }
  
@@ -536,6 +536,7 @@ public class TemplateAuth: TemplateAuthShare<ClientAuthService, DataBuildAuthBas
             {
                 await authService.SaveLoginAsync(response.Data);
                 await authService.SaveLoginTypeAsync(LoginType.Email);
+                await AuthStateProvider.InitializeAsync();
                 navigation.NavigateTo(RouterPage.HOME, forceLoad: true);
             }
 

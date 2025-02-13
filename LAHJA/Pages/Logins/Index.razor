@@ -3,15 +3,17 @@
 @using LAHJA.ApplicationLayer.Auth
 @using LAHJA.UI.Templates.Auth
 @using LAHJA.VitsModel.Auth
-@inject NavigationManager Navigation
-@inject ClientAuthService ClientAuthService
-@inject AppCustomAuthenticationStateProvider AppCustomAuthenticationStateProvider
+@using Microsoft.AspNetCore.Authorization
 @using LAHJA.UI.Components
 
+@inject NavigationManager Navigation
+@inject ClientAuthService ClientAuthService
+@inject CustomAuthenticationStateProvider AuthStateProvider
 @inherits BaseInitializationComponent
-
 @inject ISnackbar Snackbar
 
+
+@attribute [AllowAnonymous]
 
 <div style="" class="auth-them">
 

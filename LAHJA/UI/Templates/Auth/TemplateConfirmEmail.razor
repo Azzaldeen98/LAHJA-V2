@@ -2,7 +2,8 @@
  @using LAHJA.UI.Components.Auth
  @inject LAHJA.Data.UI.Templates.Auth.TemplateAuth Template
  @inject NavigationManager Navigation
-
+ @using Microsoft.AspNetCore.Authorization
+@attribute [AllowAnonymous]
  
  <ConfirmationEmail Code="@Code" Email="@Email"  OnSubmitConfirmEmail="Template.BuilderComponents.SubmitConfirmEmail" />
 

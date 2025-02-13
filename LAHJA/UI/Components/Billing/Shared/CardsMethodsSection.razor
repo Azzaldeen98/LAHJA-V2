@@ -4,10 +4,12 @@
 @using LAHJA.Data.UI.Components.Payment.CreditCards
 @using LAHJA.Helpers.Services
 @using LAHJA.Them   
+@using LAHJA.UI.Components.General.Button
 @using LAHJA.UI.Components.Payment.CreditCard
 @using LAHJA.UI.Components.TabelCard
 @using MudBlazor
 @using System.Globalization
+@using Microsoft.AspNetCore.Authorization
 
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
@@ -15,6 +17,7 @@
 @inject IManageLanguageService _manageLanguageService
 
 
+@attribute [Authorize]
 
 
 <MudExpansionPanels>
@@ -23,28 +26,28 @@
         <MudExpansionPanel @bind-Expanded="@open" HideIcon="true">
             <TitleContent>
                 <div class="d-flex">
-                    <MudAlert Severity="Severity.Warning" Variant="Variant.Outlined">
+                   @*  <MudAlert Severity="Severity.Warning" Variant="Variant.Outlined">
                         @GetTranslation("AddNewCard")
-                    </MudAlert>
+                    </MudAlert> *@
                     <MudCard Elevation="1" Class="m-2 p-2">
                         <MudIcon Color="@AppColors.BASE_COLOR_ENUM" @onclick="OnAddCard" Icon="@(open ? Icons.Material.Filled.Close : Icons.Material.Filled.Add)" class="ml-auto"></MudIcon>
                     </MudCard>
                 </div>
             </TitleContent>
-            <ChildContent>
+          @*   <ChildContent>
                 <FormCard IsUpdate="isUpdate" BuildData="selectedCard" 
                     OnClickSave="OnSaveAddCard" 
                     OnEdit="OnSaveUpdateCard" 
                     OnDelete="OnSaveDeleteCard"
                     SubmitActiveCreditCard="OnSelectedActiveCard"/>
-
-            </ChildContent>
+ *@
+            @* </ChildContent> *@
         </MudExpansionPanel>
     }
     else
     {
-        <MudExpansionPanels >
-            <MudExpansionPanel  @bind-Expanded="@open" HideIcon="true">
+       
+            <MudExpansionPanel   @bind-Expanded="@open"  HideIcon="true">
                 <TitleContent>
                     <MudCardHeader Class="p-0 d-flex flex-row justify-content-center align-items-center ">
                         <MudText Typo="Typo.h4" Align="Align.Center" GutterBottom="true">@GetTranslation("CreditCards")</MudText>
@@ -66,16 +69,16 @@
                                 @* } *@
                             </div>
                         @* </MudRadioGroup> *@
-                        @if (_isSelected)
+                        @* @if (_isSelected)
                         {
-                            <MudButton Class="w-100 my-3" Variant="Variant.Filled" Color="@AppColors.BASE_COLOR_ENUM" OnClick="@OnConfirmSelectedCard">
+                        <CustomButton OnClick="@OnConfirmSelectedCard" IsProcessing="isProcessing">
                                 @GetTranslation("Confirm")
-                            </MudButton>
-                        }
+                            </CustomButton>
+                        } *@
                     </div>
                 </TitleContent>
             </MudExpansionPanel>
-        </MudExpansionPanels>
+        
     }
 </MudExpansionPanels>
 
@@ -142,7 +145,7 @@
 
         if (creditCards == null)
         {
-            creditCards = new List<CardDetailsVM> { new CardDetailsVM { CardNumber = "454353455", HolderName = "Azzaldeen", CardType = "MasterCard", ExpirationDate = "27/2", IsSelected = true } };
+            creditCards = new List<CardDetailsVM> { new CardDetailsVM { CardNumber = "454353455", HolderName = "Azzaldeen", CardType = "MasterCard", ExpirationDate = "27/2", IsSelected = true, CVC="****" } };
         }
         else if (SelectedActiveCard.HasDelegate)
         {
@@ -226,6 +229,8 @@
             // }
         };
         groupAction.ChipClicked = OnChipClicked;
+
+        StateHasChanged();
 
         // groupAction.CreateSpaceClicked = OnSubmitCreateSpace;
     }
@@ -358,7 +363,7 @@
             { "OnEdit", EventCallback.Factory.Create<CardDetails>(this, OnSaveUpdateCard) },
             { "OnDelete", EventCallback.Factory.Create<CardDetails>(this, OnSaveDeleteCard) }
         };
-        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall, FullWidth = false };
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true };
         dialogRef = DialogService.Show<FormCard>("", parameters, options);
 
         var result = await dialogRef.Result;

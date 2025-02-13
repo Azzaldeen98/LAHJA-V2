@@ -1,6 +1,7 @@
 ﻿@using Domain.ShareData
 @using LAHJA.Helpers.Services
 @using LAHJA.Them
+@using Microsoft.AspNetCore.Components.Authorization
 
  @inject LanguageService languageService
  @inject IManageLanguageService _manageLanguageService
@@ -47,9 +48,16 @@
                         <MudText Class="text-uppercase fw-bold">@Params["UsefulLinks"]</MudText>
                         <MudDivider Class="mb-4 mt-0 d-inline-block mx-auto" Style="width: 60px;  height: 2px" />
                         <MudText><MudLink href="/" Color="@AppColors.BASE_COLOR_ENUM">@Params["Home"]</MudLink></MudText>
-                        <MudText><MudLink href="/services" Color="@AppColors.BASE_COLOR_ENUM">@Params["Services"]</MudLink></MudText>
+                        <AuthorizeView>
+                            <MudText><MudLink href="/services" Color="@AppColors.BASE_COLOR_ENUM">@Params["Services"]</MudLink></MudText>
+                        </AuthorizeView>
+
                         <MudText><MudLink href="/pricing" Color="@AppColors.BASE_COLOR_ENUM">@Params["Pricing"]</MudLink></MudText>
-                        <MudText><MudLink href="/studio" Color="@AppColors.BASE_COLOR_ENUM">@Params["Studio"]</MudLink></MudText>
+
+                        <AuthorizeView>
+                            <MudText><MudLink href="/studio" Color="@AppColors.BASE_COLOR_ENUM">@Params["Studio"]</MudLink></MudText>
+                        </AuthorizeView>
+
                         <MudText><MudLink href="/" Color="@AppColors.BASE_COLOR_ENUM">@Params["Help"]</MudLink></MudText>
                     </div>
 

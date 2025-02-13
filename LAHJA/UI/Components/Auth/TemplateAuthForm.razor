@@ -3,14 +3,17 @@
 @using LAHAJ.Loading
 @using LAHJA.Data.UI.Components.Base
 @using LAHJA.UI.Components.Auth
-
 @using LAHJA.UI.Components.General.InputField
 @using Microsoft.Extensions.Options
 @using global::Shared.Wrapper
 @using LAHJA.Them
+@inject IJSRuntime JSRuntime
+@using Microsoft.AspNetCore.Authorization
+@attribute [AllowAnonymous]
+
 
 @inherits CardAuth<DataBuildAuthBase>
-@inject IJSRuntime JSRuntime
+
 
  <Loading IsLoading="isLoading" /> 
 

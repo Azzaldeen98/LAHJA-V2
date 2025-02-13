@@ -1,9 +1,10 @@
 ﻿@using LAHJA.UI.Components.Auth
-
 @using LAHJA.Data.UI.Templates.Auth
-
+@using Microsoft.AspNetCore.Authorization
 @inject LAHJA.Data.UI.Templates.Auth.TemplateAuth Template
 
+
+@attribute [AllowAnonymous]
 
 @if(Template!=null){
     <MainAuth IsToLoginMode="IsToLoginMode"

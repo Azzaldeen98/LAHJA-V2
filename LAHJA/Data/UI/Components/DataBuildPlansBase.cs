@@ -91,6 +91,12 @@ namespace LAHJA.Data.UI.Components
         public Func<Task>? CreateSpaceClicked { get; set; }
 
     }
+    public class DataBuildAccessTokenAuth
+    {
+        public string SpaceId { get; set; }       
+        public string Subscription { get; set; }
+    }
+
     public class DataBuildSpace
     {
         public string Id { get; set; }

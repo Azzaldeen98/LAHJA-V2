@@ -1,7 +1,8 @@
 ﻿@page "/Grant"
+@using Microsoft.AspNetCore.Authorization
 @using MudBlazor
 @inject NavigationManager Navigation
-
+@attribute [Authorize]
 @* <MudPaper Class="pa-5 mx-auto mt-7" MaxWidth="1000px">
     <MudTabs>
       

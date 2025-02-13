@@ -1,4 +1,7 @@
-﻿<section class="pt-6 border-gray-100 md:col-span-8 lg:col-span-9 xl:col-span-9 md:px-4 py-4">
+﻿@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+<section class="pt-6 border-gray-100 md:col-span-8 lg:col-span-9 xl:col-span-9 md:px-4 py-4">
 	<div class="mb-6">
 		<div class="flex justify-between">
 			<h3 class="flex flex-row items-center text-xl font-bold">

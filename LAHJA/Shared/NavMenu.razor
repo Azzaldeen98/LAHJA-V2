@@ -1,8 +1,9 @@
 ﻿@using LAHJA.Them
+@using Microsoft.AspNetCore.Authorization
 @inject NavigationManager NavigationManager
 
-@if (_isLogin)
-{
+@attribute [Authorize]
+
     <div class="mt-4 d-flex flex-column nav-bar_font">
         <MudLink Style="@("color:" + _iconfill + "!important")" Href="/settings" OnClick="ClickItem">
             <MudIcon Icon="@Icons.Material.Filled.Dashboard" />
@@ -36,7 +37,7 @@
                 @translations[CurrentLanguage]["Logout"]
         </MudLink> 
     </div>
-}
+
 
 @code {
 

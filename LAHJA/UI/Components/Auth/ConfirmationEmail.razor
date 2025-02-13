@@ -5,6 +5,8 @@
 @using LAHJA.UI.Components.General.InputField
 @using MudBlazor
 @using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Authorization
+@attribute [AllowAnonymous]
 @inherits CardAuth<DataBuildAuthBase>
 
 
@@ -54,25 +56,27 @@
 
         if (Email != null)
         {
-           
+
             if (Code!=null){
                 email = Email;
                 code = Code;
                 StateHasChanged();
-                
-            
+
             }
         }
         base.OnInitialized();
     }
     async Task onSubmitConfirmEmail()
     {
-
+        isLoading = true;
         if (OnSubmitConfirmEmail.HasDelegate)
         {
 
             await OnSubmitConfirmEmail.InvokeAsync(new DataBuildAuthBase { Email = email, Code = code });
         }
+
+        await Task.Delay(6000);
+        isLoading = false;
     }
         
 

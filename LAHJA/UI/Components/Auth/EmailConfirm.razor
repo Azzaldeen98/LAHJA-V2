@@ -5,9 +5,12 @@
 @using LAHJA.Data.UI.Templates.Auth
 @using LAHJA.Helpers.Enum
 @using MudBlazor
+@using Microsoft.AspNetCore.Authorization
 
 @inject NavigationManager Navigation
 @inject TemplateAuth TemplateAuth
+@attribute [AllowAnonymous]
+
 
 <MudCard Class="w60 mx-auto my-5 p-6 rounded-lg shadow-lg text-center  dark:bg-gray-900">
     <MudCardContent>

@@ -3,6 +3,9 @@
 @using LAHJA.Data.UI.Components
 @using LAHJA.UI.Components.ServiceCard
 @using LAHJA.UI.Components.TabelCard
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 
@@ -118,13 +121,13 @@
                 Name="انشاء",
 
             },
-            new()
-            {
-                Icon=@Icons.Material.Filled.Delete
-                ,
-                IsMudChip=false,
-                Tag="delete"
-            }
+            // new()
+            // {
+            //     Icon=@Icons.Material.Filled.Delete
+            //     ,
+            //     IsMudChip=false,
+            //     Tag="delete"
+            // }
         };
         groupAction.ChipClicked += OnChipClicked;
 

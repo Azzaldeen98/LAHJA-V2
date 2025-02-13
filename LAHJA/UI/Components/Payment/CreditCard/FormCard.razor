@@ -13,8 +13,8 @@
 @inherits PaymentCard<CardDetails>
 
 
-<MudPaper Class="pa-4 w-100">
-       
+<MudPaper Class="pa-4 w-100 " >
+    <MudCard Class="p-3  m-4">
     @if (!isReadOnly && _isUpdate)
     {
         <div class="w-100 m-auto p-3 d-flex justify-content-around align-items-center">
@@ -116,18 +116,16 @@
             
                         <div class="w-100 m-auto p-3 d-flex justify-content-around align-items-center">
                             <MudSwitch T="bool" Value="newCard.IsSelected" ValueChanged="OnStatusChanged" Color="(Color.Success)"> @GetTranslation(newCard.IsSelected ? "Active" : "UnActive") </MudSwitch>
-
-                        <MudIconButton Icon="@Icons.Material.Filled.Edit" Variant="Variant.Filled" OnClick="OnEditCard" />
-                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Variant="Variant.Filled" OnClick="OnDeleteCard" />
-                        </div>
-
-                    
+                            <MudIconButton Icon="@Icons.Material.Filled.Edit" Variant="Variant.Filled" OnClick="OnEditCard" />
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Variant="Variant.Filled" OnClick="OnDeleteCard" />
+                        </div> 
                     
                 }
             </MudItem>
             
         </MudGrid>
     </MudForm>
+</MudCard>
 </MudPaper>
 
 
@@ -324,7 +322,8 @@
     {
 
 
-        if (await messageBox.ShowAsync(GetTranslation("Title"), GetTranslation("DeletedCreditCardMsg")))
+        if (await messageBox.ShowAsync(GetTranslation("Title"), 
+        GetTranslation("DeletedCreditCardMsg"), CurrentLanguage))
         {
             if (OnDelete.HasDelegate)
             {

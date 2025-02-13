@@ -1,109 +1,25 @@
-﻿using LAHJA.Helpers.Services;
+﻿using Domain.Entities.Auth.Request;
+using IdentityModel;
+using LAHJA.Data.UI.Templates.Auth;
+using LAHJA.Helpers.Enum;
+using LAHJA.Helpers.Services;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Security.Claims;
+using System.Security.Principal;
 using System.Text.Json;
-using System.Collections.Concurrent;
-using Microsoft.AspNetCore.SignalR;
-using System.Threading.Tasks;
 
 namespace LAHJA
 {
 
-
-
-
-    public class NotificationService
-    {
-        private readonly IHubContext<NotificationHub> _hubContext;
-        private readonly UserContextService _userContext;
-
-        public NotificationService(IHubContext<NotificationHub> hubContext, UserContextService userContext)
-        {
-            _hubContext = hubContext;
-            _userContext = userContext;
-        }
-        public async Task NotifyClients(string message)
-        {
-
-            await _hubContext.Clients.All.SendAsync("ReceiveNotification", message);
-        }
-
-        // إرسال إشعار لمستخدم معين بناءً على معرفه
-        public async Task SendAlertToUser(string userId, string message)
-        {
-            var connectionId = _userContext.GetConnectionId(userId);
-            if (connectionId != null)
-            {
-                await _hubContext.Clients.Client(connectionId).SendAsync("ReceiveNotification", message);
-            }
-        }
-    }
-
-    public class NotificationHub : Hub
-    {
-        private readonly UserContextService _userContext;
-
-
-        public NotificationHub(UserContextService userContext)
-        {
-            _userContext = userContext;
-
-        }
-
-        public override Task OnConnectedAsync()
-        {
-            var HttpContext = Context.GetHttpContext();
-            var token = HttpContext?.Request.Query["access_token"].ToString();
-            if (!string.IsNullOrEmpty(token))
-            {
-                _userContext.AddUser(token, Context.ConnectionId);
-
-
-            }
-            return base.OnConnectedAsync();
-        }
-
-        public override Task OnDisconnectedAsync(Exception? exception)
-        {
-            var HttpContext = Context.GetHttpContext();
-            var token = HttpContext?.Request.Query["access_token"].ToString();
-            if (!string.IsNullOrEmpty(token))
-            {
-                _userContext.RemoveUser(token);
-            }
-            return base.OnDisconnectedAsync(exception);
-
-        }
-    }
-
-
-    public class UserContextService
-    {
-        private readonly ConcurrentDictionary<string, string> _userConnections = new();
-
-        public void AddUser(string userId, string connectionId)
-        {
-            _userConnections[userId] = connectionId;
-        }
-
-        public void RemoveUser(string userId)
-        {
-            _userConnections.TryRemove(userId, out _);
-        }
-
-        public string? GetConnectionId(string userId)
-        {
-            _userConnections.TryGetValue(userId, out var connectionId);
-            return connectionId;
-        }
-    }
-
     public class CustomAuthenticationStateProvider : AuthenticationStateProvider
     {
         private readonly TokenService _tokenService;
+  
         private readonly AuthenticationState _anonymous;
 
+        private bool _isInitialized = false;
         public CustomAuthenticationStateProvider(TokenService localStorage)
         {
             _tokenService = localStorage;
@@ -112,27 +28,79 @@ namespace LAHJA
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
+
+            // إذا لم يكن التطبيق جاهزًا لاستدعاء JavaScript، أرجع مستخدم مجهول مؤقتًا
+            if (!_isInitialized)
+                return _anonymous;
+
+
             var token = await _tokenService.GetTokenAsync();
 
             if (string.IsNullOrEmpty(token))
                 return _anonymous;
 
-            var claims = ParseClaimsFromJwt(token);
-            var identity = new ClaimsIdentity(claims, "Bearer");
+
+           return  AuthenticatedState(token);
+
+
+            //var claims = ParseClaimsFromJwt(token);
+            //var identity = new ClaimsIdentity(claims, "Bearer");
+            //var user = new ClaimsPrincipal(identity);
+
+            //return new AuthenticationState(user);
+        }
+        public async Task InitializeAsync()
+        {
+            var token = await _tokenService.GetTokenAsync();
+            _isInitialized = true;
+            if (!string.IsNullOrEmpty(token))
+            {           
+                await _tokenService.SaveTokenInSessionAsync(token);
+                MarkUserAsAuthenticated(token);
+            }
+            else
+            {
+                await _tokenService.SaveTokenInSessionAsync("$$$$$");
+                MarkUserAsLoggedOut();
+
+            }
+          
+        }
+        //public void MarkUserAsAuthenticated(string token)
+        //{
+        //    var claims = ParseClaimsFromJwt(token);
+        //    var identity = new ClaimsIdentity(claims, "Bearer");
+        //    var user = new ClaimsPrincipal(identity);
+
+        //    var authenticatedState = new AuthenticationState(user);
+        //    NotifyAuthenticationStateChanged(Task.FromResult(authenticatedState));
+        //}
+        public AuthenticationState AuthenticatedState(string token)
+        {
+            //var identity = new ClaimsIdentity();
+            //identity.AddClaim(new Claim("Token", token));
+            //identity.AddClaim(new Claim("UserId", "SomeUserId"));
+            //identity.AddClaim(new Claim("Name", "User"));
+            //identity.AddClaim(new Claim("Role", "User"));
+
+            var identity = new ClaimsIdentity(new[]
+            {
+                new Claim(ClaimTypes.Name, "User"),
+                new Claim(ClaimTypes.Role, "User")
+            }, "Cookies");
+
             var user = new ClaimsPrincipal(identity);
 
-            return new AuthenticationState(user);
+            return  new AuthenticationState(user);
         }
-
         public void MarkUserAsAuthenticated(string token)
         {
-            var claims = ParseClaimsFromJwt(token);
-            var identity = new ClaimsIdentity(claims, "Bearer");
-            var user = new ClaimsPrincipal(identity);
+            var auth= AuthenticatedState(token);
+            NotifyAuthenticationStateChanged(Task.FromResult(auth));
 
-            var authenticatedState = new AuthenticationState(user);
-            NotifyAuthenticationStateChanged(Task.FromResult(authenticatedState));
         }
+
+ 
 
         public void MarkUserAsLoggedOut()
         {

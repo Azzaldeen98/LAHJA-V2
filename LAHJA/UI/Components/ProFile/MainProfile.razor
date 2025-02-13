@@ -3,7 +3,9 @@
 @using LAHJA.UI.Components.Billing.BillingSummarys
 @using LAHJA.UI.Components.Billing.Shared
 @using LAHJA.UI.Components.Plan
- 
+ @using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
 
 @page "/billing"
   <MudLayout>

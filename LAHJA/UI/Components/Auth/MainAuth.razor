@@ -1,18 +1,22 @@
 ﻿@using System.Text.RegularExpressions
 @using System.ComponentModel.DataAnnotations
-
 @using Domain.Entities
 @using LAHAJ.Loading
 @using LAHJA.Data.UI.Templates.Auth
 @using LAHJA.Them
 @using LAHJA.UI.Components.Auth
+@using LAHJA.Data.UI.Components.Base
+@using global::Shared.Constants.Router
+@using Microsoft.AspNetCore.Authorization
+
 @inject IJSRuntime JSRuntime
 @inject NavigationManager Navigation;
 @inject ISnackbar Snackbar
 @inject TemplateAuth AuthTemplate
 
-@using LAHJA.Data.UI.Components.Base
-@using global::Shared.Constants.Router
+
+
+@attribute [AllowAnonymous]
 
 @if (isLoading)
 {
@@ -128,6 +132,7 @@
                 {
                     isshowmian = false; 
                     isLoading = false;
+                
                 }
             }
         } }
@@ -161,12 +166,14 @@
 
 
 
-    protected override void OnAfterRender(bool firstRender)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
+            await Task.Delay(3000);
             isLoading = false;
             StateHasChanged();
+
         }
     }
 

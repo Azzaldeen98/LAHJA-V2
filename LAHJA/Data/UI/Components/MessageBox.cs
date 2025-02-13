@@ -15,12 +15,13 @@ namespace LAHJA.Data.UI.Components
             _dialogService = dialogService;
         }
 
-        public  async Task<bool> ShowAsync(string title,string message)
+        public  async Task<bool> ShowAsync(string title,string message,string lang="ar")
         {
             var parameters = new DialogParameters
             {
                 { "Title",title },
-                { "Message", message }
+                { "Message", message },
+                { "Lang", lang }
             };
 
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true };

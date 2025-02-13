@@ -66,12 +66,10 @@ else
     {
 
         if (Param != null)
-
+        {
+            Param.Active=! (Param.Description == "no" || Param.Description == "لا");
             Icon = Param.Active ? @Icons.Material.Sharp.Check : @Icons.Material.Sharp.Cancel;
-
-
-
-
+        }
 
     }
 

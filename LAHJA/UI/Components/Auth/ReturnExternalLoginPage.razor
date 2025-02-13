@@ -4,9 +4,11 @@
 @using LAHJA.Helpers.Enum
 @using LAHJA.Helpers.Services
 @using global::Shared.Constants.Router
- @inject NavigationManager Navigation
- @inject TokenService tokenService  ////TODO: 8-2
-
+@inject CustomAuthenticationStateProvider  AuthStateProvider
+@inject NavigationManager Navigation
+@inject TokenService tokenService  ////TODO: 8-2
+@using Microsoft.AspNetCore.Authorization
+@attribute [AllowAnonymous]
 <Loading IsLoading="isLoading" />
 
 @code {
@@ -35,9 +37,8 @@
                     await tokenService.SaveTokenAsync(token);
                     await tokenService.SaveTokenInSessionAsync(token);
                     await tokenService.SaveLoginTypeAsync(LoginType.Google);
-                    
                     isLoading = false;
-
+                    await AuthStateProvider.InitializeAsync();
                     Navigation.NavigateTo(RouterPage.HOME,true);
                 }
             }

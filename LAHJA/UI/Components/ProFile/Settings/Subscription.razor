@@ -1,7 +1,6 @@
 ﻿
 @using Domain.ShareData
 @using LAHJA.Data.UI.Components
-
 @using LAHJA.UI.Components.ProFile.USettings
 @using LAHJA.UI.Components.ServiceCard
 @using LAHJA.UI.Components.TabelCard
@@ -9,10 +8,12 @@
 @inject ISnackbar Snackbar
 @inject NavigationManager Navigation;
 @inject IManageLanguageService _manageLanguageService
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
 
 <TabelDashCard T="DataBuildUserSubscriptionInfo" 
     DataAndEventBuildTabel="dataAndEvent" 
-    
     StateCounts="cardStates"
     ActionTabels="groupAction"
     BarTabel="TranslationsLST" />
@@ -116,12 +117,12 @@
                 Tag="create",
                 Name="create"
             },
-            new()
-            {
-                Icon=@Icons.Material.Filled.Delete,
-                IsMudChip=false,
-                Tag="delete"
-            }
+            // new()
+            // {
+            //     Icon=@Icons.Material.Filled.Delete,
+            //     IsMudChip=false,
+            //     Tag="delete"
+            // }
         };
         groupAction.ChipClicked += OnChipClicked;
     }
@@ -133,7 +134,7 @@
 
     private Task OnRowClicked(DataBuildUserSubscriptionInfo data)
     {
-        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth =false };
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium,  FullWidth =true };
 
         var parameters = new DialogParameters<SubscriptionDetails>
         {

@@ -10,10 +10,15 @@
 @using LAHJA.UI.Components.Training
 @using LAHJA.UI.Templates.CategoriesPlan
 @using LAHJA.UI.Templates.Plans
+@using Microsoft.AspNetCore.Authorization
 
 @inject NavigationManager navigation;
 @inject LanguageService languageService
 @inject IManageLanguageService _manageLanguageService
+
+
+@attribute [AllowAnonymous]
+
 
 @if (isLoading)
 {
@@ -29,10 +34,6 @@
 @* <HeroHome /> *@
  <CardAsgr /> 
  
-
-
-
-
 
 <div class="d-flex flex-column justify-content-center align-items-center" style="padding:5% !important ;background:linear-gradient(90deg, rgba(240, 150, 255, 0.15) 0%, rgba(191, 200, 252, 0.15) 51%, rgba(187, 148, 255, 0.15) 100%);">
     <MudText Typo="Typo.h3">

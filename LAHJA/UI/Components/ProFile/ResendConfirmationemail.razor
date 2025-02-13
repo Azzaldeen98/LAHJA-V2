@@ -1,5 +1,10 @@
 ﻿@* @inject NavigationManager NavigationManager
  *@
+
+ @using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+
  @if(false){
 <div style="margin-top: 3%;" class="bg-gradient-to-b py-3 text-sm md:text-base from-yellow-50 to-yellow-100 dark:from-yellow-500 dark:to-yellow-600 dark:text-gray-950">
     <div class="container">

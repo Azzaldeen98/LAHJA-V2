@@ -1,4 +1,5 @@
-﻿@inject NavigationManager NavigationManager
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@inject NavigationManager NavigationManager
 
 
 @if(Translation!=null){
@@ -10,17 +11,13 @@
             @Translation[CurrentLanguage]["Home"]
         </MudLink>
 
-        @if (Flagauth)
-        {
-            <MudLink OnClick="ClickItem" Style="@("color:" + _iconfill + "!important")" Href="/Login">
-                @Translation[CurrentLanguage]["Register"]
-            </MudLink>
-       @*      <div class="">
-                <MudLink Style="@("color:" + _iconfill + "!important")" Href="/Login">
-                    @Translation[CurrentLanguage]["Login"]
+        <AuthorizeView>
+            <NotAuthorized>
+                <MudLink OnClick="ClickItem" Style="@("color:" + _iconfill + "!important")" Href="/Login">
+                    @Translation[CurrentLanguage]["Register"]
                 </MudLink>
-            </div> *@
-        }
+            </NotAuthorized>
+        </AuthorizeView>
 
         <MudLink class="isMenu-show" OnClick="ClickItem" Style="@("color:" + _iconfill + "!important")" Href="/Plans">
             @Translation[CurrentLanguage]["Plans"]
@@ -29,32 +26,36 @@
         <MudLink class="isMenu-show" OnClick="ClickItem" Style="@("color:" + Iconfill + "!important")" Href="/CategoriesPlan">
             @Translation[CurrentLanguage]["Categories"]
         </MudLink>
+         <AuthorizeView>
+            <MudLink class="isMenu-show" OnClick="ClickItem" Style="@("color:" + _iconfill + "!important")" Href="/services">
+                @Translation[CurrentLanguage]["Services"]
+            </MudLink>
+        </AuthorizeView>
 
-        <MudLink class="isMenu-show" OnClick="ClickItem" Style="@("color:" + _iconfill + "!important")" Href="/services">
-            @Translation[CurrentLanguage]["Services"]
-        </MudLink>
-
-       @*  <MudLink class="isMenu-show" OnClick="ClickItem"  Style="@("color:" + _iconfill + "!important")" Href="/payment">
-            @Translation[CurrentLanguage]["Payment"]
-
-        </MudLink>   *@
-        
-        <MudLink class="isMenu-show" OnClick="ClickItem"  Style="@("color:" + _iconfill + "!important")" Href="/studio">
-            @Translation[CurrentLanguage]["Studio"]
-        </MudLink> 
-         @if (!@Flagauth){
-
-            <MudLink class="isMenu-show" OnClick="ClickItem" Style="@("color:" + _iconfill + "!important")" Href="/trainingModel">
-            @Translation[CurrentLanguage]["TrainingModel"]
-        </MudLink>
-         }
+         <AuthorizeView>
+            <MudLink class="isMenu-show" OnClick="ClickItem"  Style="@("color:" + _iconfill + "!important")" Href="/studio">
+                @Translation[CurrentLanguage]["Studio"]
+            </MudLink> 
+        </AuthorizeView>
+    
+         <AuthorizeView>
+             <MudLink class="isMenu-show" OnClick="ClickItem" Style="@("color:" + _iconfill + "!important")" Href="/trainingModel">
+                @Translation[CurrentLanguage]["TrainingModel"]
+            </MudLink>
+        </AuthorizeView>
+        <AuthorizeView>
+            <MudLink Style="@("color:" + _iconfill + "!important")" OnClick="@(() => logout(true))">
+                <MudIcon Icon="@Icons.Material.Filled.Logout" />
+                @Translation[CurrentLanguage]["Logout"]
+            </MudLink>
+        </AuthorizeView>
    
-         @if (!@Flagauth && @NavigationManager.Uri == @NavigationManager.BaseUri)
+    @*  @if (!@Flagauth && @NavigationManager.Uri == @NavigationManager.BaseUri)
         {
 
-            @* <MudButton Variant="Variant.Text" OnClick="@(() => logout(true))"> @Translation[CurrentLanguage]["Logout"]</MudButton> *@
-            @* <Logout OnClickLogout="@(() => logout(true))" /> *@
-        }
+            @* <MudButton Variant="Variant.Text" OnClick="@(() => logout(true))"> @Translation[CurrentLanguage]["Logout"]</MudButton> 
+            @* <Logout OnClickLogout="@(() => logout(true))" /> 
+        } *@
     
 
 

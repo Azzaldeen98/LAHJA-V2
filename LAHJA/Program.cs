@@ -57,10 +57,12 @@
 //builder.Services.AddHttpContextAccessor();
 //builder.Services.AddScoped<IUserClaimsHelper, UserClaimsHelper>();
 
-//builder.Services.AddAuthentication(options => {
+//builder.Services.AddAuthentication(options =>
+//{
 //    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
 //    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-//}).AddJwtBearer(options => {
+//}).AddJwtBearer(options =>
+//{
 //    options.TokenValidationParameters = new TokenValidationParameters
 //    {
 //        ValidateIssuer = true,
@@ -75,9 +77,11 @@
 
 
 /////////////////////////////////////////////////////////TODO
-//builder.Services.AddAuthentication(options => {
+//builder.Services.AddAuthentication(options =>
+//{
 //    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-//}).AddCookie(options => {
+//}).AddCookie(options =>
+//{
 //    options.LoginPath = "/login";
 //    options.Cookie.HttpOnly = true;
 //    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
@@ -113,8 +117,8 @@
 
 
 //builder.Services.AddScoped<TokenService>();
-//builder.Services.AddScoped<ITokenService,TokenService>();
-//builder.Services.AddScoped<ISessionUserManager,SessionUserManager>();
+//builder.Services.AddScoped<ITokenService, TokenService>();
+//builder.Services.AddScoped<ISessionUserManager, SessionUserManager>();
 
 
 //builder.Services.AddMudBlazorSnackbar(config =>
@@ -182,7 +186,7 @@
 
 //app.UseStaticFiles();
 
-//app.UseAuthentication(); 
+//app.UseAuthentication();
 //app.UseAuthorization();
 
 //app.UseRouting();
@@ -214,12 +218,22 @@ using System.Globalization;
 using LAHJA.ApiClient;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.ResponseCompression;
+using LAHJA.Notification;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+
+builder.Services.AddAuthorizationCore();  // تسجيل تفويض المستخدمين
+builder.Services.AddAuthorization();  // تسجيل خدمات التفويض بشكل كامل
+builder.Services.AddCascadingAuthenticationState();  // تسجيل حالة المصادقة
+builder.Services.AddScoped<CustomAuthenticationStateProvider>();  // تسجيل موفر حالة المصادقة المخصص
+builder.Services.AddScoped<AuthenticationStateProvider>(sp => sp.GetRequiredService<CustomAuthenticationStateProvider>());
+
+
 
 
 
@@ -253,43 +267,39 @@ builder.Services.AddOptions<ReCaptchaSettings>().BindConfiguration("ReCaptchaSet
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IUserClaimsHelper, UserClaimsHelper>();
 
-builder.Services.AddAuthentication(options => {
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options => {
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = jwtSettings.Issuer,
-        ValidAudience = jwtSettings.Audience,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key))
-    };
-});
+//builder.Services.AddAuthentication(options =>
+//{
+//    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+//    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+//}).AddJwtBearer(options =>
+//{
+//    options.TokenValidationParameters = new TokenValidationParameters
+//    {
+//        ValidateIssuer = true,
+//        ValidateAudience = true,
+//        ValidateLifetime = true,
+//        ValidateIssuerSigningKey = true,
+//        ValidIssuer = jwtSettings.Issuer,
+//        ValidAudience = jwtSettings.Audience,
+//        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key))
+//    };
+//});
+
+
+
 
 
 ///////////////////////////////////////////////////////TODO
-builder.Services.AddAuthentication(options => {
+builder.Services.AddAuthentication(options =>
+{
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-}).AddCookie(options => {
-    options.LoginPath = "/login";
+}).AddCookie(options =>
+{
+    options.LoginPath = "/Login";
     options.Cookie.HttpOnly = true;
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
     options.Cookie.SameSite = SameSiteMode.Strict;
 });
-//builder.Services.AddScoped<AuthenticationStateProvider, AppCustomAuthenticationStateProvider>();
-builder.Services.AddScoped<AppCustomAuthenticationStateProvider>();
-builder.Services.AddScoped<AuthenticationStateProvider>(provider =>
-    provider.GetRequiredService<AppCustomAuthenticationStateProvider>());
-
-//builder.Services.AddScoped<AppCustomAuthenticationStateProvider>();
-builder.Services.AddScoped<IAppUserClaimsHelper, AppUserClaimsHelper>();
-
-
-builder.Services.AddAuthorization();
-
 
 
 
@@ -304,8 +314,6 @@ builder.Services
         reCaptchaOptions.SiteKey = "dddddddgffee";
         //Set any other ReCaptcha options here...
     });
-
-
 
 
 builder.Services.AddScoped<TokenService>();
@@ -331,12 +339,9 @@ builder.Services.AddScoped<ProtectedSessionStorage>();
 
 builder.Services.AddDistributedMemoryCache();
 
-
-
-
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(100);
+    options.IdleTimeout = TimeSpan.FromDays(30);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
@@ -404,3 +409,5 @@ app.UseEndpoints(endpoints =>
 });
 //await ATTK.Load();
 app.Run();
+
+

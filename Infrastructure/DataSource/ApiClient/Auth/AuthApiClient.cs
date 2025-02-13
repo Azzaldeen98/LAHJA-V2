@@ -225,7 +225,7 @@ namespace Infrastructure.DataSource.ApiClient.Auth
             try
             {
                 var model = _mapper.Map<ResetPasswordRequest>(request);
-                var client = await GetApiClientWithAuth();
+                var client = await GetApiClient();
                 await client.ResetPasswordAsync(model);
 
                 return Result<ResetPasswordResponseModel>.Success();

@@ -4,8 +4,9 @@
 @using LAHJA.UI.Components.TabelCard
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
-
 @using LAHJA.UI.Components.ProFile.Settings
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
 
 @inject LAHJA.Data.UI.Templates.Profile.TemplateProfile Template
 

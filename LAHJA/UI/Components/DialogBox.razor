@@ -6,9 +6,11 @@
             <MudText Typo="Typo.h6">@Title</MudText>
             <MudText Typo="Typo.body1">@Message</MudText>
         </DialogContent>
-        <DialogActions>
-            <MudButton OnClick="onConfirm" Color="Color.Primary">OK</MudButton>
-            <MudButton OnClick="onCancel" Color="Color.Secondary">Cancel</MudButton>
+        <DialogActions >
+            <div class="d-flex justify-content-around align-items-center">
+            <MudButton OnClick="onConfirm" Color="Color.Primary">@GetTrans("Ok")</MudButton>
+            <MudButton OnClick="onCancel" Color="Color.Secondary">@GetTrans("Cancel")</MudButton>
+        </div>
         </DialogActions>
     </MudDialog>
 
@@ -18,16 +20,37 @@
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
     [Parameter] public string Title { get; set; }
     [Parameter] public string Message { get; set; }
+    [Parameter] public string Lang { get; set; } = "ar";
 
     private void onCancel()
     {
         MudDialog.Close(DialogResult.Cancel());
-       
+
     }
 
-    
+
+    private string GetTrans(string key)
+    {
+        return Trans[Lang].ContainsKey(key)?Trans[Lang][key]:"";
+    }
+
     private void onConfirm()
     {
         MudDialog.Close(DialogResult.Ok(true));
     }
+
+    private Dictionary<string, Dictionary<string, string>> Trans = new()
+        {
+            ["ar"] = new Dictionary<string, string>
+            {
+                {"OK", "موافق"},
+                {"Cancel", "إلغاء"},
+            },
+            ["en"] = new Dictionary<string, string>
+            {
+                {"OK", "OK"},
+                {"Cancel", "Cancel"},
+            },
+        };
+
 }

@@ -1,8 +1,10 @@
 ﻿ @page "/ReSendConfirmationEmail"
  @using LAHJA.UI.Components.Auth
+ @using Microsoft.AspNetCore.Authorization
  @inject LAHJA.Data.UI.Templates.Auth.TemplateAuth Template
  @inject NavigationManager Navigation
 
+@attribute [AllowAnonymous]
 
 <ReSendConfirmationEmail    OnSubmitReSendConfirmEmail="Template.BuilderComponents.SubmitReSendConfirmEmail" />
 

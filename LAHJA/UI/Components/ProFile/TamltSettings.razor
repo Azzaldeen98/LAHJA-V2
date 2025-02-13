@@ -1,5 +1,6 @@
 ﻿ @page "/email_confirmation"
-
+ @using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
 <ResendConfirmationemail />
 <main class="flex flex-1 flex-col">
     <div class="flex-1">

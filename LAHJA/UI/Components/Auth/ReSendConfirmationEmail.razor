@@ -7,6 +7,9 @@
 @using global::Shared.Constants.Router
 @* @inherits LayoutComponentBase *@
 @inject NavigationManager navigation;
+@using Microsoft.AspNetCore.Authorization
+@attribute [AllowAnonymous]
+
 @inherits CardAuth<DataBuildAuthBase>
 
 <MudText Typo="Typo.h6">
@@ -67,14 +70,13 @@
     {
         if (form.IsValid)
         {
-            // if (success)
-            {
-                if (OnSubmitReSendConfirmEmail.HasDelegate)
+            isLoading = true;
+            if (OnSubmitReSendConfirmEmail.HasDelegate)
                 {
-
                     await OnSubmitReSendConfirmEmail.InvokeAsync(new DataBuildAuthBase { Email = email });
                 }
-            }
+            await Task.Delay(10000);
+            isLoading = false;
         }
     }
 }

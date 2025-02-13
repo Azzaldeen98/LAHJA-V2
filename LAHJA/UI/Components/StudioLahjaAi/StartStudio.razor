@@ -1,13 +1,13 @@
 ﻿@using Domain.ShareData
 @using LAHJA.Helpers.Services
+@using Microsoft.AspNetCore.Authorization
 @inject LanguageService languageService
 @inject IManageLanguageService _manageLanguageService
 
+@attribute [Authorize]
 
 
-
-<MudContainer  >
-
+<MudContainer>
 
     <MudText Typo="Typo.body1">@Title</MudText>
     <MudGrid  Justify="Justify.Center">

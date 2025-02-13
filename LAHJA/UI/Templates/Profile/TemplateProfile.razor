@@ -5,7 +5,8 @@
 @using LAHJA.Data.UI.Templates.Auth 
 @using LAHJA.UI.Components.Plan
 @using LAHJA.UI.Components.ProFile
-
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
 
 @inject LAHJA.Data.UI.Templates.Profile.TemplateProfile Template
 

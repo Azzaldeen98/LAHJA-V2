@@ -4,7 +4,7 @@
 @using Domain.ShareData
 @using LAHAJ.Loading
 @using LAHJA.Helpers.Services
-
+@using Microsoft.AspNetCore.Authorization
 @using LAHJA.UI.Components.General.Button
 @using Microsoft.AspNetCore.Components.Authorization
 @using MudBlazor
@@ -13,6 +13,10 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject LAHJA.Data.UI.Templates.Auth.TemplateAuth templateAuth
 @inject IManageLanguageService _manageLanguageService
+
+
+@attribute [AllowAnonymous]
+
 
 @if (!InBackend){
 
@@ -49,7 +53,7 @@ else
     public bool FlagDev { get; set; } = true;
 
     [Parameter]
-    public bool InBackend { get; set; } = false;
+    public bool InBackend { get; set; } = true;
 
     Dictionary<string, Dictionary<string, string>> labels = new()
     {
@@ -73,19 +77,20 @@ else
     {
         if (firstRender)
         {
-            CurrentLanguage = await _manageLanguageService.GetLanguageAsync();
-            StateHasChanged();
+            if (InBackend)
+            {
+                isLoading = true;
+                await logout();
+            }
+            else
+            {
+                CurrentLanguage = await _manageLanguageService.GetLanguageAsync();
+                StateHasChanged();
+            }
+      
+        }
+    }
 
-        }
-    }
-    protected override async void OnInitialized()
-    {
-        if (InBackend)
-        {
-            isLoading = true;
-            await  logout();
-        }
-    }
 
     private async Task logout()
     {

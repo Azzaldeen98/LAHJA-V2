@@ -1,13 +1,8 @@
-﻿using Domain.Entities.User;
-using LAHJA.Helpers.Enum;
+﻿using LAHJA.Helpers.Enum;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.JSInterop;
-using Newtonsoft.Json.Linq;
 using Shared.Constants;
-using Shared.Constants.Localization;
 using Shared.Helpers;
-using System.Threading.Tasks;
-using static IdentityModel.OidcConstants;
 namespace LAHJA.Helpers.Services
 {
 
@@ -51,9 +46,12 @@ namespace LAHJA.Helpers.Services
 
             }
         }
-   
 
-  
+        public async Task<string> GetTokenFromSessionAsync()
+        {
+            return  (await PSession.GetAsync<string>(ConstantsApp.ACCESS_TOKEN)).Value??"";
+        }
+
         public async Task SaveTokenAsync(string token)
         {
             if (!string.IsNullOrEmpty(token))

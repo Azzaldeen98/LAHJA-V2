@@ -1,22 +1,15 @@
 ﻿
 @using LAHJA.Data.UI.Components
-
-
-
 @using LAHJA.UI.Components.ProFile.Settings
-
-
 @inject LAHJA.Data.UI.Templates.Profile.TemplateProfile Template
-
-
-
-
-
 @using LAHJA.Data.UI.Components
 @using LAHJA.UI.Components.ServiceCard
 @using LAHJA.UI.Components.TabelCard
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
 
 @if (Template != null && dataAndEvent!=null)
 {

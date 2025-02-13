@@ -1,6 +1,11 @@
 ﻿@using LAHJA.UI.Components.General.Button
 @using MudBlazor
+@using Microsoft.AspNetCore.Authorization
 @inject NavigationManager Navigation
+
+
+@attribute [AllowAnonymous]
+
 <MudDialog>
     <DialogActions>
         <MudCard>

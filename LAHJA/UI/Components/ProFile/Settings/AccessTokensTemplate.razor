@@ -3,7 +3,8 @@
 @using LAHJA.UI.Components.TabelCard
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
-
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
 
 <TabelDashCard T="AccessTokenAuth" DataAndEventBuildTabel="dataAndEvent"
                StateCounts="cardStates"
@@ -13,7 +14,16 @@
 @code {
 
 
-    DataAndEventBuildTabelCard<AccessTokenAuth> dataAndEvent = null;
+    [Parameter] public List<AccessTokenAuth> DataBuild { set => _dataBuild = value; get => _dataBuild; }
+
+    [Parameter] public EventCallback<DataBuildAccessTokenAuth> SubmitCreate { set; get; }
+    [Parameter] public EventCallback<DataBuildAccessTokenAuth> SubmitDelete { set; get; }
+    [Parameter] public EventCallback<DataBuildAccessTokenAuth> SubmitCancel { set; get; }
+    
+
+
+    private List<AccessTokenAuth> _dataBuild = new();
+    private DataAndEventBuildTabelCard<AccessTokenAuth> dataAndEvent = null;
     private string lg = "ar";
     protected override void OnInitialized()
     {
@@ -22,7 +32,7 @@
 
         dataAndEvent = new()
             {
-                DataBuild = authList,
+                DataBuild = _dataBuild,
                 // LabelColumns = ColomsTrans[lg].ToList(),
 
                 Events = new()
@@ -129,17 +139,8 @@
         };
 
 
-    // Dictionary<string, string[]> ColomsTrans = new Dictionary<string, string[]>
-    //     {
-    //         { "en", new string[] { "ID", "Name", "Description", "RAM", "CPU Cores", "Disk Space", "GPU", "Global", "Bandwidth" } },
-    //         { "ar", new string[] { "المعرف", "الاسم", "الوصف", "الذاكرة العشوائية", "أنوية المعالج", "مساحة القرص", "وحدة معالجة الرسوميات", "عالمي", "عرض النطاق الترددي" } }
-    //     };
-    List<AccessTokenAuth> authList = new List<AccessTokenAuth>
-        {
-            new AccessTokenAuth { SpaceId = "space-001", Subscription = "free", AccessToken = "token-123", ApiEndpoint = "https://api.huggingface.co", CreationDate = DateTime.Now.AddDays(-10), Status = true },
-            new AccessTokenAuth { SpaceId = "space-002", Subscription = "pro", AccessToken = "token-456", ApiEndpoint = "https://api.huggingface.co", CreationDate = DateTime.Now.AddDays(-5), Status = true },
-            new AccessTokenAuth { SpaceId = "space-003", Subscription = "enterprise", AccessToken = "token-789", ApiEndpoint = "https://api.huggingface.co", CreationDate = DateTime.Now.AddDays(-1), Status = false }
-        };
+
+  
 
 
 

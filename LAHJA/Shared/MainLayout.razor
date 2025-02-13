@@ -8,6 +8,7 @@
 @using LAHJA.UI.Components.Auth
 @using LAHJA.Helpers.Services
 @using LAHJA.UI.Components.StudioLahjaAi
+@using Microsoft.AspNetCore.Components.Authorization
 @using MudBlazor
 
 
@@ -15,7 +16,8 @@
 @inject ProtectedSessionStorage pass
 @inject NavigationManager NavigationManager
 @inject TokenService _tokenService
-@inject AuthService _authService;
+@inject AuthService _authService
+@inject CustomAuthenticationStateProvider AuthStateProvider
 @inject IManageLanguageService _manageLanguageService
 @inject LanguageService languageService
 @inject LAHJA.Data.UI.Templates.Auth.TemplateAuth templateAuth
@@ -26,6 +28,7 @@
 
 @using Microsoft.Extensions.Localization
 @using System.Globalization
+@using global::Shared.Constants.Router
 
 
 <MudRTLProvider RightToLeft="@_rightToLeft">
@@ -125,9 +128,10 @@
 <MudLayout>
     <MudAppBar   Elevation="_themeManager.AppBarElevation" style="@((_isDarkMode?"":"background:#fff")+";" )" class="navbar-light">
 
-            @if(_isAuth){
-            <MudIconButton Class="mx-3 nav-menu-continer-items-lg"  Icon="@Icons.Material.Filled.Menu" Size="Size.Medium" Style="@("color:" + iconfill + "!important;")" Edge="Edge.Start" OnClick="@((e) => DrawerToggle(false))" />
-            }
+           <AuthorizeView>
+                <MudIconButton Class="mx-3 nav-menu-continer-items-lg"  Icon="@Icons.Material.Filled.Menu" Size="Size.Medium" Style="@("color:" + iconfill + "!important;")" Edge="Edge.Start" OnClick="@((e) => DrawerToggle(false))" />
+           </AuthorizeView>
+
             <MudIconButton Class="mx-3 nav-menu-continer-items-sm" Icon="@Icons.Material.Filled.Menu" Size="Size.Medium" Style="@("color:" + iconfill + "!important;")" Edge="Edge.Start" OnClick="@((e) => DrawerToggle(true))" />
 
             <span style="direction:ltr !important;" class="d-flex justify-content-center  align-items-center w-100">
@@ -221,10 +225,9 @@
 
             @if (NavigationManager.Uri != NavigationManager.BaseUri+"/studio"){
 
-                <MudIconButton class="show-panel-button"   Style="@("background-color:"+AppColors.BASE_COLOR_FOUCS)" Icon="@Icons.Material.Filled.GroupWork" @onclick="ShowPanel" />
-
-
-                @if (isPanelVisible)  
+                <AuthorizeView>
+                    <MudIconButton class="show-panel-button"   Style="@("background-color:"+AppColors.BASE_COLOR_FOUCS)" Icon="@Icons.Material.Filled.GroupWork" @onclick="ShowPanel" />
+                    @if (isPanelVisible)  
                 {
                     <MudCard @bind-Open="isPanelVisible" Class="overlay"  Elevation="0" >
                         <div class="resizable-panel" id="resizablePanel">
@@ -237,6 +240,7 @@
                         </div>
                     </MudCard>
                 }
+                </AuthorizeView>
             }
 
 @code {
@@ -390,10 +394,6 @@
         _themeManager = value;
         StateHasChanged();
     }
-
-
-
-
     private async void Handellogout(bool flag)
 
     {
@@ -407,7 +407,7 @@
 
     async void logout(bool isauth)
     {
-        NavigationManager.NavigateTo($"Logout/{false}"); 
+        NavigationManager.NavigateTo($"Logout/{false}");
         // isLoading=true;
         // flagauth = isauth;
         // Task.FromResult(templateAuth.LogoutAsync());
@@ -444,8 +444,12 @@
             if (firstRender)
             {
 
-                tokenn = await _tokenService.GetTokenAsync();
-                CurrentLanguage = await _manageLanguageService.InitAsync();
+                // var str = await AuthStateProvider.GetAuthenticationStateAsync();
+                // tokenn = await _tokenService.GetTokenAsync();
+
+                CurrentLanguage=await _manageLanguageService.InitAsync();
+
+                // CurrentLanguage = await _manageLanguageService.GetLanguageAsync();
                 // CurrentLanguage = await _manageLanguageService.GetLanguageAsync();
                 _rightToLeft = CurrentLanguage == LanguagesCode.AR.ToString().ToLower();
                 _isDarkMode = await _mudThemeProvider.GetSystemPreference();
@@ -459,42 +463,38 @@
                 }
 
 
-                if (!string.IsNullOrEmpty(tokenn))
+                // if (!string.IsNullOrEmpty(tokenn))
+                // {
+
+                 var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+                if (authState!=null && authState?.User?.Identity?.IsAuthenticated == true)
                 {
                     var typeLogin = await _tokenService.GetLoginTypeAsync();
                     if (typeLogin == LoginType.Email.ToString() && NavigationManager.Uri != NavigationManager.BaseUri + "Login")
                     {
                         var refreshToken = await _tokenService.GetRefreshTokenAsync();
                         var resp = await templateAuth.RefreshToken(new RefreshRequest { RefreshToken = refreshToken });
-
                         if (resp.Succeeded)
                         {
-                            _isAuth = true;
-                            tokenn = resp.Data.accessToken;
-                            await _authService.SaveAccessTokenInSessionAsync(tokenn);
-                            flagauth = false;
-
+                            await AuthStateProvider.InitializeAsync();
                         }
                         else
                         {
-                            NavigationManager.NavigateTo($"Logout/{true}");
+                            NavigationManager.NavigateTo($"{RouterPage.LOGOUT}/true");
                         }
                     }
-                    else
-                    {
-
-                        ////TODO: 8-2
-                        _isAuth = true;
-                        await _authService.SaveAccessTokenInSessionAsync(tokenn);
-                        flagauth = false;
-                    }
                 }
-                else 
-                {
+                // else
+                // {
+                //     NavigationManager.NavigateTo(RouterPage.LOGIN);
+                // }
 
-                    await pass.SetAsync("accessToken", "$$$$$");
+                
+                // else 
+                // {
+                //     await pass.SetAsync("accessToken", "$$$$$");
 
-                }
+                // }
 
 
                 

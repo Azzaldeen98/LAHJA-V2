@@ -2,8 +2,12 @@
 
 @using LAHAJ.Loading
 @using LAHJA.UI.Templates.Auth
-@inherits BaseInitializationComponent
 @using LAHJA.UI.Components
+@using Microsoft.AspNetCore.Authorization
+@attribute [AllowAnonymous]
+
+@inherits BaseInitializationComponent
+
 
 <div style="" class="auth-them">
 
