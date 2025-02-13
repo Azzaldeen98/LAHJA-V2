@@ -128,7 +128,8 @@ namespace LAHJA.Mappings
 
 
             ///  CreditCard
-            CreateMap<CardDetailsResponse, CardDetails>().ReverseMap();
+            CreateMap<CardDetails, CardDetailsResponse>().ReverseMap();
+            CreateMap<CardDetails, CardDetailsRequest>().ReverseMap();
 
 
             ///  Subscription

@@ -1,7 +1,4 @@
-﻿
-
-
-@using Domain.ShareData
+﻿@using Domain.ShareData
 @using LAHJA.Data.UI.Components.Payment.DataBuildBillingBase
 @using LAHJA.Data.UI.Components.Payment.CreditCard
 @using LAHJA.Data.UI.Components.Plan
@@ -30,93 +27,29 @@
         </MudStep>
 
         <MudStep CompletedStepColor="@AppColors.BASE_COLOR_ENUM" Title="Step 2" SecondaryText="Enter some text" HasError="@(_step2TextInput=="")">
-
-       
             <MudPaper Elevation="0" Class="w-100 container_flex_wrap p-3">
-             
                     <div class="w60 mt-3">
                         <BillingMethodsSection ReadOnly="@(BuildBillingData!=null)" ReadData="OnReadBillingData" BuildData="BuildBillingData" />
                      </div>
-
                      <div class="w40 mt-3">
-                         <CardsMethodsSection SelectedCard="OnSelectedCardData" BuildData="BuildCreditCardData" EditCard="OnEditCard" CreateCard="OnCreateCard" />
+                         <CardsMethodsSection 
+                             BuildData="BuildCreditCardData"
+                             SelectedActiveCard="OnSelectedActiveCard"
+                             EditCard="OnSubmitUpdateCard" 
+                             CreateCard="OnSubmitCreateCard"
+                             DeleteCard="OnSubmitDeleteCard" />
                     </div>
-               
             </MudPaper>
         </MudStep>
             <MudStep Style="height:100%" CompletedStepColor="@AppColors.BASE_COLOR_ENUM" Title="Step 3">
-             <MudButton Class="@(@AppTextStyle.TEXT_TRANSFORM_NORMAL+" m-5")" Variant="Variant.Filled"
+                <MudButton Class="@(@AppTextStyle.TEXT_TRANSFORM_NORMAL+" m-5")" Variant="Variant.Filled"
                        Size="Size.Large" OnClick="Payment" Color="@AppColors.BASE_COLOR_ENUM">@GetTranslation("ContinueToPayment")</MudButton>
-
-        
-        </MudStep>
+             </MudStep>
         </div>
     </MudStepper>
 </MudPaper>
 
-@code {
 
-
-    private bool? _step1Complete;
-    private string _step2TextInput;
-
-    private async Task OnPreviewInteraction(StepperInteractionEventArgs arg)
-    {
-        if (arg.Action == StepAction.Complete)
-        {
-            // occurrs when clicking next
-            await ControlStepCompletion(arg);
-        }
-        else if (arg.Action == StepAction.Activate)
-        {
-            // occurrs when clicking a step header with the mouse
-            await ControlStepNavigation(arg);
-        }
-
-    }
-
-    private async Task ControlStepCompletion(StepperInteractionEventArgs arg)
-    {
-        switch (arg.StepIndex)
-        {
-            case 0:
-                if (isConfirm != true)
-                {
-                    await DialogService.ShowMessageBox("Error", "You have not flipped the switch in step 1");
-                    arg.Cancel = true;
-                }
-                break;
-            case 1:
-                if (!isConfirm)
-                {
-                    await DialogService.ShowMessageBox("Error", "You have not entered text in step 2");
-                    arg.Cancel = true;
-                }
-                break;
-        }
-    }
-
-    private async Task ControlStepNavigation(StepperInteractionEventArgs arg)
-    {
-        switch (arg.StepIndex)
-        {
-            case 1:
-                if (_step1Complete != true)
-                {
-                    await DialogService.ShowMessageBox("Error", "Finish step 1 first");
-                    arg.Cancel = true;
-                }
-                break;
-            case 2:
-                if (_step1Complete != true || (_step2TextInput?.Length ?? 0) == 0)
-                {
-                    await DialogService.ShowMessageBox("Error", "Finish step 1 and 2 first");
-                    arg.Cancel = true;
-                }
-                break;
-        }
-    }
-}
 
 @* <MudLayout Class="w-100">
 
@@ -153,10 +86,15 @@
 {
 
 
+    private bool? _step1Complete;
+    private string _step2TextInput;
 
-    [Parameter] public EventCallback<CardDetails> OnSelect { get; set; }
-    [Parameter] public EventCallback<CardDetails> CreateCard { get; set; }
-    [Parameter] public EventCallback<CardDetails> EditCard { get; set; }
+    [Parameter] public EventCallback<CardDetails> SubmitSelectedActiveCard { get; set; }
+    [Parameter] public EventCallback<CardDetails> SubmitCreateCard { get; set; }
+    [Parameter] public EventCallback<CardDetails> SubmitUpdateCard { get; set; }
+    [Parameter] public EventCallback<CardDetails> SubmitDeleteCard { get; set; }
+
+
     [Parameter] public EventCallback<SubscriptionPlanInfo> SubmitPayment { get; set; }
 
 
@@ -169,7 +107,7 @@
 
 
     private CardDetails card { get; set; }
-    private bool isConfirm = false;
+    private bool isConfirm = true;
 
     private string CurrentLanguage { get; set; } = "ar";
 
@@ -181,15 +119,37 @@
             StateHasChanged();
         }
     }
-    private async Task OnCreateCard(CardDetails input)
+        private async void OnSelectedActiveCard(CardDetails data)
     {
-
+        if (SubmitSelectedActiveCard.HasDelegate)
+        {
+            card = data;
+            StateHasChanged();
+            await SubmitSelectedActiveCard.InvokeAsync(data);
+        }
     }
-    private async Task OnEditCard(CardDetails data)
+
+    private async Task OnSubmitCreateCard(CardDetails data)
     {
-
+        if (SubmitCreateCard.HasDelegate)
+        {
+            await SubmitCreateCard.InvokeAsync(data);
+        }
     }
-
+    private async Task OnSubmitUpdateCard(CardDetails data)
+    {
+        if (SubmitUpdateCard.HasDelegate)
+        {
+            await SubmitUpdateCard.InvokeAsync(data);
+        }
+    }
+    private async Task OnSubmitDeleteCard(CardDetails data)
+    {
+        if (SubmitDeleteCard.HasDelegate)
+        {
+            await SubmitDeleteCard.InvokeAsync(data);
+        }
+    }
 
     private async Task OnSubmitConfirmPlan(SubscriptionPlanInfo input)
     {
@@ -197,10 +157,9 @@
         {
             isConfirm = true;
             Payment();
-          @*   StateHasChanged(); *@
+            @*   StateHasChanged(); *@
         }
     }
-
     private async Task OnSubmitCancelPlan(SubscriptionPlanInfo input)
     {
         if ( input != null)
@@ -208,7 +167,6 @@
 
         }
     }
-
     private async Task OnSubmitUpgradePlan(SubscriptionPlanInfo input)
     {
         if (input != null)
@@ -217,16 +175,7 @@
         }
     }
 
-
-    private void OnSelectedCardData(CardDetails? data)
-    {
-        if (data != null && !string.IsNullOrEmpty(data.CardNumber))
-        {
-            card = data;
-            StateHasChanged();
-        }
-    }
-    private  void OnReadBillingData(DataBuildBillingBase? data)
+    private void OnReadBillingData(DataBuildBillingBase? data)
     {
         if (data != null && !string.IsNullOrEmpty(data.FullName))
         {
@@ -235,19 +184,67 @@
         }
 
     }
-    
+    private async Task OnPreviewInteraction(StepperInteractionEventArgs arg)
+    {
+        if (arg.Action == StepAction.Complete)
+        {
+            // occurrs when clicking next
+            await ControlStepCompletion(arg);
+        }
+        else if (arg.Action == StepAction.Activate)
+        {
+            // occurrs when clicking a step header with the mouse
+            await ControlStepNavigation(arg);
+        }
 
-
+    }
+    private async Task ControlStepCompletion(StepperInteractionEventArgs arg)
+    {
+        switch (arg.StepIndex)
+        {
+            case 0:
+                if (isConfirm != true)
+                {
+                    await DialogService.ShowMessageBox("Error", "You have not flipped the switch in step 1");
+                    arg.Cancel = true;
+                }
+                break;
+            case 1:
+                if (!isConfirm)
+                {
+                    await DialogService.ShowMessageBox("Error", "You have not entered text in step 2");
+                    arg.Cancel = true;
+                }
+                break;
+        }
+    }
+    private async Task ControlStepNavigation(StepperInteractionEventArgs arg)
+    {
+        switch (arg.StepIndex)
+        {
+            case 1:
+                if (_step1Complete != true)
+                {
+                    await DialogService.ShowMessageBox("Error", "Finish step 1 first");
+                    arg.Cancel = true;
+                }
+                break;
+            case 2:
+                if (_step1Complete != true || (_step2TextInput?.Length ?? 0) == 0)
+                {
+                    await DialogService.ShowMessageBox("Error", "Finish step 1 and 2 first");
+                    arg.Cancel = true;
+                }
+                break;
+        }
+    }
     public async void Payment()
     {
         if (SubmitPayment.HasDelegate)// && billing!=null && card!=null)
         {
             await SubmitPayment.InvokeAsync(BuildPlanData);
         }
-        else
-        {
-          
-        }
+   
 
         @* Snackbar.Add(BuildPlanData.TotalPrice.ToString(), Severity.Error); *@
     }

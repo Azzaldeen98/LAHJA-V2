@@ -30,7 +30,15 @@
         } else
         {
 
-            <PaymentComponts BuildPlanData="buildPlanData" BuildBillingData="buildBillingData" SubmitPayment="onSubmitCheckout" BuildCreditCardData="buildCreditCardData" OnSelect="onSubmitActiveCreditCard" />
+            <PaymentComponts 
+                BuildPlanData="buildPlanData" 
+                BuildBillingData="buildBillingData" 
+                SubmitPayment="onSubmitCheckout" 
+                BuildCreditCardData="buildCreditCardData" 
+                SubmitSelectedActiveCard="onSubmitActiveCreditCard"
+                         SubmitCreateCard="OnSubmitCreateCard"
+                         SubmitUpdateCard="OnSubmitUpdateCard"
+                         SubmitDeleteCard="OnSubmitDeleteCard" />
         }
 }
 
@@ -127,12 +135,36 @@
             await templatePayment.BuilderComponents.SubmitCheckout(new DataBuildPaymentBase { PlanId = plan.Id });
 
     }
+    
+    
     private async Task onSubmitActiveCreditCard(CardDetails card)
     {
         if (templateCreditCard.BuilderComponents.SubmitActiveCreditCard != null && card != null)
-            await templateCreditCard.BuilderComponents.SubmitActiveCreditCard(new DataBuildCreditCardBase { CreditCardId = card.CardNumber });
+            await templateCreditCard.BuilderComponents.SubmitActiveCreditCard(new DataBuildCreditCardBase { CreditCard = card });
     }
 
+
+    private async Task OnSubmitCreateCard(CardDetails data)
+    {
+        if (templateCreditCard.BuilderComponents.SubmitCreateCreditCardDetails!=null)
+        {
+            await templateCreditCard.BuilderComponents.SubmitCreateCreditCardDetails(new DataBuildCreditCardBase { CreditCard=data });
+        }
+    }
+    private async Task OnSubmitUpdateCard(CardDetails data)
+    {
+        if (templateCreditCard.BuilderComponents.SubmitUpdateCreditCardDetails != null)
+        {
+            await templateCreditCard.BuilderComponents.SubmitUpdateCreditCardDetails(new DataBuildCreditCardBase { CreditCard = data });
+        }
+    }
+    private async Task OnSubmitDeleteCard(CardDetails data)
+    {
+        if (templateCreditCard.BuilderComponents.SubmitDeleteCreditCardDetails != null)
+        {
+            await templateCreditCard.BuilderComponents.SubmitDeleteCreditCardDetails(new DataBuildCreditCardBase { CreditCard = data });
+        }
+    }
 
     private async Task CheckoutAsync()
     {

@@ -728,9 +728,6 @@
 
 
     private async Task Submit()
-
-
-
     {
 
 
@@ -774,27 +771,13 @@
 
 
     }
-
-
-
-
-
     public void OnColorSelected(Color value)
-
     {
 
         SelectedColor = value;
 
     }
-
-
-
-
-
-
-
     private void ApplyFilter()
-
     {
 
 
@@ -960,142 +943,26 @@
 
 
     }
-
-
-
-
-
-
     private bool dense = false;
-
     private bool hover = true;
-
     private bool striped = false;
-
     private bool bordered = false;
-
     private string searchString1 = "";
-
     private ModelProperties selectedItem1 = null;
-
     private HashSet<ModelProperties> selectedItems = new HashSet<ModelProperties>();
-
     private IEnumerable<ModelProperties> Elements = new List<ModelProperties>();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-     
-
     private bool _selectOnRowClick = true;
-
     private bool _selectionChangeable = true;
-
-
-
-
-
-
-
-
-
-
-
-
-
     protected override async Task OnInitializedAsync()
-
     {
 
        // Elements = await httpClient.GetFromJsonAsync<List<Element>>("webapi/periodictable");
 
     }
 
-
-
-
-
-
-
     private bool FilterFunc1(ModelProperties element) => FilterFunc(element, searchString1);
 
     private bool FilterFunc(ModelProperties element, string searchString)
-
-
-
     {
 
         if (string.IsNullOrWhiteSpace(searchString))

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components;
-
 namespace LAHJA.Helpers
 {
     public class Helper
@@ -29,5 +28,18 @@ namespace LAHJA.Helpers
         {
             return $"{_navigation?.BaseUri??""}{urlPage}";
         }
+
+        public static string GetMaskedCVC(string cvc)
+        {
+            return string.IsNullOrEmpty(cvc) ? "" : new string('*', cvc.Length);
+        }
+
+
     }
+
+  
+
+
+
+
 }

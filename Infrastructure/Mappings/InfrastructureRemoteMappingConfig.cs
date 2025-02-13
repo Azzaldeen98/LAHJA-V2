@@ -131,6 +131,7 @@ namespace Infrastructure.Mappings.Plans
             CreateMap<CreateAuthorizationWebRequest, AuthorizationWebRequestModel>().ReverseMap();
             CreateMap<AuthorizationSessionWebResponseModel, AuthorizationSessionWebResponse>().ReverseMap();
             CreateMap<AuthorizationSessionCoreResponseModel, AuthorizationSessionCoreResponse>().ReverseMap();
+            CreateMap<AuthorizationSessionEncryptResponseModel, TokenVm>().ReverseMap();
 
 
 

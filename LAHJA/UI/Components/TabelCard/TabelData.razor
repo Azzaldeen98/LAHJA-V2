@@ -83,6 +83,11 @@
 
     private object GetPropertyValue(T item, string propertyName)
     {
+        if (item == null)
+        {
+            return "-"; 
+        }
+
         var prop = typeof(T).GetProperty(propertyName);
 
         return prop?.GetValue(item) ?? "-";

@@ -20,8 +20,9 @@ namespace LAHJA.Data.UI.Templates.CreditCard
         public string CreditCardId  { get; set; }
         public string Email  { get; set; }
 
-        public string SuccessUrl { get; set; } = "https://asg.tryasp.net/swagger/index.html";
-        public string CancelUrl { get; set; } = "https://asg.tryasp.net/api/Details";
+        public string SuccessUrl { get; set; } 
+        public string CancelUrl { get; set; } 
+        public CardDetails? CreditCard { get; set; }
     }
 
 
@@ -134,23 +135,28 @@ namespace LAHJA.Data.UI.Templates.CreditCard
 
         public async override Task<Result<CardDetailsResponse>> CreateCreditCardDetails(DataBuildCreditCardBase data)
         {
-            var model = Mapper.Map<CardDetailsRequest>(data);
+            var model = Mapper.Map<CardDetailsRequest>(data.CreditCard);
             var res = await Service.UpdateAsync(model);
             return res;
         } 
         
         public async override Task<Result<CardDetailsResponse>> ActiveCreditCard(DataBuildCreditCardBase data)
         {
-            var model = Mapper.Map<CardDetailsRequest>(data);
+            var model = Mapper.Map<CardDetailsRequest>(data.CreditCard);
             var res = await Service.UpdateAsync(model);
             return res;
         }
 
-
+        public async override Task<Result<CardDetailsResponse>> UpdateCreditCardDetails(DataBuildCreditCardBase data)
+        {
+            var model = Mapper.Map<CardDetailsRequest>(data.CreditCard);
+            var res = await Service.UpdateAsync(model);
+            return res;
+        }
         public async override Task<Result<DeletedResponse>> DeleteCreditCardDetails(DataBuildCreditCardBase data)
         {
-            var model = Mapper.Map<CardDetailsRequest>(data);
-            var res = await Service.DeleteAsync(data?.CreditCardId);
+          
+            var res = await Service.DeleteAsync(data?.CreditCard.CardNumber);
             if (res.Succeeded)
             {
                 try
@@ -193,12 +199,7 @@ namespace LAHJA.Data.UI.Templates.CreditCard
             }
         }
 
-        public async override Task<Result<CardDetailsResponse>> UpdateCreditCardDetails(DataBuildCreditCardBase data)
-        {
-            var model = Mapper.Map<CardDetailsRequest>(data);
-            var res = await Service.UpdateAsync(model);
-            return res;
-        }
+ 
     }
 
 
@@ -221,6 +222,9 @@ namespace LAHJA.Data.UI.Templates.CreditCard
             ISnackbar snackbar) : base(mapper, AuthService, client, builderComponents, navigation, dialogService, snackbar)
         {
             this.BuilderComponents.SubmitActiveCreditCard = onSubmitActiveCreditCard;
+            this.BuilderComponents.SubmitCreateCreditCardDetails = onCreateCreditCardDetails;
+            this.BuilderComponents.SubmitUpdateCreditCardDetails = onUpdateCreditCardDetails;
+            this.BuilderComponents.SubmitDeleteCreditCardDetails = onDeleteCreditCardDetails;
        
 
             this.builderApi = new BuilderCreditCardApiClient(mapper, client);
@@ -259,79 +263,84 @@ namespace LAHJA.Data.UI.Templates.CreditCard
 
         public async Task onSubmitActiveCreditCard(DataBuildCreditCardBase DataBuildCreditCardBase)
         {
-
-           var res=  await builderApi.CreateCreditCardDetails(DataBuildCreditCardBase);
-            if (res.Succeeded)
+            try
             {
-                try
+                var res = await builderApi.CreateCreditCardDetails(DataBuildCreditCardBase);
+                if (res.Succeeded)
                 {
-                    //var map = Mapper.Map<CardDetailsResponse>(res.Data);
-                    //return Result<CardDetailsResponse>.Success(map);
 
                 }
-                catch (Exception e)
+                else
                 {
-                    //return Result<CardDetailsResponse>.Fail();
+                    //return Result<CardDetailsResponse>.Fail(res.Messages);
                 }
+
             }
-            else
+            catch (Exception e)
             {
-                //return Result<CardDetailsResponse>.Fail(res.Messages);
+                //return Result<CardDetailsResponse>.Fail();
             }
+           
 
         }
         
         public async Task onCreateCreditCardDetails(DataBuildCreditCardBase DataBuildCreditCardBase)
         {
-
-           var res=  await builderApi.CreateCreditCardDetails(DataBuildCreditCardBase);
-            if (res.Succeeded)
+            try
             {
-                try
+                var res = await builderApi.CreateCreditCardDetails(DataBuildCreditCardBase);
+                if (res.Succeeded)
                 {
-                    //var map = Mapper.Map<CardDetailsResponse>(res.Data);
-                    //return Result<CardDetailsResponse>.Success(map);
 
                 }
-                catch (Exception e)
+                else
                 {
-                    //return Result<CardDetailsResponse>.Fail();
+                    //return Result<CardDetailsResponse>.Fail(res.Messages);
                 }
+
             }
-            else
+            catch (Exception e)
             {
-                //return Result<CardDetailsResponse>.Fail(res.Messages);
+                //return Result<CardDetailsResponse>.Fail();
             }
+           
 
         }
 
-        public async Task oUpdateCreditCardDetails(DataBuildCreditCardBase DataBuildCreditCardBase)
+        public async Task onUpdateCreditCardDetails(DataBuildCreditCardBase DataBuildCreditCardBase)
         {
-
-            var res = await builderApi.UpdateCreditCardDetails(DataBuildCreditCardBase);
-            if (res.Succeeded)
+            try
             {
-                try
-                {
-                    //var map = Mapper.Map<CardDetailsResponse>(res.Data);
-                    //return Result<CardDetailsResponse>.Success(map);
 
-                }
-                catch (Exception e)
+                var res = await builderApi.UpdateCreditCardDetails(DataBuildCreditCardBase);
+                if (res.Succeeded)
                 {
-                    //return Result<CardDetailsResponse>.Fail();
+             
+                }
+                else
+                {
+                    //return Result<CardDetailsResponse>.Fail(res.Messages);
                 }
             }
-            else
+            catch (Exception e)
             {
-                //return Result<CardDetailsResponse>.Fail(res.Messages);
+                //return Result<CardDetailsResponse>.Fail();
             }
 
         }
         public async Task onDeleteCreditCardDetails(DataBuildCreditCardBase DataBuildCreditCardBase)
         {
+            try
+            {
+                await builderApi.DeleteCreditCardDetails(DataBuildCreditCardBase);
 
-            await builderApi.DeleteCreditCardDetails(DataBuildCreditCardBase);
+            }
+            catch (Exception e)
+            {
+                //return Result<CardDetailsResponse>.Fail();
+            }
+
+          
 
         }
 
