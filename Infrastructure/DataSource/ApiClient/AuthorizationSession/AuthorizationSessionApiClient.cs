@@ -23,7 +23,16 @@ namespace Infrastructure.DataSource.ApiClient.AuthorizationSession
         {
 
         }
+        public async Task<List<AccessTokenAuthResponseModel>> GetSessionsAsync()
+        {
 
+            var client = await GetApiClient();
+            var response = await client.GetSessionsAsync();
+            var resModel = _mapper.Map<List<AccessTokenAuthResponseModel>>(response);
+
+            return resModel;
+
+        }
         public async Task<AuthorizationSessionWebResponseModel> CreateAuthorizationSessionAsync(AuthorizationWebRequestModel request)
         {
         

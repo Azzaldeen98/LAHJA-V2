@@ -27,29 +27,44 @@
     [Parameter] public string subscriptionId{ set; get; }
     [Parameter] public string spaceId{ set; get; }
 
+    private List<AccessTokenAuth> dataBuild = new List<AccessTokenAuth>
+    {
+        new AccessTokenAuth { SpaceId = "space-001", Subscription = "free", AccessToken = "token-123", ApiEndpoint = "https://api.huggingface.co", CreationDate = DateTime.Now.AddDays(-10), Status = true },
+        new AccessTokenAuth { SpaceId = "space-002", Subscription = "pro", AccessToken = "token-456", ApiEndpoint = "https://api.huggingface.co", CreationDate = DateTime.Now.AddDays(-5), Status = false },
+        new AccessTokenAuth { SpaceId = "space-003", Subscription = "enterprise", AccessToken = "token-789", ApiEndpoint = "https://api.huggingface.co", CreationDate = DateTime.Now.AddDays(-1), Status = false }
+    };
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
 
         if (firstRender)
         {
-       
-
-            if (!string.IsNullOrEmpty(subscriptionId))
+            try
             {
-                // var res= await Template.GetAccessToken(subscriptionId);
-            
+
+                if (Template.BuilderComponents.GetSessionsAccessTokens != null)
+                {
+                    var response = await Template.BuilderComponents.GetSessionsAccessTokens();
+                    if (response.Succeeded && response.Data != null)
+                    {
+                        dataBuild = response.Data;
+                        StateHasChanged();
+                    }
+
+                }
+
+
+            }catch(Exception e)
+            {
+                
             }
+
         }
 
     
     }
 
-    private List<AccessTokenAuth> dataBuild = new List<AccessTokenAuth>
-        {
-            new AccessTokenAuth { SpaceId = "space-001", Subscription = "free", AccessToken = "token-123", ApiEndpoint = "https://api.huggingface.co", CreationDate = DateTime.Now.AddDays(-10), Status = true },
-            new AccessTokenAuth { SpaceId = "space-002", Subscription = "pro", AccessToken = "token-456", ApiEndpoint = "https://api.huggingface.co", CreationDate = DateTime.Now.AddDays(-5), Status = false },
-            new AccessTokenAuth { SpaceId = "space-003", Subscription = "enterprise", AccessToken = "token-789", ApiEndpoint = "https://api.huggingface.co", CreationDate = DateTime.Now.AddDays(-1), Status = false }
-        };
+
 
 
 

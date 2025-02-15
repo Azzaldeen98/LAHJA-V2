@@ -7,6 +7,7 @@ using Application.Services.Service;
 using Application.Services.Subscriptions;
 using Application.UseCase;
 using Application.UseCase.Auth;
+using Application.UseCase.AuthorizationSession;
 using Application.UseCase.Plans;
 using Application.UseCase.Plans.Get;
 using Application.UseCase.Request;
@@ -142,6 +143,16 @@ namespace Infrastructure
 
             // Space
             serviceCollection.AddScoped<CreateSpaceAuthorizationUseCase>();
+
+
+            // AuthorizationSession
+            serviceCollection.AddScoped<GetSessionsAccessTokensUseCase>();
+            serviceCollection.AddScoped<CreateAuthorizationSessionUseCase>();
+            serviceCollection.AddScoped<AuthorizationSessionUseCase>();
+            serviceCollection.AddScoped<ValidateSessionTokenUseCase>();
+            serviceCollection.AddScoped<EncryptFromWebUseCase>();
+            serviceCollection.AddScoped<EncryptFromCoreUseCase>();
+            serviceCollection.AddScoped<DeleteAuthorizationSessionUseCase>();
       
 
         }

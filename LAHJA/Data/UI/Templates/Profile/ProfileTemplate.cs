@@ -18,6 +18,7 @@ using LAHJA.Helpers.Services;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using System;
+using static MudBlazor.CategoryTypes;
 using static MudBlazor.Colors;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -39,7 +40,9 @@ namespace LAHJA.Data.UI.Templates.Profile
         public Func<T, Task> SubmitDelete { get; set; }
         public Func<T, Task> SubmitUpdate { get; set; }
         public Func<DataBuildSpace,Task<Result<AuthorizationSessionWebResponse>>> SubmitCreateSpace { get; set; }
-
+        public Func<Task<Result<List<AccessTokenAuth>>>> GetSessionsAccessTokens { get; set; }
+        public Func<string, Task<Result<DeleteResponse>>> SubmitDeleteSessionAccessToken { get; set; }
+        public Func<string, Task<Result<bool>>> SubmitValidateSessionToken { get; set; }
     }
 
     public interface IBuilderProfileApi<T> : IBuilderApi<T>
@@ -62,14 +65,18 @@ namespace LAHJA.Data.UI.Templates.Profile
         Task<ICollection<ProfileSpaceResponse>> SpacesSubscriptionAsync(string subscriptionId);
         Task<ProfileSpaceResponse> SpaceSubscriptionAsync(string subscriptionId, string spaceId);
 
+       Task<Result<List<AccessTokenAuth>>> GetSessionsAccessTokensAsync();
+
+       Task<Result<DeleteResponse>> DeleteSessionAccessTokenAsync(string id);
+
+        Task<Result<bool>> ValidateSessionTokenAsync(string token);
 
 
 
 
 
 
-
-        }
+    }
 
     public abstract class BuilderProfileApi<T, E> : BuilderApi<T, E>, IBuilderProfileApi<E>
     {
@@ -82,7 +89,12 @@ namespace LAHJA.Data.UI.Templates.Profile
         public abstract Task<Result<ProfileResponse>> CreateAsync(E data);
         public abstract Task<Result<AuthorizationSessionWebResponse>> CreateSpaceAsync(SpaceRequest data);
 
+        public abstract Task<Result<List<AccessTokenAuth>>> GetSessionsAccessTokensAsync();
 
+        public abstract  Task<Result<DeleteResponse>> DeleteSessionAccessTokenAsync(string id);
+
+        public abstract Task<Result<bool>> ValidateSessionTokenAsync(string token);
+      
         public abstract Task<Result<DeleteResponse>> DeleteAsync(E dataId);
 
 
@@ -114,13 +126,11 @@ namespace LAHJA.Data.UI.Templates.Profile
         public Func<T, Task> SubmitCreate { get; set; }
         public Func<DataBuildSpace, Task<Result<AuthorizationSessionWebResponse>>> SubmitCreateSpace { get; set; }
         public Func<T, Task> SubmitDelete { get; set; }
+
+        public Func<Task<Result<List<AccessTokenAuth>>>> GetSessionsAccessTokens { get; set; }
+        public Func<string, Task<Result<DeleteResponse>>> SubmitDeleteSessionAccessToken { get; set; }
+        public Func<string, Task<Result<bool>>> SubmitValidateSessionToken { get; set; }
         public Func<T, Task> SubmitUpdate { get; set; }
-
-
-
-      
-
-
 
     }
 
@@ -176,13 +186,7 @@ namespace LAHJA.Data.UI.Templates.Profile
             return await Service.CreateSpaceAsync(data);
         }
 
-  
-        //public override  async Task<ProfileSpaceResponse> SpaceSubscriptionAsync(string subscriptionId, string spaceId)
-        //{
 
-
-        //    return await Service.SpaceSubscriptionAsync(subscriptionId, spaceId);
-        //}
 
 
 
@@ -241,104 +245,36 @@ namespace LAHJA.Data.UI.Templates.Profile
         {
             throw new NotImplementedException();
         }
+        public override async Task<Result<List<AccessTokenAuth>>> GetSessionsAccessTokensAsync()
+        {
+            var response= await Service.GetSessionsAccessTokensAsync();
+            if (response.Succeeded)
+            {
+                var data = Mapper.Map<List<AccessTokenAuth>>(response.Data);
+                return Result<List<AccessTokenAuth>>.Success(data);
+            }
+            else
+            {
+            
+                var msg = response.Messages?.Count() > 0 ? response.Messages[0] : "Error";
+                return Result<List<AccessTokenAuth>>.Fail(msg);
+            }
 
+        }
 
-        //public override async Task<Result<ProfileResponse>> CreateAsync(DataBuildUserProfile data)
-        //{
-        //    var model = Mapper.Map<ProfileRequest>(data);
-        //    var res = await Service.CreateAsync(model);
-        //    if (res.Succeeded)
-        //    {
-        //        try
-        //        {
-        //            var map = Mapper.Map<ProfileResponse>(res.Data);
-        //            return Result<ProfileResponse>.Success(map);
+        public override async Task<Result<DeleteResponse>> DeleteSessionAccessTokenAsync(string id)
+        {
+            return await Service.DeleteSessionAccessTokenAsync(id);
 
-        //        }
-        //        catch (Exception e)
-        //        {
-        //            return Result<ProfileResponse>.Fail();
-        //        }
-        //    }
-        //    else
-        //    {
-        //        return Result<ProfileResponse>.Fail(res.Messages);
-        //    }
+        }
 
+        public override async Task<Result<bool>> ValidateSessionTokenAsync(string token)
+        {
+            return await Service.ValidateSessionTokenAsync(token);
 
-        //}
+        }
 
-        //public override async Task<Result<DeleteResponse>> DeleteAsync(DataBuildUserProfile data)
-        //{
-
-        //    var res = await Service.DeleteAsync(data.Id);
-        //    if (res.Succeeded)
-        //    {
-        //        try
-        //        {
-        //            var map = Mapper.Map<DeleteResponse>(res.Data);
-        //            return Result<DeleteResponse>.Success(map);
-
-        //        }
-        //        catch (Exception e)
-        //        {
-        //            return Result<DeleteResponse>.Fail();
-        //        }
-        //    }
-        //    else
-        //    {
-        //        return Result<DeleteResponse>.Fail(res.Messages);
-        //    }
-        //}
-
-        //public override async Task<Result<ProfileResponse>> GetProfileAsync()
-        //{
-
-        //    var res = await Service.GetProfileAsync();
-        //    return res;
-        //    //if (res.Succeeded)
-        //    //{
-        //    //    try
-        //    //    {
-        //    //        var map = Mapper.Map<ProfileResponse>(res.Data);
-        //    //        return Result<ProfileResponse>.Success(map);
-
-        //    //    }
-        //    //    catch (Exception e)
-        //    //    {
-        //    //        return Result<ProfileResponse>.Fail();
-        //    //    }
-        //    //}
-        //    //else
-        //    //{
-        //    //    return Result<ProfileResponse>.Fail(res.Messages);
-        //    //}
-        //}
-
-        //public override async Task<Result<ProfileResponse>> UpdateAsync(DataBuildUserProfile data)
-        //{
-        //    var model = Mapper.Map<ProfileRequest>(data);
-        //    var res = await Service.UpdateAsync(model);
-        //    return res;
-        //    //if (res.Succeeded)
-        //    //{
-        //    //    try
-        //    //    {
-        //    //        var map = Mapper.Map<ProfileResponse>(res.Data);
-        //    //        return Result<ProfileResponse>.Success(map);
-
-        //    //    }
-        //    //    catch (Exception e)
-        //    //    {
-        //    //        return Result<ProfileResponse>.Fail();
-        //    //    }
-        //    //}
-        //    //else
-        //    //{
-        //    //    return Result<ProfileResponse>.Fail(res.Messages);
-        //    //}
-
-        //}
+     
     }
 
 
@@ -365,6 +301,9 @@ namespace LAHJA.Data.UI.Templates.Profile
             this.BuilderComponents.SubmitUpdate = OnSubmitUpdateProfile;
             this.BuilderComponents.SubmitDelete = OnSubmitDeleteProfile;
             this.BuilderComponents.SubmitCreateSpace = OnSubmitCreateSpaceAsync;
+            this.BuilderComponents.GetSessionsAccessTokens = OnGetSessionsAccessTokensAsync;
+            this.BuilderComponents.SubmitValidateSessionToken = OnValidateSessionTokenAsync;
+            this.BuilderComponents.SubmitDeleteSessionAccessToken = OnDeleteSessionAccessTokenAsync;
             
 
 
@@ -372,6 +311,21 @@ namespace LAHJA.Data.UI.Templates.Profile
 
 
 
+        }
+
+        private async Task<Result<List<AccessTokenAuth>>> OnGetSessionsAccessTokensAsync()
+        {
+            return await builderApi.GetSessionsAccessTokensAsync();
+        }
+
+        private async Task<Result<DeleteResponse>> OnDeleteSessionAccessTokenAsync(string id)
+        {
+            return await builderApi.DeleteSessionAccessTokenAsync(id);
+        }
+
+        private async Task<Result<bool>> OnValidateSessionTokenAsync(string token)
+        {
+            return await builderApi.ValidateSessionTokenAsync(token);
         }
 
 

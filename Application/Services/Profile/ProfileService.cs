@@ -1,10 +1,12 @@
-﻿using Application.UseCase.Plans;
+﻿using Application.UseCase.AuthorizationSession;
+using Application.UseCase.Plans;
 using Application.UseCase.Space;
 using Domain.Entities.AuthorizationSession;
 using Domain.Entities.Profile;
 using Domain.Entities.Profile.Response;
 using Domain.Entities.Space.Request;
 using Domain.Repository.Profile;
+using Domain.ShareData.Base;
 using Domain.Wrapper;
 
 namespace Application.Services.Profile
@@ -17,6 +19,10 @@ namespace Application.Services.Profile
         private readonly DeleteProfileUseCase _deleteProfileUseCase;
         private readonly GetProfileUserUseCase _getProfileUserUseCase;
         private readonly CreateSpaceAuthorizationUseCase createSpaceAuthorizationUseCase;
+        private readonly GetSessionsAccessTokensUseCase getSessionsAccessTokensUseCase;
+        private readonly DeleteAuthorizationSessionUseCase deleteAuthorizationSessionUseCase;
+        private readonly ValidateSessionTokenUseCase validateSessionTokenUseCase;
+   
         private readonly IProfileRepository profileRepository;
 
 
@@ -26,7 +32,10 @@ namespace Application.Services.Profile
                             DeleteProfileUseCase deleteProfileUseCase,
                             GetProfileUserUseCase getProfileUserUseCase,
                             CreateSpaceAuthorizationUseCase createSpaceAuthorizationUseCase,
-                            IProfileRepository profileRepository)
+                            IProfileRepository profileRepository,
+                            GetSessionsAccessTokensUseCase getSessionsAccessTokensUseCase,
+                            DeleteAuthorizationSessionUseCase deleteAuthorizationSessionUseCase ,
+                            ValidateSessionTokenUseCase validateSessionTokenUseCase)
         {
             this.getProfileUseCase = getProfileUseCase;
             _createProfileUseCase = createProfileUseCase;
@@ -35,6 +44,9 @@ namespace Application.Services.Profile
             _getProfileUserUseCase = getProfileUserUseCase;
             this.createSpaceAuthorizationUseCase = createSpaceAuthorizationUseCase;
             this.profileRepository = profileRepository;
+            this.getSessionsAccessTokensUseCase = getSessionsAccessTokensUseCase;
+            this.deleteAuthorizationSessionUseCase = deleteAuthorizationSessionUseCase;
+            this.validateSessionTokenUseCase = validateSessionTokenUseCase;
         }
 
         public async Task<Result<AuthorizationSessionWebResponse>> CreateSpaceAsync(SpaceRequest request)
@@ -45,6 +57,24 @@ namespace Application.Services.Profile
         public async Task<Result<ProfileResponse>> getProfileAsync()
         {
             return await getProfileUseCase.ExecuteAsync();
+
+        }   
+        
+        public async Task<Result<List<AccessTokenAuthResponse>>> GetSessionsAccessTokensAsync()
+        {
+            return await getSessionsAccessTokensUseCase.ExecuteAsync();
+
+        }   
+        
+        public async Task<Result<DeleteResponse>> DeleteSessionAccessTokenAsync(string id)
+        {
+            return await deleteAuthorizationSessionUseCase.ExecuteAsync(id);
+
+        }   
+        
+        public async Task<Result<bool>> ValidateSessionTokenAsync(string token)
+        {
+            return await validateSessionTokenUseCase.ExecuteAsync(token);
 
         } 
         

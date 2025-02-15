@@ -11,6 +11,7 @@ using Infrastructure.Models.Price.Request;
 using Infrastructure.Models.Price.Response;
 using Infrastructure.Repository.Base;
 using Shared.Settings;
+using System.Reflection;
 
 namespace Infrastructure.Repository.AuthorizationSession
 {
@@ -21,7 +22,18 @@ namespace Infrastructure.Repository.AuthorizationSession
         {
 
         }
+        public async Task<List<AccessTokenAuthResponse>> GetSessionsAsync()
+        {
 
+            var response = await ExecutorAppMode.ExecuteAsync<List<AccessTokenAuthResponseModel>>(
+                  async () => await _apiClient.GetSessionsAsync(),
+                   async () => await _apiClient.GetSessionsAsync());
+  
+            var resModel = _mapper.Map<List<AccessTokenAuthResponse>>(response);
+
+            return resModel;
+
+        }
         public async Task<AuthorizationSessionWebResponse> CreateAuthorizationSessionAsync(AuthorizationWebRequest request) {
           
             var model = _mapper.Map<AuthorizationWebRequestModel>(request);

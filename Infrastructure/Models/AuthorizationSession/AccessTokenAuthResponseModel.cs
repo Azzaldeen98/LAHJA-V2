@@ -2,10 +2,10 @@
 
 namespace Infrastructure.Models.AuthorizationSession
 {
-    public partial class AuthorizationSessionCoreResponseModel : AuthorizationSessionCoreResponse
+    public partial class AccessTokenAuthResponseModel : AccessTokenAuthResponse
     {
 
 
-    }     
+    } 
 
 }

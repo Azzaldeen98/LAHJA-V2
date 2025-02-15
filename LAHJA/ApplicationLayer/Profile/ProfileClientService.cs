@@ -1,9 +1,11 @@
 ﻿using Application.Services.Profile;
+using Application.UseCase.AuthorizationSession;
 using AutoMapper;
 using Domain.Entities.AuthorizationSession;
 using Domain.Entities.Profile;
 using Domain.Entities.Profile.Response;
 using Domain.Entities.Space.Request;
+using Domain.ShareData.Base;
 using Domain.Wrapper;
 
 using LAHJA.Helpers.Services;
@@ -35,8 +37,24 @@ namespace LAHJA.ApplicationLayer.Profile
         {
 
             return await profileService.GetProfileUserAsync();
-        }  
-        
+        }
+        public async Task<Result<List<AccessTokenAuthResponse>>> GetSessionsAccessTokensAsync()
+        {
+            return await profileService.GetSessionsAccessTokensAsync();
+
+        }
+
+        public async Task<Result<DeleteResponse>> DeleteSessionAccessTokenAsync(string id)
+        {
+            return await profileService.DeleteSessionAccessTokenAsync(id);
+
+        }
+
+        public async Task<Result<bool>> ValidateSessionTokenAsync(string token)
+        {
+            return await profileService.ValidateSessionTokenAsync(token);
+
+        }
         public async Task<ICollection<ProfileSubscriptionResponse>> SubscriptionsAsync()
         {
 
