@@ -20,8 +20,15 @@
 
 
 @code{
+
+    private DataAndEventBuildTabelCard<DataBuildUserSubscriptionInfo> dataAndEvent = null;
+    private string lg = "ar";
+    private List<CardStateCount<string>>? cardStates = null;
+    private  GroupActionTabels groupAction = new GroupActionTabels();
+
+
     [Parameter]public  List<DataBuildUserSubscriptionInfo>? DataBuild{ set; get; }
-   
+
     [Parameter]
     public string Language
     {
@@ -42,6 +49,19 @@
     [Parameter] public EventCallback<DataBuildUserSubscriptionInfo> SubmitCancel { set; get; }
     [Parameter] public EventCallback SubmitCheckoutManage { set; get; }
 
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+
+        if (firstRender)
+        {
+            lg = await _manageLanguageService.GetLanguageAsync();
+            initializeData();
+            StateHasChanged();
+        }
+    }
+
+
     private static readonly Dictionary<string, Dictionary<string, string>> TranslationsLST = new()
         {
             ["en"] = new()
@@ -61,9 +81,8 @@
         };
 
 
-    DataAndEventBuildTabelCard<DataBuildUserSubscriptionInfo> dataAndEvent = null;
-    private string lg = "ar";
-    protected override void OnInitialized()
+
+    private void initializeData()
     {
 
         dataAndEvent = new()
@@ -128,9 +147,7 @@
     }
 
 
-    List<CardStateCount<string>>? cardStates = null;
 
-    GroupActionTabels groupAction = new GroupActionTabels();
 
     private Task OnRowClicked(DataBuildUserSubscriptionInfo data)
     {

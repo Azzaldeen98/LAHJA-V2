@@ -41,19 +41,18 @@
      
             @foreach (var column in Columns)
             {
-            if (column != "Status")
-            {
-                <MudTd>
+                if (column != "Status")
+                {
+                    <MudTd>
+                    <CellCard  Value="@GetPropertyValue(context, column)" />
+                    </MudTd>
+                }
+                else
+                {
 
-                    <CellCard Value="@GetPropertyValue(context, column)" />
-                </MudTd>
-            }
-            else
-            {
-
-                <StateCell State="@GetPropertyValue(context, column)" />
+                    <StateCell State="@GetPropertyValue(context, column)"  />
               
-            }
+                }
 
             }
     
@@ -70,6 +69,8 @@
 
 
     [Parameter] public List<string> LabelColumns { get; set; } = new();
+
+
     private string SearchText { get; set; } = "";
 
     public List<string> Columns { get; set; } = new();
@@ -92,12 +93,15 @@
 
         return prop?.GetValue(item) ?? "-";
     }
+
+
     private bool isboolValue(T item, string propertyName)
     {
         var prop = typeof(T).GetProperty(propertyName);
 
-        return prop?.GetType() == typeof(bool);
+        return prop?.PropertyType == typeof(bool);
     }
+
     private Task HandleRowClick(TableRowClickEventArgs<T> args)
     {    
         return Events.OnRowClicked.InvokeAsync(args.Item);
@@ -136,13 +140,12 @@
     {
 
         return new() { CreateDynamicComponent(typeof(MudButton), new Dictionary<string, object>
-{
-    { "Variant", Variant.Filled },
-    { "Color", Color.Primary },
-    { "ChildContent", (RenderFragment)(b => b.AddContent(0, "انقر هنا")) },
-    { "OnClick", EventCallback.Factory.Create(this, () => Console.WriteLine("تم الضغط!")) }
-})
-
+                     {
+                        { "Variant", Variant.Filled },
+                        { "Color", Color.Primary },
+                        { "ChildContent", (RenderFragment)(b => b.AddContent(0, "انقر هنا")) },
+                        { "OnClick", EventCallback.Factory.Create(this, () => Console.WriteLine("تم الضغط!")) }
+                     })
         };
     }
 

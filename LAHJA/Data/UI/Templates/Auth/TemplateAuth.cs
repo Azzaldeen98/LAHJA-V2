@@ -295,33 +295,7 @@ public class TemplateAuth: TemplateAuthShare<ClientAuthService, DataBuildAuthBas
         }
         return response;
     }
-    protected async Task OnSubmitLogout(DataBuildAuthBase? dataBuildAuthBase = null)
-    {
-        try
-        {
-            var response = await builderApi.Logout();
-            if (response.Succeeded)
-            {
-                await authService.DeleteLoginAsync();
-                navigation.NavigateTo(RouterPage.LOGIN, forceLoad: true);
 
-            }
-            else
-            {
-                await authService.DeleteLoginAsync();
-                navigation.NavigateTo(RouterPage.LOGIN, forceLoad: true);
-
-            }
-        }
-        catch(Exception e)
-        {
-            //Snackbar.Add();
-        }
-        finally
-        {
-            await AuthStateProvider.InitializeAsync();
-        }
-    }
  
     private async Task<bool> ConfirmAsync(string title ,string message)
     {
@@ -586,7 +560,34 @@ public class TemplateAuth: TemplateAuthShare<ClientAuthService, DataBuildAuthBas
         }
     }
 
+    private async Task OnSubmitLogout(DataBuildAuthBase? dataBuildAuthBase = null)
+    {
+        try
+        {
+            var response = await builderApi.Logout();
+            if (response.Succeeded)
+            {
+                await authService.DeleteLoginAsync();
+                navigation.NavigateTo(RouterPage.LOGIN, forceLoad: true);
 
+            }
+            else
+            {
+                await authService.DeleteLoginAsync();
+                navigation.NavigateTo(RouterPage.LOGIN, forceLoad: true);
+
+            }
+        }
+        catch (Exception e)
+        {
+            //Snackbar.Add();
+        }
+        finally
+        {
+            await AuthStateProvider.InitializeAsync();
+             //AuthStateProvider.MarkUserAsLoggedOut();
+        }
+    }
 
 }
 

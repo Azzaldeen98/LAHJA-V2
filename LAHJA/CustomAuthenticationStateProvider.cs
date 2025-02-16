@@ -38,16 +38,7 @@ namespace LAHJA
 
             if (string.IsNullOrEmpty(token))
                 return _anonymous;
-
-
            return  AuthenticatedState(token);
-
-
-            //var claims = ParseClaimsFromJwt(token);
-            //var identity = new ClaimsIdentity(claims, "Bearer");
-            //var user = new ClaimsPrincipal(identity);
-
-            //return new AuthenticationState(user);
         }
         public async Task InitializeAsync()
         {
@@ -60,33 +51,22 @@ namespace LAHJA
             }
             else
             {
-                await _tokenService.SaveTokenInSessionAsync("$$$$$");
+                await _tokenService.DeleteTokenFromSessionAsync();
                 MarkUserAsLoggedOut();
 
             }
-          
-        }
-        //public void MarkUserAsAuthenticated(string token)
-        //{
-        //    var claims = ParseClaimsFromJwt(token);
-        //    var identity = new ClaimsIdentity(claims, "Bearer");
-        //    var user = new ClaimsPrincipal(identity);
 
-        //    var authenticatedState = new AuthenticationState(user);
-        //    NotifyAuthenticationStateChanged(Task.FromResult(authenticatedState));
-        //}
-        public AuthenticationState AuthenticatedState(string token)
+        }
+     
+    public AuthenticationState AuthenticatedState(string userId = "userId",string name="UserName", string role="User")
         {
-            //var identity = new ClaimsIdentity();
-            //identity.AddClaim(new Claim("Token", token));
-            //identity.AddClaim(new Claim("UserId", "SomeUserId"));
-            //identity.AddClaim(new Claim("Name", "User"));
-            //identity.AddClaim(new Claim("Role", "User"));
+            
 
             var identity = new ClaimsIdentity(new[]
             {
-                new Claim(ClaimTypes.Name, "User"),
-                new Claim(ClaimTypes.Role, "User")
+                new Claim(ClaimTypes.NameIdentifier, userId),
+                new Claim(ClaimTypes.Name, name),
+                new Claim(ClaimTypes.Role, role)
             }, "Cookies");
 
             var user = new ClaimsPrincipal(identity);
@@ -101,13 +81,15 @@ namespace LAHJA
         }
 
  
-
-        public void MarkUserAsLoggedOut()
+        public void MarkUserAsJWTAuthenticated(string token)
         {
-            var anonymousState = new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
-            NotifyAuthenticationStateChanged(Task.FromResult(anonymousState));
-        }
+            var claims = ParseClaimsFromJwt(token);
+            var identity = new ClaimsIdentity(claims, "Bearer");
+            var user = new ClaimsPrincipal(identity);
 
+            var authenticatedState = new AuthenticationState(user);
+            NotifyAuthenticationStateChanged(Task.FromResult(authenticatedState));
+        }
         private IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
         {
             var payload = jwt.Split('.')[1];
@@ -115,6 +97,12 @@ namespace LAHJA
             var keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonBytes);
 
             return keyValuePairs.Select(kvp => new Claim(kvp.Key, kvp.Value.ToString()));
+        }
+
+        public void MarkUserAsLoggedOut()
+        {
+            var anonymousState = new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
+            NotifyAuthenticationStateChanged(Task.FromResult(anonymousState));
         }
     }
 

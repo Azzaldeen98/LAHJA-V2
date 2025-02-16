@@ -1,34 +1,35 @@
 ﻿using Domain.Exceptions;
 using Domain.Repository.AuthorizationSession;
+using Domain.ShareData.Base;
 using Domain.Wrapper;
 
 namespace Application.UseCase.AuthorizationSession
 {
-    public class ValidateSessionTokenUseCase
+    public class PauseSessionTokenUseCase
     {
         private readonly IAuthorizationSessionRepository repository;
 
-        public ValidateSessionTokenUseCase(IAuthorizationSessionRepository repository)
+        public PauseSessionTokenUseCase(IAuthorizationSessionRepository repository)
         {
             this.repository = repository;
         }
 
-        public async Task<Result<bool>> ExecuteAsync(string token)
+        public async Task<Result<DeleteResponse>> ExecuteAsync(string id)
         {
             try
             {
-                await repository.ValidateSessionTokenAsync(token);
-                return Result<bool>.Success(true);
+                var res = await repository.PauseAuthorizationSessionAsync(id);
+                return Result<DeleteResponse>.Success(res);
             }
             catch (ServerException e)
             {
                 Console.WriteLine($"ServerException: {e.Message}, StatusCode: {e.StatusCode}");
-                return Result<bool>.Fail(e.Message, e.StatusCode);
+                return Result<DeleteResponse>.Fail(e.Message, e.StatusCode);
             }
             catch (Exception e)
             {
                 Console.WriteLine($"Exception: {e.Message}");
-                return Result<bool>.Fail("An unexpected error occurred. Please try again.");
+                return Result<DeleteResponse>.Fail("An unexpected error occurred. Please try again.");
             }
         }
     }

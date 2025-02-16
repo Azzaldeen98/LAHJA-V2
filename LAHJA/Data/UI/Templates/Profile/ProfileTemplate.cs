@@ -12,6 +12,7 @@ using LAHJA.ApplicationLayer.Profile;
 using LAHJA.Data.UI.Components;
 using LAHJA.Data.UI.Components.Plan;
 using LAHJA.Data.UI.Components.ProFileModel;
+using LAHJA.Data.UI.Models;
 using LAHJA.Data.UI.Templates.Base;
 using LAHJA.Data.UI.Templates.Profile;
 using LAHJA.Helpers.Services;
@@ -40,8 +41,11 @@ namespace LAHJA.Data.UI.Templates.Profile
         public Func<T, Task> SubmitDelete { get; set; }
         public Func<T, Task> SubmitUpdate { get; set; }
         public Func<DataBuildSpace,Task<Result<AuthorizationSessionWebResponse>>> SubmitCreateSpace { get; set; }
-        public Func<Task<Result<List<AccessTokenAuth>>>> GetSessionsAccessTokens { get; set; }
-        public Func<string, Task<Result<DeleteResponse>>> SubmitDeleteSessionAccessToken { get; set; }
+        public Func<DataBuildServiceInfo, Task<Result<AuthorizationSessionWebResponse>>> SubmitCreateSessionToken { get; set; }
+        public Func<Task<Result<List<SessionTokenAuth>>>> GetSessionsAccessTokens { get; set; }
+        public Func<DataBuildSessionTokenAuth, Task<Result<DeleteResponse>>> SubmitDeleteSessionAccessToken { get; set; }
+        public Func<DataBuildSessionTokenAuth, Task<Result<DeleteResponse>>> SubmitResumeSessionToken { get; set; }
+        public Func<DataBuildSessionTokenAuth, Task<Result<DeleteResponse>>> SubmitPauseSessionToken { get; set; }
         public Func<string, Task<Result<bool>>> SubmitValidateSessionToken { get; set; }
     }
 
@@ -64,10 +68,12 @@ namespace LAHJA.Data.UI.Templates.Profile
         Task<ICollection<ProfileServiceResponse>> ServicesModelAiAsync(string modelAiId);
         Task<ICollection<ProfileSpaceResponse>> SpacesSubscriptionAsync(string subscriptionId);
         Task<ProfileSpaceResponse> SpaceSubscriptionAsync(string subscriptionId, string spaceId);
-
-       Task<Result<List<AccessTokenAuth>>> GetSessionsAccessTokensAsync();
+       Task<Result<AuthorizationSessionWebResponse>> CreateSessionTokenAsync(string serviceId);
+        Task<Result<List<SessionTokenAuth>>> GetSessionsAccessTokensAsync();
 
        Task<Result<DeleteResponse>> DeleteSessionAccessTokenAsync(string id);
+       Task<Result<DeleteResponse>> PauseSessionTokenAsync(string id);
+       Task<Result<DeleteResponse>> ResumeSessionTokenAsync(string id);
 
         Task<Result<bool>> ValidateSessionTokenAsync(string token);
 
@@ -89,10 +95,12 @@ namespace LAHJA.Data.UI.Templates.Profile
         public abstract Task<Result<ProfileResponse>> CreateAsync(E data);
         public abstract Task<Result<AuthorizationSessionWebResponse>> CreateSpaceAsync(SpaceRequest data);
 
-        public abstract Task<Result<List<AccessTokenAuth>>> GetSessionsAccessTokensAsync();
+        public abstract Task<Result<List<SessionTokenAuth>>> GetSessionsAccessTokensAsync();
 
         public abstract  Task<Result<DeleteResponse>> DeleteSessionAccessTokenAsync(string id);
-
+        public abstract Task<Result<DeleteResponse>> PauseSessionTokenAsync(string id);
+        public abstract Task<Result<AuthorizationSessionWebResponse>> CreateSessionTokenAsync(string serviceId);
+        public abstract Task<Result<DeleteResponse>> ResumeSessionTokenAsync(string id);
         public abstract Task<Result<bool>> ValidateSessionTokenAsync(string token);
       
         public abstract Task<Result<DeleteResponse>> DeleteAsync(E dataId);
@@ -126,9 +134,11 @@ namespace LAHJA.Data.UI.Templates.Profile
         public Func<T, Task> SubmitCreate { get; set; }
         public Func<DataBuildSpace, Task<Result<AuthorizationSessionWebResponse>>> SubmitCreateSpace { get; set; }
         public Func<T, Task> SubmitDelete { get; set; }
-
-        public Func<Task<Result<List<AccessTokenAuth>>>> GetSessionsAccessTokens { get; set; }
-        public Func<string, Task<Result<DeleteResponse>>> SubmitDeleteSessionAccessToken { get; set; }
+        public Func<DataBuildServiceInfo, Task<Result<AuthorizationSessionWebResponse>>> SubmitCreateSessionToken { get; set; }
+        public Func<Task<Result<List<SessionTokenAuth>>>> GetSessionsAccessTokens { get; set; }
+        public Func<DataBuildSessionTokenAuth, Task<Result<DeleteResponse>>> SubmitDeleteSessionAccessToken { get; set; }
+        public Func<DataBuildSessionTokenAuth, Task<Result<DeleteResponse>>> SubmitResumeSessionToken { get; set; }
+        public Func<DataBuildSessionTokenAuth, Task<Result<DeleteResponse>>> SubmitPauseSessionToken { get; set; }
         public Func<string, Task<Result<bool>>> SubmitValidateSessionToken { get; set; }
         public Func<T, Task> SubmitUpdate { get; set; }
 
@@ -245,19 +255,19 @@ namespace LAHJA.Data.UI.Templates.Profile
         {
             throw new NotImplementedException();
         }
-        public override async Task<Result<List<AccessTokenAuth>>> GetSessionsAccessTokensAsync()
+        public override async Task<Result<List<SessionTokenAuth>>> GetSessionsAccessTokensAsync()
         {
             var response= await Service.GetSessionsAccessTokensAsync();
             if (response.Succeeded)
             {
-                var data = Mapper.Map<List<AccessTokenAuth>>(response.Data);
-                return Result<List<AccessTokenAuth>>.Success(data);
+                var data = Mapper.Map<List<SessionTokenAuth>>(response.Data);
+                return Result<List<SessionTokenAuth>>.Success(data);
             }
             else
             {
             
                 var msg = response.Messages?.Count() > 0 ? response.Messages[0] : "Error";
-                return Result<List<AccessTokenAuth>>.Fail(msg);
+                return Result<List<SessionTokenAuth>>.Fail(msg);
             }
 
         }
@@ -268,13 +278,26 @@ namespace LAHJA.Data.UI.Templates.Profile
 
         }
 
+        public override async Task<Result<DeleteResponse>> PauseSessionTokenAsync(string id) {
+
+            return await Service.PauseSessionTokenAsync(id);
+        }
+        public override async Task<Result<DeleteResponse>> ResumeSessionTokenAsync(string id) {
+          
+            return await Service.ResumeSessionTokenAsync(id);
+
+        }
+
         public override async Task<Result<bool>> ValidateSessionTokenAsync(string token)
         {
             return await Service.ValidateSessionTokenAsync(token);
 
         }
 
-     
+        public override async Task<Result<AuthorizationSessionWebResponse>> CreateSessionTokenAsync(string serviceId)
+        {
+            return await Service.CreateAuthorizationSessionAsync(new AuthorizationWebRequest { ServiceId=serviceId});
+        }
     }
 
 
@@ -304,6 +327,9 @@ namespace LAHJA.Data.UI.Templates.Profile
             this.BuilderComponents.GetSessionsAccessTokens = OnGetSessionsAccessTokensAsync;
             this.BuilderComponents.SubmitValidateSessionToken = OnValidateSessionTokenAsync;
             this.BuilderComponents.SubmitDeleteSessionAccessToken = OnDeleteSessionAccessTokenAsync;
+            this.BuilderComponents.SubmitPauseSessionToken = OnPauseSessionTokenAsync;
+            this.BuilderComponents.SubmitResumeSessionToken = OnResumeSessionTokenAsync;
+            this.BuilderComponents.SubmitCreateSessionToken = OnCreateSessionTokenAsync;
             
 
 
@@ -313,14 +339,33 @@ namespace LAHJA.Data.UI.Templates.Profile
 
         }
 
-        private async Task<Result<List<AccessTokenAuth>>> OnGetSessionsAccessTokensAsync()
+        private async Task<Result<List<SessionTokenAuth>>> OnGetSessionsAccessTokensAsync()
         {
             return await builderApi.GetSessionsAccessTokensAsync();
         }
 
-        private async Task<Result<DeleteResponse>> OnDeleteSessionAccessTokenAsync(string id)
+        private async Task<Result<DeleteResponse>> OnDeleteSessionAccessTokenAsync(DataBuildSessionTokenAuth dataBuild)
         {
-            return await builderApi.DeleteSessionAccessTokenAsync(id);
+            return await builderApi.DeleteSessionAccessTokenAsync(dataBuild.Id);
+        }
+
+        private  async Task<Result<DeleteResponse>> OnPauseSessionTokenAsync(DataBuildSessionTokenAuth dataBuild)
+        {
+
+            return await builderApi.PauseSessionTokenAsync(dataBuild.Id);
+        }
+        private  async Task<Result<DeleteResponse>> OnResumeSessionTokenAsync(DataBuildSessionTokenAuth dataBuild)
+        {
+
+            return await builderApi.ResumeSessionTokenAsync(dataBuild.Id);
+
+        }
+
+        private async Task<Result<AuthorizationSessionWebResponse>> OnCreateSessionTokenAsync(DataBuildServiceInfo dataBuild)
+        {
+
+            return await builderApi.CreateSessionTokenAsync(dataBuild.Id);
+
         }
 
         private async Task<Result<bool>> OnValidateSessionTokenAsync(string token)

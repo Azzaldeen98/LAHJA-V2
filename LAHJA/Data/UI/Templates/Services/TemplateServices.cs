@@ -18,6 +18,7 @@ using LAHJA.Data.UI.Templates.Base;
 using LAHJA.Helpers.Services;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
 
@@ -47,7 +48,7 @@ namespace LAHJA.Data.UI.Templates.Services
     public interface IBuilderServicesComponent<T> : IBuilderComponents<T>
     {
         Func<T, Task> SubmitGetOne { get; set; }
-        Func<T, Task> SubmitGetAll { get; set; }
+        Func<T, Task<Result<List<DataBuildServiceInfo>>>> SubmitGetAll { get; set; }
         Func<T, Task> SubmitCreate { get; set; }
         Func<T, Task> SubmitDelete { get; set; }
         Func<T, Task> SubmitUpdate { get; set; }
@@ -61,7 +62,7 @@ namespace LAHJA.Data.UI.Templates.Services
 
 
         public Func<T, Task> SubmitGetOne { get; set; }
-        public Func<T, Task> SubmitGetAll { get; set; }
+        public Func<T, Task<Result<List<DataBuildServiceInfo>>>> SubmitGetAll { get; set; }
         public Func<T, Task> SubmitCreate { get; set; }
         public Func<T, Task> SubmitDelete { get; set; }
         public Func<T, Task> SubmitUpdate { get; set; }
@@ -73,7 +74,7 @@ namespace LAHJA.Data.UI.Templates.Services
     public interface IBuilderServicesApi<T> : IBuilderApi<T>
     {
         Task<Result<ServiceResponse>> GetOneAsync(T id);
-        Task<Result<List<ServiceResponse>>> GetAllAsync();
+        Task<Result<List<DataBuildServiceInfo>>> GetAllAsync();
         Task<Result<ServiceResponse>> CreateAsync(T data);
         Task<Result<DeleteResponse>> DeleteAsync(T data);
         Task<Result<ServiceResponse>> UpdateAsync(T data);
@@ -105,7 +106,7 @@ namespace LAHJA.Data.UI.Templates.Services
 
         public abstract Task<Result<ServiceResponse>> CreateAsync(E data);
         public abstract Task<Result<DeleteResponse>> DeleteAsync(E dataId);
-        public abstract Task<Result<List<ServiceResponse>>> GetAllAsync();
+        public abstract Task<Result<List<DataBuildServiceInfo>>> GetAllAsync();
         public abstract Task<Result<ServiceResponse>> GetOneAsync(E id);
         public abstract Task<Result<ServiceResponse>> UpdateAsync(E data);
         public abstract Task<Result<ServiceAIResponse>> Text2Text(E data);
@@ -141,10 +142,20 @@ namespace LAHJA.Data.UI.Templates.Services
         //    return await Service.DeleteAsync(data.ServiceId);
         //}
 
-        public override async Task<Result<List<ServiceResponse>>> GetAllAsync()
+        public override async Task<Result<List<DataBuildServiceInfo>>> GetAllAsync()
         {
-          
-            return await Service.GetAllAsync();
+           
+            var res = await Service.GetAllAsync();
+            if (res.Succeeded)
+            {
+                var mapReq = Mapper.Map<List<DataBuildServiceInfo>>(res.Data);
+                return Result<List<DataBuildServiceInfo>>.Success(mapReq);
+            }
+            else
+            {
+                return Result<List<DataBuildServiceInfo>>.Fail(res.Messages.Count>0?res.Messages[0]:"Error");
+            }
+
         }
 
  
@@ -476,7 +487,7 @@ public override Task<Result<RequestAllowed>> AllowedAsync(DataBuildServiceBase d
                 _errors = response.Messages;
         }
 
-        private async Task<Result<List<ServiceResponse>>> GetAll(DataBuildServiceBase? data=null)
+        private async Task<Result<List<DataBuildServiceInfo>>> GetAll(DataBuildServiceBase? data=null)
         {
             return await builderApi.GetAllAsync();
             

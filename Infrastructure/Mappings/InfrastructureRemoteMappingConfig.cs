@@ -132,8 +132,8 @@ namespace Infrastructure.Mappings.Plans
             CreateMap<AuthorizationSessionWebResponseModel, AuthorizationSessionWebResponse>().ReverseMap();
             CreateMap<AuthorizationSessionCoreResponseModel, AuthorizationSessionCoreResponse>().ReverseMap();
             CreateMap<AuthorizationSessionEncryptResponseModel, TokenVm>().ReverseMap();
-            ///TODO : Add Api Response data type for GetSessionsToken
-            //CreateMap<AccessTokenAuthResponseModel, >().ReverseMap();
+       
+            CreateMap<SessionVm, SessionTokenAuthResponseModel>().ReverseMap();
 
 
 

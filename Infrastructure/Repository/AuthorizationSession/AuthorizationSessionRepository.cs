@@ -22,18 +22,20 @@ namespace Infrastructure.Repository.AuthorizationSession
         {
 
         }
-        public async Task<List<AccessTokenAuthResponse>> GetSessionsAsync()
+        public async Task<List<SessionTokenAuthResponse>> GetSessionsAsync()
         {
 
-            var response = await ExecutorAppMode.ExecuteAsync<List<AccessTokenAuthResponseModel>>(
+            var response = await ExecutorAppMode.ExecuteAsync<List<SessionTokenAuthResponseModel>>(
                   async () => await _apiClient.GetSessionsAsync(),
                    async () => await _apiClient.GetSessionsAsync());
   
-            var resModel = _mapper.Map<List<AccessTokenAuthResponse>>(response);
+            var resModel = _mapper.Map<List<SessionTokenAuthResponse>>(response);
 
             return resModel;
 
         }
+
+
         public async Task<AuthorizationSessionWebResponse> CreateAuthorizationSessionAsync(AuthorizationWebRequest request) {
           
             var model = _mapper.Map<AuthorizationWebRequestModel>(request);
@@ -69,6 +71,31 @@ namespace Infrastructure.Repository.AuthorizationSession
                 );
 
             return _mapper.Map<AuthorizationSessionEncryptResponse>(res);
+        }
+        public async Task<DeleteResponse> PauseAuthorizationSessionAsync(string id)
+        {
+
+            var res = await ExecutorAppMode.ExecuteAsync<DeleteResponse>(
+               async () => await _apiClient.PauseAuthorizationSessionAsync(id),
+               async () => await _apiClient.PauseAuthorizationSessionAsync(id)
+           );
+       
+      
+            return res;
+
+        }
+        public async Task<DeleteResponse> ResumeAuthorizationSessionAsync(string id)
+        {
+
+
+            var res = await ExecutorAppMode.ExecuteAsync<DeleteResponse>(
+                async () => await _apiClient.ResumeAuthorizationSessionAsync(id),
+                async () => await _apiClient.ResumeAuthorizationSessionAsync(id)
+            );
+
+
+            return res;
+
         }
         public async Task<AuthorizationSessionEncryptResponse> EncryptFromCoreAsync(string sessionToken) {
 

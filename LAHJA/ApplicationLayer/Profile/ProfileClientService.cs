@@ -1,4 +1,5 @@
-﻿using Application.Services.Profile;
+﻿using Application.Services.AuthorizationSession;
+using Application.Services.Profile;
 using Application.UseCase.AuthorizationSession;
 using AutoMapper;
 using Domain.Entities.AuthorizationSession;
@@ -16,18 +17,26 @@ namespace LAHJA.ApplicationLayer.Profile
     {
         private readonly ProfileService profileService;
         private readonly TokenService tokenService;
+        private readonly AuthorizationSessionService    authorizationSessionService;
         private readonly IMapper _mapper;
 
         public ProfileClientService(ProfileService profileService,
             IMapper mapper,
-            TokenService tokenService)
+            TokenService tokenService,
+            AuthorizationSessionService authorizationSessionService)
         {
 
             this.profileService = profileService;
             _mapper = mapper;
             this.tokenService = tokenService;
+            this.authorizationSessionService = authorizationSessionService;
         }
 
+        public async Task<Result<AuthorizationSessionWebResponse>> CreateAuthorizationSessionAsync(AuthorizationWebRequest request)
+        {
+            return await authorizationSessionService.CreateAuthorizationSessionAsync(request);
+
+        }
 
         public async Task<Result<AuthorizationSessionWebResponse>> CreateSpaceAsync(SpaceRequest request)
         {
@@ -38,23 +47,38 @@ namespace LAHJA.ApplicationLayer.Profile
 
             return await profileService.GetProfileUserAsync();
         }
-        public async Task<Result<List<AccessTokenAuthResponse>>> GetSessionsAccessTokensAsync()
+
+
+
+        public async Task<Result<List<SessionTokenAuthResponse>>> GetSessionsAccessTokensAsync()
         {
-            return await profileService.GetSessionsAccessTokensAsync();
+            return await authorizationSessionService.GetSessionsAccessTokensAsync();
+
+        }
+        public async Task<Result<DeleteResponse>> PauseSessionTokenAsync(string id)
+        {
+            return await authorizationSessionService.PauseSessionTokenAsync(id);
 
         }
 
+        public async Task<Result<DeleteResponse>> ResumeSessionTokenAsync(string id)
+        {
+            return await authorizationSessionService.ResumeSessionTokenAsync(id);
+
+        }
         public async Task<Result<DeleteResponse>> DeleteSessionAccessTokenAsync(string id)
         {
-            return await profileService.DeleteSessionAccessTokenAsync(id);
+            return await authorizationSessionService.DeleteSessionAccessTokenAsync(id);
 
         }
 
         public async Task<Result<bool>> ValidateSessionTokenAsync(string token)
         {
-            return await profileService.ValidateSessionTokenAsync(token);
+            return await authorizationSessionService.ValidateSessionTokenAsync(token);
 
         }
+
+
         public async Task<ICollection<ProfileSubscriptionResponse>> SubscriptionsAsync()
         {
 

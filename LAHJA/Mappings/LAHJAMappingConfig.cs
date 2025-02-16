@@ -25,6 +25,8 @@ using LAHJA.Data.UI.Components;
 using Domain.Entities.Profile.Response;
 using Domain.Entities.Auth.Response;
 using Domain.Entities.AuthorizationSession;
+using LAHJA.Data.UI.Models;
+using Domain.Entities.Service.Response;
 
 namespace LAHJA.Mappings
 {
@@ -164,9 +166,7 @@ namespace LAHJA.Mappings
                 .ForMember(dest => dest.Key, opt => opt.MapFrom(src => src.Token))
                 .ReverseMap();  
             
-            CreateMap<RequestResponse, EventRequest>()
-                //.ForMember(dest => dest.Key, opt => opt.MapFrom(src => src.Token))/
-                .ReverseMap();   
+            CreateMap<RequestResponse, EventRequest>().ReverseMap();   
             
                 CreateMap<DataBuildServiceBase, Data.UI.Models.QueryRequestTextToSpeech>()
                 .ForMember(dest => dest.Data, opt => opt.MapFrom(src => src.Text))
@@ -177,12 +177,17 @@ namespace LAHJA.Mappings
                 .ReverseMap();
 
             CreateMap<DataBuildSpace,ProfileSpaceResponse>().ReverseMap();
+            CreateMap<DataBuildServiceInfo, ServiceResponse>().ReverseMap();
 
             CreateMap<DataBuildUserSubscriptionInfo, ProfileSubscriptionResponse>().ReverseMap();
             CreateMap<DataBuildUserSubscriptionInfo, SubscriptionResponse>().ReverseMap();
             CreateMap<DataBuildUserProfile, ProfileUserResponse>().ReverseMap();
             CreateMap<DataBuildUserModelAi, ProfileModelAiResponse>().ReverseMap();
-            CreateMap<AccessTokenAuth, AccessTokenAuthResponse>().ReverseMap();
+            CreateMap<SessionTokenAuthResponse,SessionTokenAuth>()
+                .ForMember(dest => dest.StartTime, opt => opt.MapFrom(src => src.StartTime.DateTime))
+                .ForMember(dest => dest.CreationDate, opt => opt.MapFrom(src => src.CreationDate.DateTime))
+                .ForMember(dest => dest.EndTime, opt => opt.MapFrom(src => src.EndTime.Value.DateTime))
+                .ReverseMap();
 
 
             //.ForMember(dest => dest.ServiceDetailsList, opt => opt.MapFrom(src => src.Features

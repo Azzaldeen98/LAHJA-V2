@@ -3,11 +3,9 @@ using Infrastructure.DataSource.ApiClientFactory;
 using Infrastructure.Nswag;
 using Microsoft.Extensions.Configuration;
 using Infrastructure.DataSource.ApiClient.Base;
-using Domain.Wrapper;
-using Domain.Entities.ModelGateway;
-using Infrastructure.Models.ModelGateway;
 using Infrastructure.Models.AuthorizationSession;
 using Domain.ShareData.Base;
+
 
 
 
@@ -23,12 +21,12 @@ namespace Infrastructure.DataSource.ApiClient.AuthorizationSession
         {
 
         }
-        public async Task<List<AccessTokenAuthResponseModel>> GetSessionsAsync()
+        public async Task<List<SessionTokenAuthResponseModel>> GetSessionsAsync()
         {
 
             var client = await GetApiClient();
             var response = await client.GetSessionsAsync();
-            var resModel = _mapper.Map<List<AccessTokenAuthResponseModel>>(response);
+            var resModel = _mapper.Map<List<SessionTokenAuthResponseModel>>(response?.ToList());
 
             return resModel;
 
@@ -43,6 +41,24 @@ namespace Infrastructure.DataSource.ApiClient.AuthorizationSession
 
                 return resModel;
             
+        }
+        public async Task<DeleteResponse> PauseAuthorizationSessionAsync(string id)
+        {
+
+            var client = await GetApiClient();
+            var response = await client.PauseAuthorizationSessionAsync(id);
+            var resModel = _mapper.Map<DeleteResponse>(response);
+            return resModel;
+
+        }
+        public async Task<DeleteResponse> ResumeAuthorizationSessionAsync(string id)
+        {
+
+            var client = await GetApiClient();
+            var response = await client.ResumeAuthorizationSessionAsync(id);
+            var resModel = _mapper.Map<DeleteResponse>(response);
+            return resModel;
+
         }
         public async Task<AuthorizationSessionCoreResponseModel> AuthorizationSessionAsync(ValidateTokenRequestModel request)
         {

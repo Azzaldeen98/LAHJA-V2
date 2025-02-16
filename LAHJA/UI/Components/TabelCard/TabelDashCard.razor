@@ -4,6 +4,7 @@
 @using LAHJA.UI.Components.TabelCard
 
 @typeparam T
+
 <style>
     
 
@@ -37,12 +38,13 @@
                          ChipClicked="ActionTabels.ChipClicked" />
 
     </div>
-    @if(DataAndEventBuildTabel.DataBuild!=null && DataAndEventBuildTabel.DataBuild.Count>0){
-    <TabelData T="T" DataBuild="DataAndEventBuildTabel.DataBuild" 
-                      Events="DataAndEventBuildTabel.Events"
-                      LabelColumns="DataAndEventBuildTabel.LabelColumns"
-                      FixedHeader="DataAndEventBuildTabel.FixedHeader"
-        />
+    @if (DataAndEventBuildTabel!=null &&  DataAndEventBuildTabel?.DataBuild != null && DataAndEventBuildTabel?.DataBuild.Count > 0)
+    {
+        <TabelData T="T" DataBuild="DataAndEventBuildTabel.DataBuild" 
+                          Events="DataAndEventBuildTabel.Events"
+                          LabelColumns="DataAndEventBuildTabel.LabelColumns"
+                          FixedHeader="DataAndEventBuildTabel.FixedHeader"
+            />
     }
     else
     {

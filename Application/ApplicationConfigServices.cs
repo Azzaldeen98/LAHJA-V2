@@ -1,4 +1,5 @@
 ﻿using Application.Services.Auth;
+using Application.Services.AuthorizationSession;
 using Application.Services.Checkout;
 using Application.Services.Plans;
 using Application.Services.Profile;
@@ -153,6 +154,8 @@ namespace Infrastructure
             serviceCollection.AddScoped<EncryptFromWebUseCase>();
             serviceCollection.AddScoped<EncryptFromCoreUseCase>();
             serviceCollection.AddScoped<DeleteAuthorizationSessionUseCase>();
+            serviceCollection.AddScoped<ResumeSessionTokenUseCase>();
+            serviceCollection.AddScoped<PauseSessionTokenUseCase>();
       
 
         }
@@ -172,6 +175,7 @@ namespace Infrastructure
             serviceCollection.AddScoped<LAHJAService>();
             serviceCollection.AddScoped<RequestService>();
             serviceCollection.AddScoped<SpaceService>();
+            serviceCollection.AddScoped<AuthorizationSessionService>();
 
         }
 

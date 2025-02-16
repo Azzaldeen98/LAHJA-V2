@@ -1,4 +1,5 @@
 ﻿@using Domain.Entities.AuthorizationSession
+@using Domain.ShareData
 @using Domain.Wrapper
 @using LAHJA.Data.UI.Components
 @using LAHJA.UI.Components.ServiceCard
@@ -8,7 +9,7 @@
 
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
-
+@inject IManageLanguageService _manageLanguageService
 
 <TabelDashCard T="DataBuildSpace" DataAndEventBuildTabel="dataAndEvent" 
                                   StateCounts="cardStates"
@@ -24,7 +25,12 @@
 
 @code{
 
-    // [Parameter] public EventCallback<DataBuildSpace> SubmitCreateSpace { get; set; }
+    private DataAndEventBuildTabelCard<DataBuildSpace> dataAndEvent = null;
+    private string lg = "ar";
+    private string srcIframe = "https://lahja-core.onrender.com/createspace";
+    private List<DataBuildSpace>? _dataBuild=new();
+
+
     [Parameter] public Func<DataBuildSpace, Task<Result<AuthorizationSessionWebResponse>>> SubmitCreateSpace { get; set; }
 
     [Parameter] public List<DataBuildSpace>? DataBuild {
@@ -44,20 +50,12 @@
     [Parameter] public DataAndEventBuildTabelCard<DataBuildSpace>? DataAndEventBuild { get => dataAndEvent; set => dataAndEvent = value; }
 
 
-    DataAndEventBuildTabelCard<DataBuildSpace> dataAndEvent = null;
-    private string lg = "ar";
-    private string srcIframe = "https://lahja-core.onrender.com/createspace";
 
-    private List<DataBuildSpace>? _dataBuild=new();
 
 
     private async Task OnSubmitCreateSpace()
     {
-        // if (SubmitCreateSpace.HasDelegate)
-        // {
-        //     await SubmitCreateSpace.InvokeAsync(new DataBuildSpace());
 
-        // }
 
         if (SubmitCreateSpace != null)
         {
@@ -73,14 +71,17 @@
     }
 
 
-    protected override void OnInitialized()
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
 
-        initData(_dataBuild);
-
+        if (firstRender)
+        {
+            lg = await _manageLanguageService.GetLanguageAsync();
+            initData(_dataBuild);
+            StateHasChanged();
+        }
     }
-
-
     private void initData(List<DataBuildSpace> dataBuild)
     {
         dataAndEvent = new()

@@ -16,7 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\AuthorizationSession\" />
     <Folder Include="Services\ModelGateway\" />
     <Folder Include="Services\RequestEvent\" />
     <Folder Include="Services\Roles\" />

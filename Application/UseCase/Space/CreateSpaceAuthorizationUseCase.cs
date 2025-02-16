@@ -64,73 +64,7 @@ namespace Application.UseCase.Space
                     }
                 }
 
-                //var taskEncrypt = Task.FromResult(async() => {
-
-                //    try
-                //    {
-                //        return await authorizationSessionRepository.EncryptFromWebAsync();
-                //    }
-                //    catch (ServerException e) {
-                //        throw;
-                //    }
-                //    catch (Exception e) {
-                //        throw;
-                //    }
-
-                //});
-                // var taskService = Task.FromResult(async () => {
-
-                //         if (!string.IsNullOrEmpty(serviceId)) {
-
-                //             return await serviceRepository.GetOneAsync(serviceId);
-                //         }
-                //         else
-                //         {
-                //             var services = await serviceRepository.GetAllAsync();
-                //             if (services.Any())
-                //             {
-                //                 var service = services.FirstOrDefault(x => x.Name.ToLower().Contains("space") && x.Name.ToLower().Contains("create"));
-                //                 if (service != null)
-                //                 { }
-
-                //                 return service;
-                //             }
-
-                //             return null;
-                //         }
-
-                //     });
-
-                // taskEncrypt.Start();
-                // taskService.Start();
-
-                // var encrypt = taskEncrypt.WaitAsync(CancellationToken.None).ContinueWith(r => {
-
-                //     if (r.IsCompletedSuccessfully && r.Status != TaskStatus.Faulted) 
-                //     {
-
-                //     }
-
-
-
-                // });
-                // var service = await taskEncrypt.WaitAsync(CancellationToken.None);
-                // if (service.Invoke()!=null && encrypt != null)
-                // {
-
-                //     var response = await authorizationSessionRepository.CreateAuthorizationSessionAsync(new AuthorizationWebRequest
-                //     {
-                //         ServiceId = service.Id,
-                //         Token = encrypt.
-                //     });
-                //     if (response != null)
-                //     {
-
-
-                //         return Result<AuthorizationSessionWebResponse>.Success(response);
-                //     }
-                // }
-
+             
 
 
                 return  Result<AuthorizationSessionWebResponse>.Fail();

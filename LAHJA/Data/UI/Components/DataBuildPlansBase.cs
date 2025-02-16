@@ -91,8 +91,9 @@ namespace LAHJA.Data.UI.Components
         public Func<Task>? CreateSpaceClicked { get; set; }
 
     }
-    public class DataBuildAccessTokenAuth
+    public class DataBuildSessionTokenAuth
     {
+        public string Id { get; set; }       
         public string SpaceId { get; set; }       
         public string Subscription { get; set; }
     }
@@ -120,14 +121,25 @@ namespace LAHJA.Data.UI.Components
             }));
     }
 
-    public class AccessTokenAuth
+    public class SessionTokenAuth
     {
-        public string SpaceId { get; set; }        // معرف الـ Space
+        public string Id { get; set; }
+        //public string SpaceId { get; set; }        // معرف الـ Space
         public string Subscription { get; set; }   // نوع الاشتراك (مجاني/مدفوع)
-        public string AccessToken { get; set; }    // رمز الوصول (Access Token)
-        public string ApiEndpoint { get; set; }    // بوابة API
-        public DateTime CreationDate { get; set; } // تاريخ الإنشاء
-        public bool Status { get; set; }           // الحالة (فعال / غير فعال)
+        public string SessionToken { get; set; }    // رمز الوصول (Access Token)
+        public string ApiEndPoint { get; set; }    // بوابة API
+        public bool Status { get; set; } // الحالة (فعال / غير فعال)
+        public string AuthorizationType { get; set; }
+        public DateTime StartTime { get; set; }
+        public DateTime? EndTime { get; set; }
+        public DateTime CreationDate { get; set; }
+        public bool IsActive { get; set; }
+        public string IpAddress { get; set; }
+        public string DeviceInfo { get; set; }
+        public string ServiceId { get; set; }
+        public string ModelGatewayId { get; set; }
+
+        public ICollection<DataBuildSpace> Spaces { get; set; }         
     }
 
     public  class TitelBarTabel
@@ -182,6 +194,16 @@ namespace LAHJA.Data.UI.Components
         // الأحداث كـ Parameters
         public  EventBuildTabelCard<T>? Events { set; get; }
         public List<string> LabelColumns { get; set; } = new();
+    }
+
+    public class EventBuildViewRowDetails<T>
+    {
+        public EventCallback<T> DeleteClicked { get; set; }
+   
+        public EventCallback<T> SwitchedActiveStatus { get; set; }
+        public EventCallback<T> ActiveClicked { get; set; }
+        public EventCallback<T> ValidateClicked { get; set; }
+
     }
 
 }

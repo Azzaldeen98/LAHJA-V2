@@ -1,14 +1,16 @@
-﻿<MudChip Color="@color" T="object" Size="Size.Small">@State</MudChip>
+﻿<MudChip Class="py-0 px-3"  Color="@color" T="object" Size="Size.Small">@State</MudChip>
 
 
 @code{
-    [Parameter] public  object  State{ set; get; }
+    [Parameter] public object? State { set; get; }
+
+
     private Color color=Color.Default;
 
     protected override void OnInitialized()
     {
-        var s = State.ToString();
-        if(s=="نشط" || s == "Active"||s=="True")
+        var s = State?.ToString();
+        if (s == "نشط" || s == "Active" || s == "True")
         {
             color = Color.Success;
         }

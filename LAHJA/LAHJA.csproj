@@ -45,7 +45,6 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="ApplicationLayer\ModelGateway\" />
-	  <Folder Include="ApplicationLayer\AuthorizationSession\" />
 	  <Folder Include="ApplicationLayer\RequestEvent\" />
 	  <Folder Include="ApplicationLayer\Roles\" />
 	  <Folder Include="ApplicationLayer\ServiceMethod\" />

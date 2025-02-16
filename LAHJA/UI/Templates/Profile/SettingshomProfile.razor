@@ -70,7 +70,7 @@
                </MudContainer>
             </div>
 
-            <div class="nav-menu-continer-items-sm w-100" style="overflow: auto !important;">
+            <div class="nav-menu-continer-items-sm w-100">
                 <div class="d-flex flex-row justify-content-start align-items-start w-100" style="position:fixed;z-index:200; justify-content:end !important;">
                     <MudIconButton Icon="@Icons.Material.Filled.Menu" OnClick="ToggleMenu" />
                 </div>
@@ -107,9 +107,9 @@
                 </MudContainer>
                     </MudDrawer>
                 </MudMainContent>
-                </div>
+            </div>
 
-            <div class="plan-RenderComponent" >
+            <div class="plan-RenderComponent"  >
             
                         @if (!string.IsNullOrEmpty(Url))
                         {
@@ -119,15 +119,16 @@
                         {
                             <Dashboard />
                         }
-                    </div>
-        
+            </div>
 
+            <div style="height:50px"></div>
         </div>
+  
     }
     else
     {
             <h1>Error the element !!</h1>
-        }
+        
 
     }
 
