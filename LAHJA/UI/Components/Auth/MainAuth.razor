@@ -6,6 +6,7 @@
 @using LAHJA.Them
 @using LAHJA.UI.Components.Auth
 @using LAHJA.Data.UI.Components.Base
+@using Microsoft.AspNetCore.Components.Authorization
 @using global::Shared.Constants.Router
 @using Microsoft.AspNetCore.Authorization
 
@@ -15,7 +16,6 @@
 @inject TemplateAuth AuthTemplate
 
 
-
 @attribute [AllowAnonymous]
 
 @if (isLoading)
@@ -23,10 +23,19 @@
     <Loading IsLoading="isLoading" />
 }else{
 
-
-<MudContainer class="cuntrer " style="display:flex;justify-content:center;direction:ltr !important">
-
-    <div style="padding:2% 2% " class="c-auth-main">
+    
+<AuthorizeView>
+@*     <Authorizing>
+        @code {
+            protected override void OnInitialized()
+            {
+                Navigation.NavigateTo(RouterPage.HOME);
+            }
+        }
+    </Authorizing> *@
+    <NotAuthorized>
+        <MudContainer class="cuntrer " style="display:flex;justify-content:center;direction:ltr !important">
+            <div style="padding:2% 2% " class="c-auth-main">
                  
                 <div class="RCardP fsing">
            
@@ -106,17 +115,28 @@
 
 
             </div>
-            
-   
         </MudContainer>
+    </NotAuthorized>
+</AuthorizeView>
+
  } 
 
 
 
 @code {
 
-    bool isLoading = true;
-
+    private bool isLoading = false;
+    private bool isAuth = false;
+    private bool success;
+    private bool _isToLogin = false;
+    private string[] errors = { };
+    private MudTextField<string> pwField1;
+    private MudForm form;
+    private bool isshowmian = true;
+    private string[] nameAuth = { "Sign up", "Login" };
+    private int indexAuth = 0;
+    // bool toLoginMode = false;
+    List<string> errorMessages { get; set; } = new List<string>();
     [Parameter] public EventCallback<ExternalLoginRequest> OnSubmitExternalLogin { get; set; }
     [Parameter] public EventCallback<DataBuildAuthBase> OnSubmit { get; set; }
     [Parameter] public EventCallback<DataBuildAuthBase> OnSubmitedForgetPassword { get; set; }
@@ -153,40 +173,25 @@
         get { return _isToLogin; }
     }
 
-    bool success;
-    bool _isToLogin = false;
-    string[] errors = { };
-    MudTextField<string> pwField1;
-    MudForm form;
-    bool isshowmian = true;
-    string[] nameAuth = { "Sign up", "Login" };
-    int indexAuth = 0;
-    // bool toLoginMode = false;
-    List<string> errorMessages { get; set; } = new List<string>();
-
-
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await Task.Delay(3000);
-            isLoading = false;
-            StateHasChanged();
-
-        }
-    }
+    
+    // protected override async Task OnAfterRenderAsync(bool firstRender)
+    // {
+    //     if (firstRender)
+    //     {
+           
+    //         isLoading = false;
+    //         // StateHasChanged();
+    //     }
+    // }
 
 
     void ChangeAuth()
     {
-
+       
         if (!IsToLoginMode)
             Navigation.NavigateTo(RouterPage.LOGIN, forceLoad: true);
         else 
             Navigation.NavigateTo(RouterPage.REGISTER, forceLoad: true);
-
-        StateHasChanged();
     }
 
     async void onClickFacebookAccount()
@@ -196,12 +201,6 @@
         {
             await OnSubmitExternalLogin.InvokeAsync(new ExternalLoginRequest { Provider = "Facebook", ReturnUrl = "" });
         }
-
-        // Navigation.NavigateTo("https://asg-api.runasp.net/api/ExternalLogin?provider=Google&returnUrl=http%3A%2F%2Flahja.runasp.net");
-        // if (indexAuth == 1)
-        //     Navigation.NavigateTo("https://www.facebook.com/login");
-        // else
-        //     Navigation.NavigateTo("https://www.facebook.com/r.php");
     }    
     async void onClickGoogleAccount()
     {
@@ -209,12 +208,6 @@
         {
             await OnSubmitExternalLogin.InvokeAsync(new ExternalLoginRequest{Provider="Google",ReturnUrl=""});
         }
-        // Navigation.NavigateTo("https://asg-api.runasp.net/api/ExternalLogin?provider=Google&returnUrl=http%3A%2F%2Flahja.runasp.net");
-
-        // if (indexAuth == 1)
-        //     Navigation.NavigateTo("https://accounts.google.com/ServiceLogin");
-        // else
-        //     Navigation.NavigateTo("https://accounts.google.com/signup");
     }
 
 
@@ -229,15 +222,15 @@
     private  async Task OnSubmitLoginOrRegister(DataBuildAuthBase data)
     {
         isLoading = true;
-        StateHasChanged();
+      
 
         if (OnSubmit.HasDelegate)
         {
             await OnSubmit.InvokeAsync(data);
         }
-        // await Task.Delay(2000);
-        
-
+        await Task.Delay(1000);
+        isLoading = false;
+        // StateHasChanged();
     }
 
 

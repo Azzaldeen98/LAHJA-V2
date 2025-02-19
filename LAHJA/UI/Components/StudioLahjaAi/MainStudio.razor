@@ -182,7 +182,7 @@
 
     void ShowEX()
     {
-        
+
     }
     public class CategoryData
     {
@@ -192,6 +192,7 @@
         public string Icon { get; set; }
         public Type Component { get; set; }
         public string TypeModel { get; set; }
+        public string ServiceId { get; set; }
     }
 
     // private bool _open = false;
@@ -233,8 +234,33 @@
     private void SelectMenuItem(CategoryData item)
     {
         _selectedComponent = item;
-        SelectedComponent = RenderFragmentHelper.RenderComponent(item.Component, item.Id);
+
+        var parameters = new Dictionary<string, object>();
+
+        if (!string.IsNullOrEmpty(item.ServiceId))
+            parameters.Add("ServiceId", item.ServiceId);
+
+        SelectedComponent = RenderComponent(item.Component, parameters);
+ 
         ToggleMenu();
+    }
+    public static RenderFragment RenderComponent(Type componentType, Dictionary<string, object> parameters = null)
+    {
+        return builder =>
+        {
+            builder.OpenComponent(0, componentType);
+
+            if (parameters != null)
+            {
+                foreach (var param in parameters)
+                {
+                    if (!string.IsNullOrEmpty(param.Key) && param.Value!=null)
+                         builder.AddAttribute(1, param.Key, param.Value);
+                }
+            }
+
+            builder.CloseComponent();
+        };
     }
 
     private void ToggleSettingsMenu()
@@ -464,7 +490,8 @@
     },
     new CategoryData
     {   Id=1,
-        Identifier = "Forums",
+        ServiceId = "serv_cec8071f426d4180ad5dd29bb618bc12",
+        Identifier = "studio-t2text",
         Component = typeof(T2Text),
         Text = new Dictionary<string, string>
         {
@@ -475,7 +502,8 @@
     },
     new CategoryData
     {   Id=2,
-        Identifier = "Social",
+        Identifier = "T2Speech",
+        ServiceId = "serv_8284631079cc40ff8fb8afa15dd86dcd",
         Component = typeof(T2Speech),
         Text = new Dictionary<string, string>
         {
@@ -486,7 +514,8 @@
     },
     new CategoryData
     {   Id=3,
-        Identifier = "Stream Realtime",
+        ServiceId = "serv_8284631079cc40ff8fb8afa15dd86dcd",
+        Identifier = "studio-t2speech",
         Component = typeof(T2SpeechLive),
         Text = new Dictionary<string, string>
         {
@@ -497,7 +526,8 @@
     },
     new CategoryData
     {   Id=4,
-        Identifier = "ChatText",
+         ServiceId = "serv_4d5a62dc4eb246338619db0f18a52479",
+        Identifier = "chatbot",
         Component = typeof(ChatT2Text),
         Text = new Dictionary<string, string>
         {
@@ -508,6 +538,7 @@
     },   
     new CategoryData
     {   Id=4,
+         ServiceId = "serv_8284631079cc40ff8fb8afa15dd86dcd",
         Identifier = "VoiceChat",
         Component = typeof(VoiceChat),
         Text = new Dictionary<string, string>

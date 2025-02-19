@@ -82,7 +82,7 @@ namespace Infrastructure.DataSource.ApiClient.AuthorizationSession
         {
       
                 var client = await GetApiClient();
-               var response= await client.EncryptFromWebAsync(); 
+               var response= await client.EncryptFromWebAsync(new EncryptTokenRequest {AuthorizationType= "internal", Expires= DateTimeOffset.UtcNow}); 
                return new AuthorizationSessionEncryptResponseModel(){ EncrptedToken= response.EncryptedToken };
         }
 

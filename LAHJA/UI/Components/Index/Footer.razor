@@ -66,9 +66,9 @@
                         <MudText Class="text-uppercase fw-bold">@Params["Contact"]</MudText>
                         <MudDivider Class="mb-4 mt-0 d-inline-block mx-auto" Style="width: 60px;  height: 2px" />
                         <MudText><MudIcon Icon="@Icons.Material.Filled.Home" Class="mr-3" />@Params["Address"]</MudText>
-                        <MudText><MudIcon Icon="@Icons.Material.Filled.Email" Class="mr-3" />@Params["Email"]</MudText>
-                        <MudText><MudIcon Icon="@Icons.Material.Filled.Phone" Class="mr-3" />@Params["Phone"]</MudText>
-                        <MudText><MudIcon Icon="@Icons.Material.Filled.Print" Class="mr-3" />@Params["Print"]</MudText>
+                        <MudLink Href="http://digitalintelligence.sa:2096"><MudIcon Icon="@Icons.Material.Filled.Email" Class="mr-3" />@Email</MudLink>
+                        <MudLink Href="@($"Tel:{PhoneNumber}")"><MudIcon Icon="@Icons.Material.Filled.Phone" Class="mr-3" />@PhoneNumber</MudLink>
+                        @* <MudText><MudIcon Icon="@Icons.Material.Filled.Print" Class="mr-3" />@Params["Print"]</MudText> *@
                     </div>
                 </div>
             </MudContainer>
@@ -82,13 +82,22 @@
 </div>
 
 @code {
+
+    private string currentLang = "en";
+
+    [Parameter] 
+    public Dictionary<string, string> Params { get; set; }
+    [Parameter] 
+    public string Email { get; set; } = "care@digitalintelligence.sa";
+    [Parameter]
+    public string PhoneNumber { get; set; } = "+ 05 234 567 89";
+
     protected override void OnInitialized()
     {
         languageService.OnLanguageChanged += OnChangedLanguage;
         OnChangedLanguage(LanguagesCode.AR.ToString().ToLower());
-      
+
     }
-    [Parameter] public Dictionary<string, string> Params { get; set; }
 
     private static readonly Dictionary<string, Dictionary<string, string>> Translations = new()
     {
@@ -106,10 +115,8 @@
                 ["Studio"] = "Studio",
                 ["Help"] = "Help",
                 ["Address"] = "Riyadh,Saudi Arabia",
-                ["Email"] = "gmail@example.com",
-                ["Phone"] = "+ 05 234 567 88",
                 ["Print"] = "+ 05 234 567 89",
-                ["Copyright"] = "© 2024 Copyright:LAHJA "
+                ["Copyright"] = "© 2025 Copyright:LAHJA "
         },
         ["ar"] = new()
             {
@@ -125,14 +132,12 @@
                 ["Studio"] = "الاستديو",
                 ["Help"] = "مساعدة",
                 ["Address"] = "الرياض، المملكة العربية السعودية،  ",
-                ["Email"] = "gmail@example.com",
-                ["Phone"] = "+ 05 234 567 88",
                 ["Print"] = "+ 05 234 567 89",
-                ["Copyright"] = "© 2024 حقوق الطبع والنشر: LAHJA "
+                ["Copyright"] = "© 2025 حقوق الطبع والنشر: LAHJA "
         }
     };
 
-    private string currentLang = "en";
+
 
     protected void OnChangedLanguage(string langCode)
     {

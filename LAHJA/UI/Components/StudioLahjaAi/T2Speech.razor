@@ -1,4 +1,5 @@
 @using Domain.ShareData
+@using LAHAJ.Loading
 @using LAHJA.ApiClient.Models
 @using LAHJA.Data.UI.Components.ServiceCard
 @using LAHJA.Data.UI.Components.StudioLahjaAiVM
@@ -13,29 +14,36 @@
 
 
 @inherits StudioAi
-<iframe 
+@* <iframe 
         src="https://modelspeech.onrender.com/studio-t2speech/" 
         width="100%" 
         height="600" 
         style="border: none;height:100%">
     </iframe>
+ *@
 
+
+@if (!string.IsNullOrEmpty(_srcFrame))
+{
+    <iframe src="@_srcFrame"
+            width="100%"
+            height="600"
+            style="border: none;height:100%"
+            onload="@OnFrameLoaded">
+    </iframe>
+}
+
+@if (isLoading)
+{
+    <Loading IsLoading="@isLoading" />
+}
 
 <div class="d-flex Cont-speech" style="display:none !important" >
 
 <MudCard Elevation="0"   Class="rounded-lg pb-4 panal-speech">
 
    
-  
 
- @*    <MudCardHeader>
-        <CardHeaderContent>
-
-        </CardHeaderContent>
-        <CardHeaderActions>
-
-        </CardHeaderActions>
-    </MudCardHeader> *@
 
 
     <MudCardContent>
@@ -181,11 +189,26 @@
 
 @code {
 
+
+  
+
     [Parameter] public EventCallback<DataBuildServiceBase> SubmitSend { get; set; }
     private bool isAudioPlaying = false;
     private bool isAudioPlayingIsEnd = true;
     public bool Streaming { get; set; } = true;
     bool _open_api = false;
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+
+            await CreateSessionTokenAsync();
+        }
+    }
+
+
     void onViewApi()
     {
         _open_api = true;

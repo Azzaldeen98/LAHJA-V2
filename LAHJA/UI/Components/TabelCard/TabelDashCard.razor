@@ -38,13 +38,12 @@
                          ChipClicked="ActionTabels.ChipClicked" />
 
     </div>
-    @if (DataAndEventBuildTabel!=null &&  DataAndEventBuildTabel?.DataBuild != null && DataAndEventBuildTabel?.DataBuild.Count > 0)
+    @if (_dataAndEventBuildTabel != null && _dataAndEventBuildTabel?.DataBuild != null && _dataAndEventBuildTabel?.DataBuild.Count > 0)
     {
-        <TabelData T="T" DataBuild="DataAndEventBuildTabel.DataBuild" 
-                          Events="DataAndEventBuildTabel.Events"
-                          LabelColumns="DataAndEventBuildTabel.LabelColumns"
-                          FixedHeader="DataAndEventBuildTabel.FixedHeader"
-            />
+        <TabelData T="T" DataBuild="_dataAndEventBuildTabel.DataBuild"
+                   Events="_dataAndEventBuildTabel.Events"
+                   LabelColumns="_dataAndEventBuildTabel.LabelColumns"
+                   FixedHeader="_dataAndEventBuildTabel.FixedHeader" />
     }
     else
     {
@@ -57,7 +56,18 @@
 
 @code {
 
-    [Parameter] public DataAndEventBuildTabelCard<T>? DataAndEventBuildTabel{ set; get; }
+    DataAndEventBuildTabelCard<T>? _dataAndEventBuildTabel{ set; get; }
+    [Parameter] public DataAndEventBuildTabelCard<T>? DataAndEventBuildTabel{ set
+        {
+
+            if (value != null)
+            {
+                _dataAndEventBuildTabel = value;
+                StateHasChanged();
+            }
+        }
+        get => _dataAndEventBuildTabel;
+    }
     // بيانات افتراضية مشابهة لبيانات JSON التي قدمتها
     [Parameter] public List<CardStateCount<string>>? StateCounts { set; get; }
 

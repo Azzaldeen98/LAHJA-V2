@@ -2,6 +2,7 @@
 @using Domain.ShareData
 @using Domain.Wrapper
 @using LAHJA.Data.UI.Components
+@using LAHJA.Helpers
 @using LAHJA.UI.Components.ServiceCard
 @using LAHJA.UI.Components.TabelCard
 @using Microsoft.AspNetCore.Authorization
@@ -63,7 +64,9 @@
 
             if (response.Succeeded)
             {
-                 srcIframe = $"{response.Data.UrlCore}/?token={response.Data.SessionToken}";
+                // srcIframe = $"{response.Data.UrlCore}/?token={response.Data.SessionToken}";
+
+                srcIframe= Helper.GetServiceSrcFrame(response.Data.UrlCore, response.Data.SessionToken);
                 OpenDialog(srcIframe);
                 
             }

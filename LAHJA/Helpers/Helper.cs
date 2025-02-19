@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using ApexCharts;
+using Microsoft.AspNetCore.Components;
 namespace LAHJA.Helpers
 {
     public class Helper
@@ -32,9 +33,12 @@ namespace LAHJA.Helpers
         public static string GetMaskedCVC(string cvc)
         {
             return string.IsNullOrEmpty(cvc) ? "" : new string('*', cvc.Length);
+        }    
+        
+        public static string GetServiceSrcFrame(string urlCore,string sessionToken)
+        {
+            return $"{urlCore}/?token={sessionToken}";
         }
-
-
     }
 
   

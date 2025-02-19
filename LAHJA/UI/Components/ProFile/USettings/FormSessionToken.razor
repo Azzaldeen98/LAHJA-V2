@@ -14,13 +14,24 @@
 @inject IManageLanguageService _manageLanguageService
 
 
+<MudDialog Class="w40 p-3" Style="max-width: 90%;" >
 
-<MudPaper Class="pa-4 ">
-    <MudCard Class="p-3  m-4">
+   <DialogContent>
 
+    <MudCard Class="p-3 m-3">
 
-        <MudText Typo="Typo.h6" Align="Align.Center">@GetTranslation("Title")</MudText>
-        <MudForm Class="mt-5" Model="@selectedService" @ref="form" IsValid="true">
+                <MudCardHeader Class="d-flex justify-content-around align-items-center">
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h6" Align="Align.Center">@GetTranslation("Title")</MudText>
+                    </CardHeaderContent>
+                    <CardHeaderActions>
+                  @*       <MudTooltip Text="@ColumnsTranslations.GetTranslation("SubscriptionSettings",lg)">
+                            <MudIconButton Icon="@Icons.Material.Filled.Settings" OnClick="OnSubmitCheckoutManage" Color="Color.Default" />
+                        </MudTooltip> *@
+                    </CardHeaderActions>
+                </MudCardHeader>
+      
+        <MudForm Class="mt-5 py-3" Model="@selectedService" @ref="form" IsValid="true">
 
 
             <MudGrid Class="justify-space-between">
@@ -36,13 +47,13 @@
                     </MudSelect>
                 </MudItem>
 
-      
 
 
-                <MudItem xs="12" Class="mt-5">
 
-                        <MudButton Class="w-100" Color="@AppColors.BASE_COLOR_ENUM" Variant="Variant.Filled" OnClick="@OnSaveAdd">
-                          @GetTranslation("Save")
+                    <MudItem xs="12" Class="mt-5 d-flex justify-content-center">
+
+                        <MudButton Class="w60 m-auto" Color="@AppColors.BASE_COLOR_ENUM" Variant="Variant.Filled" OnClick="@OnSaveAdd">
+                            @GetTranslation("Save")
                         </MudButton>
                  
                 </MudItem>
@@ -50,8 +61,12 @@
             </MudGrid>
         </MudForm>
     </MudCard>
-</MudPaper>
 
+</DialogContent>
+<DialogActions>
+ 
+</DialogActions>
+</MudDialog>
 
 
 
@@ -158,8 +173,6 @@
 
         if (form.IsValid)
         {
-
-            
             if (SubmitSaved.HasDelegate && selectedService != null)
             {
                 await SubmitSaved.InvokeAsync(selectedService);
@@ -197,15 +210,15 @@
 
     private Dictionary<string, string> TransEn = new Dictionary<string, string>()
     {
-        { "Title", "Add New Session Token" },
-        { "Save", "Save" },
+        { "Title", "Create New Session Token" },
+        { "Save", "Create" },
         { "ChoseService", "Chose the service" },
     };
 
     private Dictionary<string, string> TransAr = new Dictionary<string, string>()
     {
-        { "Title", " إضافة رمز جلسة جديد" },
-        { "Save", "حفظ" },
+        { "Title", " إنشاء رمز جلسة جديد" },
+        { "Save", "إنشاء" },
         { "ChoseService", "اختر خدمة معينه" },
 
     };

@@ -56,11 +56,11 @@
 </style>
 
 <MudDialog>
-    <DialogContent>
+    <DialogContent >
         @if (DataBuild != null)
         {
-            <MudPaper Class="d-flex flex-column justify-content-center align-items-center">
-                <MudCardHeader Class="d-flex justify-content-around align-items-center">
+            <div class="d-flex  border-0 flex-column justify-content-center align-items-center">
+                <MudCardHeader Class="d-flex border-0 justify-content-around align-items-center">
                     <CardHeaderContent>
                         <MudText Typo="Typo.h5" Align="Align.Center" Class="m-auto my-3">
                             @Title
@@ -68,7 +68,7 @@
                     </CardHeaderContent>
                 </MudCardHeader>
 
-                <MudPaper Class="p-2  mt-5">
+                <div class="p-2 border-0 mt-5">
                     <MudGrid Class="p-3 border" Style="width: 100%;">
                         @if (Labels != null && Labels.Count > 0)
                         {
@@ -117,35 +117,36 @@
                         }
                      
                     </MudGrid>
-                </MudPaper>
-
-                <div class="w-100 p-3 d-flex justify-content-around align-items-center">
-
-                    @* <MudIconButton Icon="@Icons.Material.Filled.Pause" Variant="Variant.Outlined" Color="AppColors.BASE_COLOR_ENUM" Size="Size.Medium" /> *@
-                    @if (HasSwitchButton && !string.IsNullOrEmpty(PropertySwitchName))
-                    {
-                        @* @foreach (var label in Labels) *@
-                        {
-                            var valu= GetPropertyValue(PropertySwitchName);
-                            if (valu!=null && isboolValue(dataBuild, PropertySwitchName))
-                            {
-                                isActive = (bool)valu;
-
-                                <MudSwitch T="bool" Value="@isActive" ValueChanged="OnSwitchActiveStatus" Color="(Color.Success)"> @(isActive ? "Pause" : "Resume") </MudSwitch>
-
-                                @* break; *@
-                            }
-
-                        }
-                    }
-
-                    <MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="OnDelete" Variant="Variant.Outlined" Color="Color.Error" Size="Size.Small" />
-
                 </div>
-            </MudPaper>
+
+           
+            </div>
         }
     </DialogContent>
     <DialogActions>
+        <div class="w-100 p-3 d-flex justify-content-around align-items-center">
+
+            @* <MudIconButton Icon="@Icons.Material.Filled.Pause" Variant="Variant.Outlined" Color="AppColors.BASE_COLOR_ENUM" Size="Size.Medium" /> *@
+            @if (HasSwitchButton && !string.IsNullOrEmpty(PropertySwitchName))
+            {
+                @* @foreach (var label in Labels) *@
+                {
+                    var valu = GetPropertyValue(PropertySwitchName);
+                    if (valu != null && isboolValue(dataBuild, PropertySwitchName))
+                    {
+                        isActive = (bool)valu;
+
+                        <MudSwitch T="bool" Value="@isActive" ValueChanged="OnSwitchActiveStatus" Color="(Color.Success)"> @(isActive ? "Pause" : "Resume") </MudSwitch>
+
+                        @* break; *@
+                    }
+
+                }
+            }
+
+            <MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="OnDelete" Variant="Variant.Outlined" Color="Color.Error" Size="Size.Small" />
+
+        </div>
     </DialogActions>
 </MudDialog>
 

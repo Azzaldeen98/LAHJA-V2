@@ -9,7 +9,7 @@
 @if(Template!=null){
     <MainAuth IsToLoginMode="IsToLoginMode"
               OnSubmitExternalLogin="Template.BuilderComponents.SubmitExternalLogin"
-        ErrorMessages="@Template.Errors"
+              ErrorMessages="@Template.Errors"
               OnSubmitedForgetPassword="@Template.BuilderComponents.SubmitedForgetPassword"
     OnSubmit="@Template.BuilderComponents.Submit" />
 
@@ -18,13 +18,27 @@
 
     [Parameter] public bool IsToLoginMode { set; get; }
 
-    // protected override void OnInitialized()
+    // private bool _isLoaded = true;
+    // private bool isAuth = false;
+
+    // protected override async Task OnAfterRenderAsync(bool firstRender)
     // {
-    //     base.OnInitialized();
+    //     if (firstRender)
+    //     {
+    //         isAuth = await getAuthAsync();
+
+    //         if (isAuth)
+    //         {
+    //             Navigation.NavigateTo("/");
+    //         }
+
+    //         await Task.Delay(1000);
+    //         _isLoaded = false;
+    //         StateHasChanged();
+
+    //     }
+
     // }
-
-    // private LAHJA.Data.UI.Templates.Auth.TemplateAuth template = new LAHJA.Data.UI.Templates.Auth.TemplateAuth();
-
 
 
 }

@@ -20,18 +20,17 @@
 @attribute [AllowAnonymous]
 
 
-@if (isLoading)
+@* @if (isLoading)
 {
     <Loading IsLoading="isLoading" />
 
 }else{
-
+ *@
 <CardStart />
 <CardShowExperience Translations="TranslationsLST" />
 
   <HeroHome /> 
-  @* <CardAsgFeatures /> *@
-@* <HeroHome /> *@
+
  <CardAsgr /> 
  
 
@@ -41,7 +40,7 @@
     </MudText>
     <p> @GetTranslation("OurServicesDescription") </p>
 
-    <div class="d-flex my-5 flex-wrap">
+    <div class="d-flex my-5 flex-wrap" >
         <TemplateCategoriesPlan  IsLoading="false"/>
     </div>
 </div>
@@ -59,7 +58,6 @@
 <Mainicon/>
 <TestimonialsHome />
 
-
 <AnmCard />
 
 <NumberCard />
@@ -67,23 +65,38 @@
 <br />
 
 <FAQComponent />
- @* <SectionSercicis/> *@
-
 
 <Footer />
 
 
-}
+@* } *@
 @code {
 
 
-
-    // A dictionary to store translations for both Arabic and English
-
-
     private bool isLoading = true;
-    private static readonly Dictionary<string, Dictionary<string, string>> TranslationsLST = new()
+    private string lg = "ar"; 
+    private string GetTranslation(string key)
+    {
+
+        return Translations[lg].ContainsKey(key) ? Translations[lg][key] : key;
+    }
+    protected override async void OnAfterRender(bool firstRender)
+
+    {
+        if (firstRender)
         {
+            lg = await _manageLanguageService.GetLanguageAsync();
+            isLoading = false;
+           await InvokeAsync(StateHasChanged);
+
+        }
+     
+
+    }
+    
+    
+    private static readonly Dictionary<string, Dictionary<string, string>> TranslationsLST = new()
+    {
             ["en"] = new()
             {
                 ["Text1"] = "Try the power",
@@ -98,10 +111,10 @@
                 ["Description"] = "توفر  منصة لهجة  طريقة ذكية للتواصل مع الذكاء الاصطناعي بلهجتك الخاصة.",
                 ["ButtonLink"] = "ابداء الاصدار التجريبي المجاني"
             }
-        };
+    };
 
     private static readonly Dictionary<string, Dictionary<string, string>> Translations = new()
-        {
+    {
 
             ["en"] = new()
 
@@ -131,41 +144,16 @@
 
             }
 
-        };
+    };
 
 
-    private string CurrentLanguage = "ar"; // Default language is English
-    private string GetTranslation(string key)
-    {
 
-        return Translations[CurrentLanguage].ContainsKey(key) ? Translations[CurrentLanguage][key] : key;
-    }
-    protected override void OnInitialized()
-    {
+    // protected async void UpdateContent(string currentLangCode)
+    // {
 
-        languageService.OnLanguageChanged += UpdateContent;
-
-    }
-    protected override async void OnAfterRender(bool firstRender)
-
-    {
-        if (firstRender)
-        {
-            CurrentLanguage = await _manageLanguageService.GetLanguageAsync();
-
-            isLoading = false;
-            InvokeAsync(StateHasChanged);
-
-        }
-     
-
-    }
-    protected async void UpdateContent(string currentLangCode)
-    {
-
-        CurrentLanguage = currentLangCode;
-        InvokeAsync(StateHasChanged);
+    //     lg = currentLangCode;
+    //    await InvokeAsync(StateHasChanged);
 
 
-    }
+    // }
 }

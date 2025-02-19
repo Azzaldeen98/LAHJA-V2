@@ -1,4 +1,5 @@
 @using Domain.ShareData
+@using LAHAJ.Loading
 @using LAHJA.Data.UI.Components.StudioLahjaAiVM
 @using LAHJA.Data.UI.Models
 @using LAHJA.Data.UI.Models.Studio
@@ -13,13 +14,14 @@
 
 @inherits StudioAi
 
-<iframe 
-        src="https://modelspeech.onrender.com/studio-t2text/" 
-        width="100%" 
-        height="600" 
-        style="border: none;height:100%">
-    </iframe>
-<style>
+@*   <iframe 
+          src="https://modelspeech.onrender.com/studio-t2text/" 
+          width="100%" 
+          height="600" 
+          style="border: none;height:100%">
+      </iframe> *@
+ <style>
+
 
 
     .custom-focus-border:focus-within {
@@ -28,6 +30,27 @@
 
 
 </style>
+
+
+@if (!string.IsNullOrEmpty(_srcFrame))
+{
+
+    <iframe src="@_srcFrame"
+            width="100%"
+            height="600"
+            style="border: none;height:100%"
+            onload="@OnFrameLoaded">
+
+    </iframe>
+
+
+}
+
+@if (isLoading)
+{
+    <Loading IsLoading="@isLoading" />
+}
+
 
 @* <div class="d-flex Cont-speech" >
 
@@ -147,6 +170,7 @@
 
 @code {
 
+   
 
     private bool IsSettingsMenuVisible = false;
     private string CurrentLanguage = "ar";
@@ -154,7 +178,14 @@
     private RenderFragment? SelectedComponent;
     private bool isProcessing = false;
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
 
+            await CreateSessionTokenAsync();
+        }
+    }
 
     public new async Task SpeechMessage(ChatMessage message)
     {

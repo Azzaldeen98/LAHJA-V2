@@ -15,7 +15,7 @@
 @inherits CardAuth<DataBuildAuthBase>
 
 
- <Loading IsLoading="isLoading" /> 
+@*  <Loading IsLoading="isLoading" />  *@
 
  <ReCaptchaComponent /> 
 
@@ -178,16 +178,17 @@
             }
             data.IsLogin = IsLogin;
 
-                if (OnSubmit.HasDelegate)
-                {
-                     await OnSubmit.InvokeAsync(data);
-                }
+            if (OnSubmit.HasDelegate)
+            {
+                await OnSubmit.InvokeAsync(data);
+            }
         }
 
         isProcessing = false;
-        isLoading = false;
+        // await Task.Delay(1000);
+        // isLoading = false;
 
-        StateHasChanged();
+        // StateHasChanged();
 
 }
 

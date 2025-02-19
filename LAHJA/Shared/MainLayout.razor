@@ -223,7 +223,8 @@
 
         <div> @Body </div>
 
-            @if (NavigationManager.Uri != NavigationManager.BaseUri+"/studio"){
+            @if (NavigationManager.Uri != NavigationManager.BaseUri + "studio")
+            {
 
                 <AuthorizeView>
                     <MudIconButton class="show-panel-button"   Style="@("background-color:"+AppColors.BASE_COLOR_FOUCS)" Icon="@Icons.Material.Filled.GroupWork" @onclick="ShowPanel" />

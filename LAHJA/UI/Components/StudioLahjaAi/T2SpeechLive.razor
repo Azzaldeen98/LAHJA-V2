@@ -1,3 +1,4 @@
+@using LAHAJ.Loading
 @using LAHJA.ApiClient.Models
 @using LAHJA.ApiClient.Services.Query
 @using LAHJA.ApiClient.Services.VoiceBot
@@ -12,13 +13,36 @@
 @inject TemplateServices templateServices
 
 @inject ISnackbar Snackbar
+@inherits StudioAi
 
-<T2Speech SubmitSend="@OnSubmit" />
+@if (!string.IsNullOrEmpty(_srcFrame))
+{
+    <iframe src="@_srcFrame"
+            width="100%"
+            height="600"
+            style="border: none;height:100%"
+            onload="@OnFrameLoaded">
+    </iframe>
+}
+
+@if (isLoading)
+{
+    <Loading IsLoading="@isLoading" />
+}
 
 @code
 {
 
-   
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+
+            await CreateSessionTokenAsync();
+        }
+    }
     private async Task OnSubmit(DataBuildServiceBase data)
     {
         try

@@ -94,8 +94,8 @@ namespace LAHJA.Data.UI.Components
     public class DataBuildSessionTokenAuth
     {
         public string Id { get; set; }       
-        public string SpaceId { get; set; }       
-        public string Subscription { get; set; }
+        public string ServiceId { get; set; }            
+
     }
 
     public class DataBuildSpace

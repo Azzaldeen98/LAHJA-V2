@@ -20,7 +20,7 @@
 }
 .plan-RenderComponent-nav {
     /*height: 800px;*/
-    /*position: fixed;*/
+    position: absolute;
   /*  top:50px;*/
     width: 20%;
     /*height: auto;*/

@@ -1,0 +1,116 @@
+﻿@using LAHAJ.Loading
+@using LAHJA.Data.UI.Components
+@using LAHJA.Data.UI.Templates.AuthSession
+@using LAHJA.Helpers
+@inject ISnackbar Snackbar
+@inject TemplateAuthSession templateAuthSession
+
+
+@if (!string.IsNullOrEmpty(srcIframe))
+{
+    <iframe src="@srcIframe"
+            style="@styleCss"
+            onload="@OnFrameLoaded">
+    </iframe>
+}
+
+@if (isLoading)
+{
+    <Loading IsLoading="@isLoading" />
+}
+
+@code {
+
+   private bool isLoading = true;
+   private string srcIframe;
+   private string serviceId;
+    private string styleCss = "width:100%;height:100%;border:none";
+
+    [Parameter]
+    public bool IsLoading
+    {
+        get => isLoading; set { isLoading = value; }
+    }
+
+    [Parameter]
+    public string StyleCss
+    {
+        get => styleCss; set { styleCss = value; }
+    }
+    
+    [Parameter]
+    public string SrcIframe
+    {
+        get => srcIframe; set { srcIframe = value; }
+    }
+    [Parameter]
+    public string ServiceId
+    {
+        get => serviceId; set { serviceId = value; }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+
+            await CreateSessionTokenAsync();
+        }
+    }
+
+
+
+    private void OnFrameLoaded()
+    {
+        isLoading = false;
+    }
+
+
+    protected async Task CreateSessionTokenAsync()
+    {
+
+        if (!string.IsNullOrEmpty(serviceId))
+        {
+            if (templateAuthSession.BuilderComponents.GetSessionsAccessTokens != null)
+            {
+                var response = await templateAuthSession.BuilderComponents.GetSessionsAccessTokens();
+
+                if (response.Succeeded)
+                {
+                    foreach (var token in response.Data)
+                    {
+                        if (token != null && token.ServiceId == serviceId)
+                        {
+                            if (token.IsActive)
+                            {
+                                await CreateSessionAsync(serviceId);
+                            }
+                            else
+                            {
+                                Snackbar.Add("Session key is not active. Enable it or create a new one.", Severity.Error);
+                            }
+                            return;
+
+                        }
+                    }
+
+                }
+
+                await CreateSessionAsync(serviceId);
+            }
+        }
+
+    }
+    public async Task CreateSessionAsync(string serviceId)
+    {
+        if (templateAuthSession.BuilderComponents.GetSessionsAccessTokens != null)
+        {
+            var res = await templateAuthSession.BuilderComponents.SubmitCreateSessionToken(new DataBuildSessionTokenAuth { ServiceId = serviceId });
+            if (res.Succeeded)
+            {
+                srcIframe = Helper.GetServiceSrcFrame(res.Data.UrlCore, res.Data.SessionToken);
+                StateHasChanged();
+            }
+        }
+    }
+}

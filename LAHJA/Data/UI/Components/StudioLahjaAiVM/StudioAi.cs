@@ -1,4 +1,7 @@
-﻿using LAHJA.Data.UI.Templates.Services;
+﻿using Domain.ShareData.Base;
+using LAHJA.Data.UI.Templates.AuthSession;
+using LAHJA.Data.UI.Templates.Services;
+using LAHJA.Helpers;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -6,8 +9,18 @@ namespace LAHJA.Data.UI.Components.StudioLahjaAiVM
 {
     public class StudioAi: StudioAiCard<DataBuildStudioBase>
     {
-        [Inject] public TemplateServices templateServices { get; set; }
 
+        [Inject] TemplateAuthSession templateAuthSession { get; set; }
+
+        [Inject] public TemplateServices templateServices { get; set; }
+        [Inject] public ISnackbar Snackbar { get; set; }
+
+
+        protected string _srcFrame;
+        protected bool isLoading = true;
+        [Parameter] public string SrcIFrame { get=> _srcFrame; set=> _srcFrame=value; }
+     
+        [Parameter] public string ServiceId { get; set; }
 
         [Parameter]
         public string CurrentLanguage { get=> base.CurrentLanguage; set=> base.CurrentLanguage=value; }
@@ -55,6 +68,55 @@ namespace LAHJA.Data.UI.Components.StudioLahjaAiVM
 
         protected SelectedStudioFilter selectedStudioFilter = new SelectedStudioFilter();
 
+        protected void OnFrameLoaded()
+        {
+            isLoading = false;
+        }
+        protected  async Task CreateSessionTokenAsync()
+        {
+        
+                if (!string.IsNullOrEmpty(ServiceId))
+                {
+                    if (templateAuthSession.BuilderComponents.GetSessionsAccessTokens != null)
+                    {
+                        var response = await templateAuthSession.BuilderComponents.GetSessionsAccessTokens();
+
+                        if (response.Succeeded)
+                        {
+                            foreach (var token in response.Data)
+                            {
+                                if (token != null && token.ServiceId == ServiceId )
+                                {
+                                    if(token.IsActive){
+                                        await CreateSessionAsync(ServiceId);
+                                }
+                                else
+                                {
+                                    Snackbar.Add("Session key is not active. Enable it or create a new one.",Severity.Error);
+                                }
+                                    return;
+                               
+                                }
+                            }
+
+                        }
+
+                        await CreateSessionAsync(ServiceId);
+                    }
+                }
+           
+        }
+        public  async Task CreateSessionAsync(string serviceId)
+        {
+            if (templateAuthSession.BuilderComponents.GetSessionsAccessTokens != null) { 
+                var res = await templateAuthSession.BuilderComponents.SubmitCreateSessionToken(new DataBuildSessionTokenAuth { ServiceId = serviceId });
+                if (res.Succeeded)
+                {
+                    _srcFrame = Helper.GetServiceSrcFrame(res.Data.UrlCore, res.Data.SessionToken);
+                    StateHasChanged();
+                }
+            }
+        }
         public virtual async Task SpeechMessage(string message)
         {
 

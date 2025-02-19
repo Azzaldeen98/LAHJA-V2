@@ -37,11 +37,8 @@ else{
     {
         if (firstRender)
         {
-
-            
             await Template.getAllSubscriptionsPlansAsync(_countItemsShow,2);
             isLoading = false;
-
             StateHasChanged();
         }
     }

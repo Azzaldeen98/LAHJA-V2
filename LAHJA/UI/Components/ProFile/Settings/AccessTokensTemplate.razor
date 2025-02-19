@@ -145,7 +145,7 @@
 
 
 
-        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = false };
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.False, FullWidth = false };
 
 
         var parameters = new DialogParameters<FormSessionToken>
@@ -165,6 +165,9 @@
         {
             await SubmitCreateSessionToken.InvokeAsync(data);
         }
+
+        dialog.Close();
+        refreshPage();
     }
     private Task OnRowClicked(SessionTokenAuth data)
     {
@@ -203,8 +206,12 @@
 
                 if (SubmitResume.HasDelegate)
                 {
+             
+
                     await SubmitResume.InvokeAsync(new DataBuildSessionTokenAuth{Id=value.Id});
-                    refreshPage();
+                    dialog?.Close();
+                    await SwitchTokenStatus(value);
+
                 }
             }
         }
@@ -215,12 +222,31 @@
 
                 if (SubmitPause.HasDelegate)
                 {
-                    await SubmitPause.InvokeAsync(new DataBuildSessionTokenAuth { Id = value.Id });
-                    refreshPage();
+
+
+                    await SubmitPause.InvokeAsync(new DataBuildSessionTokenAuth { Id = value.Id });              
+                    dialog?.Close();
+                    await SwitchTokenStatus(value);
+
+
                 }
             }
         }
     } 
+    private async Task SwitchTokenStatus(SessionTokenAuth value)
+    {
+
+        var tokenIndex = _dataBuild.FindIndex(x => x.Id == value.Id);
+        if (tokenIndex != -1)
+        {
+            _dataBuild[tokenIndex].IsActive = value.IsActive;
+            _dataBuild[tokenIndex].Status = value.IsActive;
+        }
+        initializeData(_dataBuild);
+        StateHasChanged();
+
+      
+    }
     private async Task OnDeleteClicked(SessionTokenAuth value)
     {
         if (await MessageBox.ShowAsync(GetTranslation("title"), GetTranslation("RemoveSessionTokenMsg"),lg))
@@ -228,7 +254,12 @@
             if (SubmitDelete.HasDelegate)
             {
                 await SubmitDelete.InvokeAsync(new DataBuildSessionTokenAuth { Id = value.Id });
-                refreshPage();
+               dialog?.Close();
+                _dataBuild.Remove(value);
+                initializeData(_dataBuild);
+                StateHasChanged();
+
+                // refreshPage();
 
             }
         }
@@ -240,7 +271,16 @@
             if (SubmitActive.HasDelegate)
             {
                 await SubmitActive.InvokeAsync(new DataBuildSessionTokenAuth { Id = value.Id });
-                refreshPage();
+                var tokenIndex = DataBuild.FindIndex(x => x.Id == value.Id);
+                if (tokenIndex != -1)
+                {
+                    DataBuild[tokenIndex].IsActive = value.IsActive;
+                    DataBuild[tokenIndex].Status = value.Status;
+                }
+
+                StateHasChanged();
+                dialog?.Close();
+                // refreshPage();
 
             }
         }
@@ -258,7 +298,8 @@
     }
     private void refreshPage()
     {
-        Navigation.NavigateTo(Navigation.Uri, true);
+        
+         Navigation.NavigateTo(Navigation.Uri, true);
     }
 
      public string GetTranslation(string Key)
