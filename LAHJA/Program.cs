@@ -139,7 +139,10 @@ builder.Services.AddMudBlazorSnackbar(config =>
 
 //////////////////////////////////////////
 builder.Services.AddRazorPages();
-builder.Services.AddServerSideBlazor();
+
+builder.Services.AddServerSideBlazor()
+    .AddCircuitOptions(options => { options.DetailedErrors = true; });
+
 builder.Services.AddMudServices();
 builder.Services.AddScoped<ProtectedSessionStorage>();
 

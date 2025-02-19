@@ -3,6 +3,7 @@
 @using LAHJA.Data.UI.Templates.AuthSession
 @using LAHJA.Helpers
 @inject ISnackbar Snackbar
+@inject NavigationManager Navigation
 @inject TemplateAuthSession templateAuthSession
 
 
@@ -21,9 +22,10 @@
 
 @code {
 
-   private bool isLoading = true;
-   private string srcIframe;
-   private string serviceId;
+    private bool isLoading = true;
+    private string srcIframe;
+    private string serviceId;
+    private string backupServiceLink;
     private string styleCss = "width:100%;height:100%;border:none";
 
     [Parameter]
@@ -37,7 +39,7 @@
     {
         get => styleCss; set { styleCss = value; }
     }
-    
+
     [Parameter]
     public string SrcIframe
     {
@@ -47,6 +49,12 @@
     public string ServiceId
     {
         get => serviceId; set { serviceId = value; }
+    }   
+
+    [Parameter]
+    public string BackupServiceLink
+    {
+        get => backupServiceLink; set { backupServiceLink = value; }
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -111,6 +119,17 @@
                 srcIframe = Helper.GetServiceSrcFrame(res.Data.UrlCore, res.Data.SessionToken);
                 StateHasChanged();
             }
+            else if (!string.IsNullOrEmpty(backupServiceLink))
+            {
+                srcIframe = backupServiceLink;
+                StateHasChanged();
+            }
+            else
+            {
+                Navigation.NavigateTo("/",true);
+            }
+
+            
         }
     }
 }

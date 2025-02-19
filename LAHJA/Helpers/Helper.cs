@@ -39,6 +39,16 @@ namespace LAHJA.Helpers
         {
             return $"{urlCore}/?token={sessionToken}";
         }
+
+
+        public static bool PageNeedAuthentication(string url)
+        {
+           var urlPage= url.Replace(_navigation.BaseUri, "");
+            var protectedRoutes = new List<string> { "dashboard", "profile", "settings",
+                "services","studio","trainingModel","billing","logout" };
+
+            return protectedRoutes.Any(route => urlPage.StartsWith(route));
+        }
     }
 
   

@@ -55,25 +55,37 @@
                     //     OnCreateClicked = OnSubmitCreateSpace
                     // }
                 };
-            cardStates = new()
-        {
-
-            new()
+            if (dataBuild != null)
             {
-                Value="6",
-                Label="Active"
+                cardStates = new()
+                {
 
-            },
+                    new()
+                    {
+                        Value=dataBuild.Where(x=>x.IsGlobal).Count().ToString(),
+                        Label="Global"
 
-             new()
-            {
-                 Value="1",
-                Label="UnActive"
+                    },
+
+                     new()
+                    {
+                         Value=dataBuild.Where(x=>x.IsGlobal==false).Count().ToString(),
+                        Label="UnGlobal"
+                    },
+                    new()
+                    {
+                        Value=dataBuild.Where(x=>x.IsGpu).Count().ToString(),
+                        Label="Gpu"
+
+                    },
+
+                     new()
+                    {
+                         Value=dataBuild.Where(x=>x.IsGpu==false).Count().ToString(),
+                        Label="NotGpu"
+                    }
+                };
             }
-            ,
-
-
-        };
             groupAction.Actions = new()
         {
             new()

@@ -95,37 +95,28 @@
                     OnRowClicked = EventCallback.Factory.Create<DataBuildUserSubscriptionInfo>(this, OnRowClicked)
                 }
             };
-        cardStates = new()
+
+
+        if (DataBuild != null)
         {
-
-            new()
+            cardStates = new()
             {
-                Value="6",
-                Label="Active"
 
-            },
+                new()
+                {
+                    Value=DataBuild.Where(x=>x.Active).Count().ToString(),
+                    Label="Active"
 
-             new()
-            {
-                 Value="1",
-                Label="UnActive"
-            }
-            ,
-            new()
-            {
-                 Value="1",
-                Label="UnActive"
-            }
-            ,
-            new()
-            {
-                 Value="1",
-                Label="UnActive"
-            }
+                },
 
-
-
-        };
+                 new()
+                {
+                     Value=DataBuild.Where(x=>x.Active==false).Count().ToString(),
+                    Label="UnActive"
+                }
+            };
+        }
+       
         groupAction.Actions = new()
         {
           

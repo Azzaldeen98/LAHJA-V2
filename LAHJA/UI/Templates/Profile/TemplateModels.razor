@@ -35,37 +35,38 @@
     {
 
 
-
+      
         if (firstRender)
         {
-
+            var _dataBuild = await Template.GetDataBuildModelAis();
             dataAndEvent = new()
                 {
-                    DataBuild = await Template.GetDataBuildModelAis(),
-                                                                      //   LabelColumns = ColomsTrans[lg].ToList(),
-
+                    DataBuild = _dataBuild,
+                    //   LabelColumns = ColomsTrans[lg].ToList(),
                     Events = new()
                 };
 
-            cardStates = new()
+            if (_dataBuild != null)
+            {
+                cardStates = new()
         {
 
             new()
             {
-                Value="6",
-                Label="Active"
+                Value=_dataBuild.Where(x=>x.IsStandard==true).Count().ToString(),
+                Label="Standard"
 
             },
 
              new()
             {
-                 Value="1",
-                Label="UnActive"
-            }
-            ,
-
+                 Value=_dataBuild.Where(x=>x.IsStandard==false).Count().ToString(),
+                Label="UnIsStandard"
+            },
 
         };
+            }
+
             groupAction.Actions = new()
         {
             new()

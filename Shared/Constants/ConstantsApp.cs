@@ -9,6 +9,7 @@ namespace Shared.Constants
    public static class ConstantsApp
     {
         public static string ACCESS_TOKEN = "accessToken";
+        public static string START_UP_WEB = "startUpWeb";
         public static string LANGUAGE_STORAGE = "currentLnguage";
         public static string REFRESH_TOKEN = "refreshToken";
         public static string EXPIRES_IN_TOKEN = "expiresInToken";

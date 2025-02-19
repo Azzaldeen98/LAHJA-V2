@@ -16,7 +16,36 @@ namespace LAHJA.Helpers.Services
             _jsRuntime = jsRuntime;
             PSession = pSession;
         }
+        public async Task<bool> IsWebHasStartUpAsync()
+        {
+            try
+            {
+                return (await PSession.GetAsync<bool>(ConstantsApp.START_UP_WEB)).Value;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+            
+        }
+        public async Task<bool> StartUpWebSessionAsync()
+        {
 
+            try
+            {
+                if (!await IsWebHasStartUpAsync())
+                {
+                    await PSession.SetAsync(ConstantsApp.START_UP_WEB, true);
+                    return true;
+                }
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
         public async Task SaveTokenInSessionAsync(string token)
         {
 

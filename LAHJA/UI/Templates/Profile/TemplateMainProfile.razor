@@ -1,15 +1,15 @@
-﻿
-@page "/settings/{*Url}"
+﻿@page "/dashboard/{*Url}"
 
 @using LAHAJ.Loading
 @using LAHJA.UI.Components.ProFile
+@using LAHJA.UI.Components.ProFile.Settings
+@using LAHJA.UI.Components.ProFile.USettings
 @using MudBlazor
 @using Domain.ShareData
 @using LAHJA.Data.UI.Components.ProFileModel
 @using LAHJA.Helpers.Services
 @using LAHJA.UI.Components.ProFile.Cards
-@using LAHJA.UI.Components.ProFile.Settings
-@using LAHJA.UI.Components.ProFile.USettings
+
 @using LAHJA.UI.Templates.Subscription
 @using global::Shared.Constants.Router
 @using Microsoft.AspNetCore.Authorization
@@ -62,7 +62,7 @@
                     </MudContainer>
                     <MudContainer Class="mt-3 flex items-center gap-2 text-sm text-gray-400">
                         Upgrade to
-                        <MudLink Href="/settings/billing/subscription#subscribe" Class="flex items-center">
+                        <MudLink Href="/dashboard/billing/subscription#subscribe" Class="flex items-center">
                             <MudIcon Icon="mdi-crown" Class="mr-1" />
                             Pro
                         </MudLink>
@@ -100,7 +100,7 @@
                         <MudDivider Class="my-3 py-1" />
                         <MudContainer Class="mt-3 flex items-center gap-2 text-sm text-gray-400">
                         Upgrade to
-                        <MudLink Href="/settings/billing/subscription#subscribe" Class="flex items-center">
+                        <MudLink Href="/dashboard/billing/subscription#subscribe" Class="flex items-center">
                             <MudIcon Icon="mdi-crown" Class="mr-1" />
                             Pro
                         </MudLink>
@@ -109,7 +109,7 @@
                 </MudMainContent>
             </div>
 
-            <div class="plan-RenderComponent"  >
+            <div class="plan-RenderComponent" >
             
                         @if (!string.IsNullOrEmpty(Url))
                         {
@@ -117,7 +117,7 @@
                         }
                         else
                         {
-                            <Dashboard />
+                             <Statistics />
                         }
             </div>
 
@@ -139,7 +139,7 @@
 
 
     private bool _open = false;
-    [Parameter] public string Url { get; set; } = "profile"; 
+    [Parameter] public string Url { get; set; } = "profile";
     [Parameter] public string Filter { get; set; } = "profile";
 
     [Parameter] public DataBuildUserProfile DataBuild { get => data;
@@ -180,7 +180,7 @@
             if (result.Succeeded)
             {
                 data = result.Data;
-               await InvokeAsync(StateHasChanged);
+              StateHasChanged();
             }
            
         }
@@ -195,81 +195,34 @@
 
     private List<NavItem> NavItems;
 
-    private static Dictionary<string, Dictionary<string, string>> Translations = new()
-        {
-            ["en"] = new()
-            {
-                ["Statistics"] = "Statistics",
-                ["Profile"] = "Profile",
-                ["Spaces"] = "Spaces",
-
-                ["CreditCards"] = "Credit Cards",
-                ["Account"] = "Account",
-                ["Subscriptions"] = "Subscriptions",
-                ["Authentication"] = "Authentication",
-                ["models"] = "Models",
-                ["Billing"] = "Billing",
-                ["Access Tokens"] = "Access Tokens",
-                ["SSH and GPG Keys"] = "SSH and GPG Keys",
-                ["Webhooks"] = "Webhooks",
-                ["Papers"] = "Papers",
-                ["Notifications"] = "Notifications",
-                ["Local Apps and"] = "Local Apps and",
-                ["Gated Repositories"] = "Gated Repositories",
-
-                ["Connected Apps"] = "Connected Apps",
-                ["Theme"] = "Theme"
-            },
-            ["ar"] = new()
-            {
-                ["Statistics"] = "الاحصائيات",
-                ["Profile"] = "الملف الشخصي",
-                ["Spaces"] = "المساحات",
-                ["CreditCards"] = "بطاقات الائتمان",
-
-                ["Account"] = "الحساب",
-                ["Subscriptions"] = "الاشتراكات",
-                ["Authentication"] = "التحقق",
-                ["models"] = "النماذج",
-                ["Billing"] = "الفوترة",
-                ["Access Tokens"] = "رموز الوصول",
-                ["SSH and GPG Keys"] = "مفاتيح SSH و GPG",
-                ["Webhooks"] = "Webhooks",
-                ["Papers"] = "الأوراق",
-                ["Notifications"] = "الإشعارات",
-                ["Local Apps and"] = "التطبيقات المحلية و",
-                ["Gated Repositories"] = "المستودعات المحمية",
-
-                ["Connected Apps"] = "التطبيقات المتصلة",
-                ["Theme"] = "السمة"
-            }
-        };
+ 
 
     private void ChangeLanguage(string language)
     {
         CurrentLanguage = language;
         NavItems=  new()
         {
-            new NavItem { Label = GetLabel("Statistics"), Url = "settings/Statistics" ,Icon=@Icons.Material.Filled.QueryStats},
-            new NavItem { Label = GetLabel("Subscriptions"), Url = "settings/SubscriptionTemplate",Icon=@Icons.Material.Filled.Subscriptions },
-            new NavItem { Label = GetLabel("Spaces"), Url = "settings/spaces",Icon=@Icons.Material.Filled.SpaceDashboard },
-            new NavItem { Label = GetLabel("models"), Url = "settings/models" ,Icon=@Icons.Material.Filled.ModelTraining},
-            new NavItem { Label = GetLabel("CreditCards"), Url = "settings/CreditCards",Icon=@Icons.Material.Filled.CreditCard },
+            new NavItem { Label = GetLabel("Statistics"), Url = "dashboard/Statistics" ,Icon=@Icons.Material.Filled.QueryStats},
+            new NavItem { Label = GetLabel("Profile"), Url = "dashboard/profile",Icon=@Icons.Material.Filled.ManageAccounts },
+            new NavItem { Label = GetLabel("Subscriptions"), Url = "dashboard/SubscriptionTemplate",Icon=@Icons.Material.Filled.Subscriptions },
+            new NavItem { Label = GetLabel("Spaces"), Url = "dashboard/spaces",Icon=@Icons.Material.Filled.SpaceDashboard },
+            new NavItem { Label = GetLabel("models"), Url = "dashboard/models" ,Icon=@Icons.Material.Filled.ModelTraining},
+            new NavItem { Label = GetLabel("CreditCards"), Url = "dashboard/CreditCards",Icon=@Icons.Material.Filled.CreditCard },
 
-            new NavItem { Label = GetLabel("Billing"), Url = "settings/billing", },
-            new NavItem { Label = GetLabel("Authentication"), Url = "settings/authentication",Icon=@Icons.Material.Filled.PrivacyTip, },
-            new NavItem { Label = GetLabel("Access Tokens"), Url = "settings/AccessTokens",Icon=@Icons.Material.Filled.Token, },
-          //  new NavItem { Label = GetLabel("SSH and GPG Keys"), Url = "settings/keys" },
-            new NavItem { Label = GetLabel("Webhooks"), Url = "settings/webhooks",Icon=@Icons.Material.Filled.Webhook, },
-           // new NavItem { Label = GetLabel("Papers"), Url = "settings/papers" },
-            new NavItem { Label = GetLabel("Notifications"), Url = "settings/notifications",Icon=@Icons.Material.Filled.Notifications },
-            //new NavItem { Label = GetLabel("Local Apps and"), Url = "settings/local-apps", Badge = "NEW" },
-           // new NavItem { Label = GetLabel("Gated Repositories"), Url = "settings/gated-repos" },
-           new NavItem { Label = GetLabel("Profile"), Url = "settings/profile",Icon=@Icons.Material.Filled.Person },
-            new NavItem { Label = GetLabel("Account"), Url = "settings/Account" ,Icon=@Icons.Material.Filled.ManageAccounts},
+            new NavItem { Label = GetLabel("Billing"), Url = "dashboard/billing", },
+            new NavItem { Label = GetLabel("Authentication"), Url = "dashboard/authentication",Icon=@Icons.Material.Filled.PrivacyTip, },
+            new NavItem { Label = GetLabel("Access Tokens"), Url = "dashboard/AccessTokens",Icon=@Icons.Material.Filled.Token, },
+          //  new NavItem { Label = GetLabel("SSH and GPG Keys"), Url = "dashboard/keys" },
+            new NavItem { Label = GetLabel("Webhooks"), Url = "dashboard/webhooks",Icon=@Icons.Material.Filled.Webhook, },
+           // new NavItem { Label = GetLabel("Papers"), Url = "dashboard/papers" },
+            new NavItem { Label = GetLabel("Notifications"), Url = "dashboard/notifications",Icon=@Icons.Material.Filled.Notifications },
+            //new NavItem { Label = GetLabel("Local Apps and"), Url = "dashboard/local-apps", Badge = "NEW" },
+           // new NavItem { Label = GetLabel("Gated Repositories"), Url = "dashboard/gated-repos" },
+           new NavItem { Label = GetLabel("Profile"), Url = "dashboard/profile",Icon=@Icons.Material.Filled.Person },
+            new NavItem { Label = GetLabel("Account"), Url = "dashboard/Account" ,Icon=@Icons.Material.Filled.ManageAccounts},
 
-           // new NavItem { Label = GetLabel("Connected Apps"), Url = "settings/applications" },
-            new NavItem { Label = GetLabel("Theme"), Url = "settings/theme" }
+           // new NavItem { Label = GetLabel("Connected Apps"), Url = "dashboard/applications" },
+            new NavItem { Label = GetLabel("Theme"), Url = "dashboard/theme" }
         };
         StateHasChanged();
         InvokeAsync(StateHasChanged);
@@ -292,15 +245,15 @@
 
         if (string.IsNullOrEmpty(Url))
         {
-            Url = "settings/profile";
+            Url = "Statistics";
         }
 
         var componentMap = new Dictionary<string, Type>
                         {
-                { "Statistics", typeof(Dashboard) },
+                { "Statistics", typeof(Statistics) },
                 { "profile", typeof(ProfileForm) },
                 { "Account", typeof(AccountTemplate) },
-                { "SubscriptionTemplate", typeof(TemplateSubscriptionsPlan) },
+                { "SubscriptionTemplate", typeof(TemplateSubscriptions) },
                 { "CreditCards", typeof(TemplateCreditCards) },
                 { "billing", typeof(BillingSection) },
                 { "authentication", typeof(AuthenticationTemplate) },
@@ -352,6 +305,54 @@
         public string Icon { get; set; } = @Icons.Material.Filled.Check;
     }
 
+    private static Dictionary<string, Dictionary<string, string>> Translations = new()
+        {
+            ["en"] = new()
+            {
+                ["Statistics"] = "Statistics",
+                ["Profile"] = "Profile",
+                ["Spaces"] = "Spaces",
 
+                ["CreditCards"] = "Credit Cards",
+                ["Account"] = "Account",
+                ["Subscriptions"] = "Subscriptions",
+                ["Authentication"] = "Authentication",
+                ["models"] = "Models",
+                ["Billing"] = "Billing",
+                ["Access Tokens"] = "Access Tokens",
+                ["SSH and GPG Keys"] = "SSH and GPG Keys",
+                ["Webhooks"] = "Webhooks",
+                ["Papers"] = "Papers",
+                ["Notifications"] = "Notifications",
+                ["Local Apps and"] = "Local Apps and",
+                ["Gated Repositories"] = "Gated Repositories",
+
+                ["Connected Apps"] = "Connected Apps",
+                ["Theme"] = "Theme"
+            },
+            ["ar"] = new()
+            {
+                ["Statistics"] = "الاحصائيات",
+                ["Profile"] = "الملف الشخصي",
+                ["Spaces"] = "المساحات",
+                ["CreditCards"] = "بطاقات الائتمان",
+
+                ["Account"] = "الحساب",
+                ["Subscriptions"] = "الاشتراكات",
+                ["Authentication"] = "التحقق",
+                ["models"] = "النماذج",
+                ["Billing"] = "الفوترة",
+                ["Access Tokens"] = "رموز الوصول",
+                ["SSH and GPG Keys"] = "مفاتيح SSH و GPG",
+                ["Webhooks"] = "Webhooks",
+                ["Papers"] = "الأوراق",
+                ["Notifications"] = "الإشعارات",
+                ["Local Apps and"] = "التطبيقات المحلية و",
+                ["Gated Repositories"] = "المستودعات المحمية",
+
+                ["Connected Apps"] = "التطبيقات المتصلة",
+                ["Theme"] = "السمة"
+            }
+        };
 
 }

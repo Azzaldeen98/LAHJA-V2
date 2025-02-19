@@ -565,18 +565,10 @@ public class TemplateAuth: TemplateAuthShare<ClientAuthService, DataBuildAuthBas
         try
         {
             var response = await builderApi.Logout();
-            if (response.Succeeded)
-            {
-                await authService.DeleteLoginAsync();
-                navigation.NavigateTo(RouterPage.LOGIN, forceLoad: true);
+            if (response.Succeeded){ }
+            else{ }
 
-            }
-            else
-            {
-                await authService.DeleteLoginAsync();
-                navigation.NavigateTo(RouterPage.LOGIN, forceLoad: true);
-
-            }
+            await authService.DeleteLoginAsync();
         }
         catch (Exception e)
         {
@@ -584,8 +576,9 @@ public class TemplateAuth: TemplateAuthShare<ClientAuthService, DataBuildAuthBas
         }
         finally
         {
-            await AuthStateProvider.InitializeAsync();
-             //AuthStateProvider.MarkUserAsLoggedOut();
+            //await AuthStateProvider.InitializeAsync();
+            AuthStateProvider.MarkUserAsLoggedOut();
+            navigation.NavigateTo(RouterPage.HOME, forceLoad: true);
         }
     }
 

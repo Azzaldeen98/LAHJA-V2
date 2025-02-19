@@ -15,7 +15,7 @@
 
 @if (isLoading)
 {
-    <MudCard Class="position-relative" Style="height: 100% !important; width: 100% !important;  ">
+    <MudCard Class="position-relative" Style="height: inherit !important; width:inherit !important;  ">
         <!-- عناصر Skeleton -->
   @*       <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="100%" />
         <MudCardContent>
@@ -29,9 +29,9 @@
         </MudCardActions> *@
 
         <!-- Overlay للتحميل -->
-        <MudOverlay Visible="true" DarkBackground="true"  Class="full-screen-overlay">
+        <MudOverlay Visible="true" DarkBackground="true"  Class="full-screen-overlay"> 
             <!-- المحتوى في المنتصف -->
-            <MudStack Class="align-items-center justify-center" Spacing="2" Style="height: 100vh; width: 100vw;">
+            <MudStack Class="align-items-center justify-center" Spacing="2" Style="height: inherit; width: inherit;">
 
 
                 <div id="logo-icon-animate-id" class="icon-xxl text-center shadow-primary rounded-circle flex-shrink-0 ripple-anim" style="line-height: 6.8rem;">

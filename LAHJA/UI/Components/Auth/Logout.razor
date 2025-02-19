@@ -10,7 +10,7 @@
 @using MudBlazor
 @inject NavigationManager Navigation
 @inject AuthService AuthService
-@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject CustomAuthenticationStateProvider AutStateProvider
 @inject LAHJA.Data.UI.Templates.Auth.TemplateAuth templateAuth
 @inject IManageLanguageService _manageLanguageService
 
@@ -27,27 +27,25 @@
                 <MudDivider Class="mb-3" />
                 <MudStack Direction="Row" Spacing="2" JustifyContent="Center">
                    <CustomButton OnClick="ConfirmLogout" Text="@Trans("Logout")" />
-                    <CancelButton Lang="@CurrentLanguage" OnClick="CancelLogout" />
+                    <CancelButton Lang="@lg" OnClick="CancelLogout" />
                 </MudStack>
                 <MudText Color="Color.Error" Class="mt-2">@errorMessage</MudText>
             </MudCardContent>
         </MudCard>
     </MudContainer>
 }
-else
-{
-    <Loading IsLoading="isLoading" />
-}
+
+ <Loading IsLoading="isLoading" />
+
 @code
 {
+    private string token;
+    private bool isLoading = false;
+    private string errorMessage;
+    private string lg = "ar";
 
     [Parameter]
     public EventCallback<bool>OnClickLogout{ get; set; }
-
-    private string token;
-    private bool isLoading=false;
-    private string errorMessage;
-    private string CurrentLanguage="ar";
 
     [Parameter]
     public bool FlagDev { get; set; } = true;
@@ -69,8 +67,8 @@ else
 
     private string Trans(string key)
     {
-        return labels.ContainsKey(CurrentLanguage) &&
-        labels[CurrentLanguage].ContainsKey(key) ? labels[CurrentLanguage][key] : "";
+        return labels.ContainsKey(lg) &&
+        labels[lg].ContainsKey(key) ? labels[lg][key] : "";
 
     }
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -80,23 +78,22 @@ else
             if (InBackend)
             {
                 isLoading = true;
-                await logout();
+                StateHasChanged();
+                await templateAuth.LogoutAsync();
             }
             else
             {
-                CurrentLanguage = await _manageLanguageService.GetLanguageAsync();
+                lg = await _manageLanguageService.GetLanguageAsync();
                 StateHasChanged();
             }
-      
         }
     }
 
 
-    private async Task logout()
+    private async Task logOutAsync()
     {
+
         await templateAuth.LogoutAsync();
-        @* await AuthService.DeleteLoginAsync(); *@
-        await AuthenticationStateProvider.GetAuthenticationStateAsync();
     }
 
 
@@ -108,7 +105,7 @@ else
             isLoading = true;
             if (FlagDev)
             {
-                await logout();
+                await logOutAsync();
 
                 if (OnClickLogout.HasDelegate)
                 {

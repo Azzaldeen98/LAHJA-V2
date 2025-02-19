@@ -38,7 +38,12 @@ namespace LAHJA
 
             if (string.IsNullOrEmpty(token))
                 return _anonymous;
+
            return  AuthenticatedState(token);
+        }
+        public async Task StartUpWebAsync()
+        {
+
         }
         public async Task InitializeAsync()
         {
