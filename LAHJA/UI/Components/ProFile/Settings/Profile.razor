@@ -4,7 +4,7 @@
 @using LAHJA.Them
 @using LAHJA.UI.Components.ProFile.USettings
 
-@inject IJSRuntime JS
+@inject NavigationManager Navigation;
 @inject TemplateProfile Template
 @inject IManageLanguageService _manageLanguageService
 
@@ -57,9 +57,9 @@
             var result = await Template.BuilderComponents.SubmitUpdateProfileUser(_buildData);
             if (result.Succeeded)
             {
-                _buildData = result.Data;
-                isUpdate = false;
-                StateHasChanged();
+                // _buildData = result.Data;
+                // isUpdate = false;
+                Navigation.NavigateTo("dashboard/profile",true  );
             }
     }
 
