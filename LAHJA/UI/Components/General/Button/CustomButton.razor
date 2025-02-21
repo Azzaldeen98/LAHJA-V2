@@ -1,5 +1,5 @@
 ﻿@using LAHJA.Them
-<MudButton Class="@(AppTextStyle.TEXT_TRANSFORM_NORMAL+" w-100 p-0")" Disabled="@isProcessing" OnClick="HandleClick" Variant="Variant.Filled" Color="@buttonColor">
+<MudButton Class="@(AppTextStyle.TEXT_TRANSFORM_NORMAL+" "+@styleClass)" Disabled="@isProcessing" OnClick="HandleClick" Variant="Variant.Filled" Color="@buttonColor">
     @if (isProcessing)
     {
         <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
@@ -12,6 +12,17 @@
 </MudButton>
 
 @code {
+
+    private string styleClass = "w-100 p-0";
+
+    [Parameter]
+    public string StyleClass
+    {
+        get => StyleClass;
+        set => StyleClass = value;
+    }
+
+
     private bool isProcessing = false;
 
     [Parameter]

@@ -1,39 +1,5 @@
 ﻿@using LAHJA.Them
 
-
-
-@* <MudContainer Class="pt-6 border-gray-100 md:col-span-8 lg:col-span-9 xl:col-span-9 md:px-4 py-4">
-    <MudContainer Class="mb-6">
-        <MudContainer Class="flex justify-between">
-            <MudText Typo="Typo.h5" Class="flex flex-row items-center text-xl font-bold">
-                Profile Settings 
-            </MudText>
-        </MudContainer>
-    </MudContainer>
-    <MudForm @ref="form" OnValidSubmit="HandleValidSubmit" Class="mb-8 flex flex-col space-y-5 md:pr-36">
-        
-        <MudTextField @bind-Value="FullName" Label="Full name" Placeholder="Full name" Name="fullname" Pattern="^(?!\.+$).*$" MaxLength="50" Required="true" />
-        <MudContainer>
-            <MudText Typo="Typo.body2">Avatar <span class="pl-2 text-gray-400">(optional)</span></MudText>
-            <MudContainer Class="flex items-center gap-2">
-                <MudContainer Class="mt-1 flex items-center gap-3"> *@
-                    @* <MudButton Variant="Variant.Outlined">Upload file</MudButton> *@
-                    @* <MudTextField InputType="InputType." Label="avatar" Value="" /> *@
-                    @* <MudInput ="file" Accept="image/png, image/jpeg" Class="sr-only" /> *@
-@*                 </MudContainer>
-                <MudButton Variant="Variant.Text" Class="mt-1 flex items-center text-sm text-gray-500 hover:text-gray-800 hover:underline">Remove</MudButton>
-            </MudContainer>
-        </MudContainer>1
-        <MudTextField @bind-Value="Homepage" Label="Homepage" Placeholder="Homepage" Name="homepage" Type="url" />
-        <MudTextField @bind-Value="Interests" Label="AI & ML interests" Placeholder="AI & ML interests" Name="details" TextArea="true" />
-        <MudTextField @bind-Value="GitHubUsername" Label="GitHub username" Placeholder="GitHub username" Name="github" Pattern="[a-zA-Z\d\-]+" Title="Github 'username' from https://github.com/username" />
-        <MudTextField @bind-Value="TwitterUsername" Label="Twitter username" Placeholder="Twitter account" Name="twitter" Pattern="[a-zA-Z\d_]+" Title="Twitter 'username' from " />
-        <MudTextField @bind-Value="LinkedInProfile" Label="LinkedIn profile" Placeholder="LinkedIn profile" Name="linkedin" Pattern="[a-zA-Z\d\-]+" Title="LinkedIn 'username' from https://www.linkedin.com/in/username" />
-        <MudTextField @bind-Value="BlueskyUsername" Label="Bluesky username" Placeholder="Bluesky account" Name="bluesky" Pattern="[a-zA-Z\d\.-]+" Title="Bluesky 'username' from https://bsky.app/profile/username" />
-        <MudButton Type="Submit" Variant="Variant.Filled" Color="Color.Primary">Save changes</MudButton>
-    </MudForm>
-</MudContainer> *@
-
 @inject NavigationManager NavigationManager
 
 <MudContainer Class="pt-6 border-gray-100 md:col-span-8 lg:col-span-9 xl:col-span-9 md:px-4 py-4" dir="@GetDirection()">

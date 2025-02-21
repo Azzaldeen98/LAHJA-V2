@@ -27,6 +27,7 @@ using Domain.Entities.Auth.Response;
 using Domain.Entities.AuthorizationSession;
 using LAHJA.Data.UI.Models;
 using Domain.Entities.Service.Response;
+using Domain.Entities.Profile.Request;
 
 namespace LAHJA.Mappings
 {
@@ -175,6 +176,11 @@ namespace LAHJA.Mappings
                CreateMap<DataBuildServiceBase, RequestCreate>()
                 .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Text))
                 .ReverseMap();
+
+            CreateMap<DataBuildUserProfile,ProfileUserRequest>()
+                .ForMember(dest => dest.Image, opt => opt.MapFrom(src => src.ImageUri))
+                .ReverseMap();
+
 
             CreateMap<DataBuildSpace,ProfileSpaceResponse>().ReverseMap();
             CreateMap<DataBuildServiceInfo, ServiceResponse>().ReverseMap();

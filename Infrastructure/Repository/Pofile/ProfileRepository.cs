@@ -2,6 +2,7 @@
 using Domain.Entities.Billing.Response;
 using Domain.Entities.Plans.Response;
 using Domain.Entities.Profile;
+using Domain.Entities.Profile.Request;
 using Domain.Entities.Profile.Response;
 using Domain.Entities.Request.Response;
 using Domain.Entities.Subscriptions.Response;
@@ -66,6 +67,12 @@ public class ProfileRepository :IProfileRepository
     {
         throw new NotImplementedException();
     }
+    public async Task<Result<ProfileUserResponse>> UpdateProfileUserAsync(ProfileUserRequest request)
+    {
+       return await ExecutorAppMode.ExecuteAsync(
+           async () => await profileApiClient.UpdateProfileUserAsync(request),
+          async () => Result<ProfileUserResponse>.Success());
+    }
 
     public async Task<Result<ProfileUserResponse>> GetProfileUserAsync()
     {
@@ -94,7 +101,7 @@ public class ProfileRepository :IProfileRepository
                           {
                               var profile = new ProfileUserResponse
                               {
-                                  Name = user?.Name ?? "",
+                                  DisplayName = user?.Name ?? "",
                                   Email = user?.Email ?? "",
                                   PhoneNumber = user?.PhoneNumber ?? "",
                                   Image = user?.Image ?? "",

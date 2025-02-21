@@ -19,6 +19,7 @@ using Infrastructure.Models.Service.Response;
 using Infrastructure.Models.Setting.Request;
 using Infrastructure.Models.Subscriptions.Response;
 using Infrastructure.Nswag;
+using Domain.Entities.Profile.Request;
 
 
 namespace Infrastructure.Mappings.Plans
@@ -91,6 +92,7 @@ namespace Infrastructure.Mappings.Plans
             /// Profile
             CreateMap<ProfileUserResponse, UserResponse>().ReverseMap();
             CreateMap<ProfileResponse, UserResponse>().ReverseMap();
+            CreateMap<ProfileUserRequest, UserRequest>().ReverseMap();
 
 
 

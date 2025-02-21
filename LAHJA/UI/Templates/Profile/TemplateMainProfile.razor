@@ -27,25 +27,18 @@
 
 @* <ResendConfirmationemail />   *@
 
-
-
     @if(DataBuild!=null)
     {
         <div style="" class="cont-plan-RenderComponent">
-
-
             <div class="plan-RenderComponent-nav">
 
-                <MudContainer  Class="w-100" >
+                <MudContainer Class="w-100" >
                     <MudContainer Class="pt-1 border px-3 border-gray-100 rounded-xl bg-gradient-to-l  p-0" style="background-color:none!important">
-          
-                        <UserAvaterCard Name="@data.Name" PhoneNumber="@data.PhoneNumber" ImageUrl="@data.Image" />
-       
+                    <UserAvaterCard Name="@(data.DisplayName??data.FirstName)" PhoneNumber="@data.PhoneNumber" ImageUrl="@data.Image" />
                         <MudDivider Class="my-3 py-1" />
                         <MudList T="string" >
                             @foreach (var item in NavItems)
                             {
-                         
                                 <MudNavLink style="padding:0% !important; margin:0px !important" Icon="@item.Icon"  Href="@item.Url" Match="NavLinkMatch.All" OnClick="() => SetActiveTab(item.Url)">
                                         <MudText Typo="Typo.body2">@item.Label</MudText>
                                         @if (!string.IsNullOrEmpty(item.Badge))
@@ -53,13 +46,10 @@
                                             <MudText Typo="Typo.caption" Class="ml-auto mr-1.5 rounded text-xs font-semibold leading-tight bg-blue-500/10 text-blue-700 dark:text-blue-200">@item.Badge</MudText>
                                         }
                                 </MudNavLink>
-                        
                             }
                         </MudList>
-             
-
-       
                     </MudContainer>
+
                     <MudContainer Class="mt-3 flex items-center gap-2 text-sm text-gray-400">
                         Upgrade to
                         <MudLink Href="/dashboard/billing/subscription#subscribe" Class="flex items-center">
@@ -69,21 +59,15 @@
                 </MudContainer>
                </MudContainer>
             </div>
-
             <div class="nav-menu-continer-items-sm w-100">
                 <div class="d-flex flex-row justify-content-start align-items-start w-100" style="position:fixed;z-index:200; justify-content:end !important;">
                     <MudIconButton Icon="@Icons.Material.Filled.Menu" OnClick="ToggleMenu" />
                 </div>
-                    <!-- المحتوى داخل هذا العنصر -->
 
-           
                  <MudMainContent Class="nav-profile-menu-continer-items-sm w-100 ">
-           
                     <MudDrawer @bind-Open="@_open" Fixed="true" Elevation="0" Class="h-100" Anchor="Anchor.End" Variant="@DrawerVariant.Temporary">
-
                         <MudNavMenu Class="font-size-nav-v2" >
-
-                            <UserAvaterCard Name="@data.Name" PhoneNumber="@data.PhoneNumber" ImageUrl="@data.Image" />
+                        <UserAvaterCard Name="@(data.DisplayName??data.FirstName)" PhoneNumber="@data.PhoneNumber" ImageUrl="@data.Image" />
                             <MudDivider Class="my-3 py-1" />
                             @foreach (var item in NavItems)
                             {
@@ -98,17 +82,16 @@
                             }
                         </MudNavMenu>
                         <MudDivider Class="my-3 py-1" />
-                        <MudContainer Class="mt-3 flex items-center gap-2 text-sm text-gray-400">
-                        Upgrade to
-                        <MudLink Href="/dashboard/billing/subscription#subscribe" Class="flex items-center">
-                            <MudIcon Icon="mdi-crown" Class="mr-1" />
-                            Pro
-                        </MudLink>
-                </MudContainer>
+                        @* <MudContainer Class="mt-3 flex items-center gap-2 text-sm text-gray-400">
+                            Upgrade to
+                            <MudLink Href="/dashboard/billing/subscription#subscribe" Class="flex items-center">
+                                <MudIcon Icon="mdi-crown" Class="mr-1" />
+                                Pro
+                            </MudLink>
+                        </MudContainer> *@
                     </MudDrawer>
                 </MudMainContent>
             </div>
-
             <div class="plan-RenderComponent" >
             
                         @if (!string.IsNullOrEmpty(Url))
@@ -120,23 +103,18 @@
                              <Statistics />
                         }
             </div>
-
             <div style="height:50px"></div>
         </div>
-  
     }
     else
     {
-            <h1>Error the element !!</h1>
-        
-
+        <h1>Error the element !!</h1>   
     }
 
 
 
 @code
 {
-
 
     private bool _open = false;
     [Parameter] public string Url { get; set; } = "profile";
@@ -195,8 +173,6 @@
 
     private List<NavItem> NavItems;
 
- 
-
     private void ChangeLanguage(string language)
     {
         CurrentLanguage = language;
@@ -204,6 +180,7 @@
         {
             new NavItem { Label = GetLabel("Statistics"), Url = "dashboard/Statistics" ,Icon=@Icons.Material.Filled.QueryStats},
             new NavItem { Label = GetLabel("Profile"), Url = "dashboard/profile",Icon=@Icons.Material.Filled.ManageAccounts },
+   
             new NavItem { Label = GetLabel("Subscriptions"), Url = "dashboard/SubscriptionTemplate",Icon=@Icons.Material.Filled.Subscriptions },
             new NavItem { Label = GetLabel("Spaces"), Url = "dashboard/spaces",Icon=@Icons.Material.Filled.SpaceDashboard },
             new NavItem { Label = GetLabel("models"), Url = "dashboard/models" ,Icon=@Icons.Material.Filled.ModelTraining},
@@ -251,7 +228,7 @@
         var componentMap = new Dictionary<string, Type>
                         {
                 { "Statistics", typeof(Statistics) },
-                { "profile", typeof(ProfileForm) },
+                { "profile", typeof(Profile) },
                 { "Account", typeof(AccountTemplate) },
                 { "SubscriptionTemplate", typeof(TemplateSubscriptions) },
                 { "CreditCards", typeof(TemplateCreditCards) },

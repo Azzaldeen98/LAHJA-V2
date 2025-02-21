@@ -3,6 +3,7 @@ using Application.UseCase.Plans;
 using Application.UseCase.Space;
 using Domain.Entities.AuthorizationSession;
 using Domain.Entities.Profile;
+using Domain.Entities.Profile.Request;
 using Domain.Entities.Profile.Response;
 using Domain.Entities.Space.Request;
 using Domain.Repository.Profile;
@@ -19,6 +20,7 @@ namespace Application.Services.Profile
         private readonly DeleteProfileUseCase _deleteProfileUseCase;
         private readonly GetProfileUserUseCase _getProfileUserUseCase;
         private readonly CreateSpaceAuthorizationUseCase createSpaceAuthorizationUseCase;
+        private readonly UpdateProfileUserUseCase  updateProfileUserUseCase;
 
    
         private readonly IProfileRepository profileRepository;
@@ -30,7 +32,8 @@ namespace Application.Services.Profile
                             DeleteProfileUseCase deleteProfileUseCase,
                             GetProfileUserUseCase getProfileUserUseCase,
                             CreateSpaceAuthorizationUseCase createSpaceAuthorizationUseCase,
-                            IProfileRepository profileRepository)
+                            IProfileRepository profileRepository,
+                            UpdateProfileUserUseCase updateProfileUserUseCase)
         {
             this.getProfileUseCase = getProfileUseCase;
             _createProfileUseCase = createProfileUseCase;
@@ -39,12 +42,17 @@ namespace Application.Services.Profile
             _getProfileUserUseCase = getProfileUserUseCase;
             this.createSpaceAuthorizationUseCase = createSpaceAuthorizationUseCase;
             this.profileRepository = profileRepository;
-       
+            this.updateProfileUserUseCase = updateProfileUserUseCase;
         }
 
         public async Task<Result<AuthorizationSessionWebResponse>> CreateSpaceAsync(SpaceRequest request)
         {
             return await createSpaceAuthorizationUseCase.ExecuteAsync(request);
+        }   
+        
+        public async Task<Result<ProfileUserResponse>> UpdateProfileUserAsync(ProfileUserRequest request)
+        {
+            return await updateProfileUserUseCase.ExecuteAsync(request);
         }
 
         public async Task<Result<ProfileResponse>> getProfileAsync()

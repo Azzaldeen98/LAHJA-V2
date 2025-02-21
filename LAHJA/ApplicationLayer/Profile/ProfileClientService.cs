@@ -1,9 +1,11 @@
 ﻿using Application.Services.AuthorizationSession;
 using Application.Services.Profile;
 using Application.UseCase.AuthorizationSession;
+using Application.UseCase.Plans;
 using AutoMapper;
 using Domain.Entities.AuthorizationSession;
 using Domain.Entities.Profile;
+using Domain.Entities.Profile.Request;
 using Domain.Entities.Profile.Response;
 using Domain.Entities.Space.Request;
 using Domain.ShareData.Base;
@@ -32,6 +34,10 @@ namespace LAHJA.ApplicationLayer.Profile
             this.authorizationSessionService = authorizationSessionService;
         }
 
+        public async Task<Result<ProfileUserResponse>> UpdateProfileUserAsync(ProfileUserRequest request)
+        {
+            return await profileService.UpdateProfileUserAsync(request);
+        }
         public async Task<Result<AuthorizationSessionWebResponse>> CreateAuthorizationSessionAsync(AuthorizationWebRequest request)
         {
             return await authorizationSessionService.CreateAuthorizationSessionAsync(request);

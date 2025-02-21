@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Domain.Entities.Profile;
+using Domain.Entities.Profile.Request;
 using Domain.Entities.Profile.Response;
 using Domain.Exceptions;
 using Domain.Wrapper;
@@ -25,6 +26,7 @@ namespace Infrastructure.DataSource.ApiClient.Profile
             : base(clientFactory, mapper, config)
         {
         }
+
         public async Task<Result<ProfileUserResponse>> GetProfileUserAsync()
         {
             try
@@ -33,7 +35,7 @@ namespace Infrastructure.DataSource.ApiClient.Profile
                 var client = await GetApiClient();
                 var response = await client.UserAsync();
                 var resModel = _mapper.Map<ProfileUserResponse>(response);
-                return Result<ProfileUserResponse>.Success(resModel);
+                    return Result<ProfileUserResponse>.Success(resModel);
 
             }
             catch (ApiException e)
@@ -79,7 +81,33 @@ namespace Infrastructure.DataSource.ApiClient.Profile
 
 
         }
+        public async Task<Result<ProfileUserResponse>> UpdateProfileUserAsync(ProfileUserRequest request)
+        {
+            try
+            {
+                var model = _mapper.Map<UserRequest>(request);
+                var client = await GetApiClient();
+                await client.UpdateProfileAsync(model);
+            
+                return Result<ProfileUserResponse>.Success();
 
+            }
+            catch (ApiException e)
+            {
+
+                return Result<ProfileUserResponse>.Fail(e.Response, e.StatusCode);
+
+            }
+            catch (Exception e)
+            {
+
+                return Result<ProfileUserResponse>.Fail(e.Message);
+
+            }
+
+
+
+        }
         public  async  Task<ICollection<ProfileSubscriptionResponse>> SubscriptionsAsync()
         {
             try

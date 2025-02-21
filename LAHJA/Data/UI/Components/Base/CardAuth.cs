@@ -46,7 +46,7 @@ namespace LAHJA.Data.UI.Components.Base
 
     public class DataBuildAuthBase
     {
-        public string? FirstName777 { get; set; } = "ASG";
+
         public string? FirstName { get; set; } = "ASG";
         public string? LastName { get; set; } = "USER";
         public int? Age { get; set; }
@@ -56,6 +56,7 @@ namespace LAHJA.Data.UI.Components.Base
         public string? ConfirmPassword { get; set; } 
         public string? Address { get; set; }
         public string? Gender { get; set; }
+        public string? Picture { get; set; }
         public string? Nationality { get; set; }
         public string? Code { get; set; }
         public bool IsLogin { get; set; } = true;
@@ -103,6 +104,7 @@ namespace LAHJA.Data.UI.Components.Base
 
         protected string firstName;
         protected string lastName;
+        protected string picture = "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp";
         protected string phoneNumber;
         protected string email = "admin@gmail.com";
         protected string password = "Admin123*";

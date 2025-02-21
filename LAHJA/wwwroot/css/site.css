@@ -1,22 +1,16 @@
 ﻿
 .cont-plan-RenderComponent {
-    /*position:fixed;*/
     width: 100%;
     height: 100%;
     left: 0 ;
-    /*display:flex;
-    flex-direction:row;
-    justify-content:space-around;
-    align-items:start;*/
-
 }
 .plan-RenderComponent{
     max-height:1000px;
-    position:fixed;
-    overflow:auto;
+    position:absolute;
+    overflow-y:auto;
     width:80%;
     left:0;
-    top:50px;
+    top:70px;
 }
 .plan-RenderComponent-nav {
     /*height: 800px;*/

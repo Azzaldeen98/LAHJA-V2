@@ -495,7 +495,8 @@ public class TemplateAuth: TemplateAuthShare<ClientAuthService, DataBuildAuthBas
     private async Task handleApiLoginAsync(DataBuildAuthBase date)
     {
         var response =await builderApi.Login(date);
-  
+
+
         if (response.Succeeded)
         {
 
@@ -503,11 +504,10 @@ public class TemplateAuth: TemplateAuthShare<ClientAuthService, DataBuildAuthBas
             {
                 await sessionUserManager.StoreEmailAsync(date.Email);
               
-                //if(response.Data.accessToken!=null)
-                //    customAuthenticationStateProvider.StoreAuthenticationData(response.Data.accessToken);
             }
             finally
             {
+           
                 await authService.SaveLoginAsync(response.Data);
                 await authService.SaveLoginTypeAsync(LoginType.Email);
                 await AuthStateProvider.InitializeAsync();

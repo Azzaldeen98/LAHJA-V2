@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.Profile;
+using Domain.Entities.Profile.Request;
 using Domain.Entities.Profile.Response;
 using Domain.Entities.Request.Response;
 using Domain.Wrapper;
@@ -7,7 +8,7 @@ namespace Domain.Repository.Profile;
 
 public interface IProfileRepository
 {
-
+    public  Task<Result<ProfileUserResponse>> UpdateProfileUserAsync(ProfileUserRequest request);
     public Task<Result<ProfileUserResponse>> GetProfileUserAsync();
     public Task<Result<ProfileResponse>> getProfileAsync();
     public Task<Result<ProfileResponse>> UpdateProfileAsync(ProfileRequest profileRequest);

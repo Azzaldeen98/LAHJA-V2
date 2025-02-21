@@ -78,6 +78,7 @@ namespace Infrastructure
             serviceCollection.AddScoped<CreateProfileUseCase>();
             serviceCollection.AddScoped<UpdateProfileUseCase>();
             serviceCollection.AddScoped<DeleteProfileUseCase>();
+            serviceCollection.AddScoped<UpdateProfileUserUseCase>();
 
 
             /// Payment

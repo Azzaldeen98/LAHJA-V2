@@ -4,6 +4,10 @@ window.reloadPage = function () {
     location.reload();
 };
 
+window.createObjectURL = (file) => {
+    return URL.createObjectURL(new Blob([file]));
+};
+
 
 window.downloadAudioFromElement = (audioElementId, fileName) => {
     const audioElement = document.getElementById(audioElementId);

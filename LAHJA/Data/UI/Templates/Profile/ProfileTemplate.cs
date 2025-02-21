@@ -3,6 +3,7 @@ using AutoMapper;
 using Domain.Entities.AuthorizationSession;
 using Domain.Entities.Plans.Response;
 using Domain.Entities.Profile;
+using Domain.Entities.Profile.Request;
 using Domain.Entities.Profile.Response;
 using Domain.Entities.Space.Request;
 using Domain.ShareData.Base;
@@ -41,6 +42,7 @@ namespace LAHJA.Data.UI.Templates.Profile
         public Func<T, Task> SubmitDelete { get; set; }
         public Func<T, Task> SubmitUpdate { get; set; }
         public Func<DataBuildSpace,Task<Result<AuthorizationSessionWebResponse>>> SubmitCreateSpace { get; set; }
+        public Func<DataBuildUserProfile, Task<Result<DataBuildUserProfile>>> SubmitUpdateProfileUser { get; set; }
         public Func<DataBuildServiceInfo, Task<Result<AuthorizationSessionWebResponse>>> SubmitCreateSessionToken { get; set; }
         public Func<Task<Result<List<SessionTokenAuth>>>> GetSessionsAccessTokens { get; set; }
         public Func<DataBuildSessionTokenAuth, Task<Result<DeleteResponse>>> SubmitDeleteSessionAccessToken { get; set; }
@@ -52,7 +54,8 @@ namespace LAHJA.Data.UI.Templates.Profile
     public interface IBuilderProfileApi<T> : IBuilderApi<T>
     {
 
-
+        Task<Result<ProfileUserResponse>> UpdateProfileUserAsync(DataBuildUserProfile data);
+     
         Task<Result<ProfileResponse>> GetProfileAsync();
         Task<Result<ProfileUserResponse>> GetProfileUserAsync();
 
@@ -94,7 +97,7 @@ namespace LAHJA.Data.UI.Templates.Profile
 
         public abstract Task<Result<ProfileResponse>> CreateAsync(E data);
         public abstract Task<Result<AuthorizationSessionWebResponse>> CreateSpaceAsync(SpaceRequest data);
-
+        public abstract  Task<Result<ProfileUserResponse>> UpdateProfileUserAsync(DataBuildUserProfile data);
         public abstract Task<Result<List<SessionTokenAuth>>> GetSessionsAccessTokensAsync();
 
         public abstract  Task<Result<DeleteResponse>> DeleteSessionAccessTokenAsync(string id);
@@ -129,11 +132,12 @@ namespace LAHJA.Data.UI.Templates.Profile
     public class BuilderProfileComponent<T> : IBuilderProfileComponent<T>
     {
 
-
+      
         public Func<T, Task> SubmitSearch { get; set; }
         public Func<T, Task> SubmitCreate { get; set; }
         public Func<DataBuildSpace, Task<Result<AuthorizationSessionWebResponse>>> SubmitCreateSpace { get; set; }
         public Func<T, Task> SubmitDelete { get; set; }
+        public Func<DataBuildUserProfile, Task<Result<DataBuildUserProfile>>> SubmitUpdateProfileUser { get; set; }
         public Func<DataBuildServiceInfo, Task<Result<AuthorizationSessionWebResponse>>> SubmitCreateSessionToken { get; set; }
         public Func<Task<Result<List<SessionTokenAuth>>>> GetSessionsAccessTokens { get; set; }
         public Func<DataBuildSessionTokenAuth, Task<Result<DeleteResponse>>> SubmitDeleteSessionAccessToken { get; set; }
@@ -194,6 +198,13 @@ namespace LAHJA.Data.UI.Templates.Profile
         public override async Task<Result<AuthorizationSessionWebResponse>> CreateSpaceAsync(SpaceRequest data)
         {
             return await Service.CreateSpaceAsync(data);
+        }
+      
+      
+        public override async Task<Result<ProfileUserResponse>> UpdateProfileUserAsync(DataBuildUserProfile data)
+        {
+            var model = Mapper.Map<ProfileUserRequest>(data);
+            return await Service.UpdateProfileUserAsync(model);
         }
 
 
@@ -330,6 +341,7 @@ namespace LAHJA.Data.UI.Templates.Profile
             this.BuilderComponents.SubmitPauseSessionToken = OnPauseSessionTokenAsync;
             this.BuilderComponents.SubmitResumeSessionToken = OnResumeSessionTokenAsync;
             this.BuilderComponents.SubmitCreateSessionToken = OnCreateSessionTokenAsync;
+            this.BuilderComponents.SubmitUpdateProfileUser = OnUpdateProfileUserAsync;
             
 
 
@@ -338,7 +350,30 @@ namespace LAHJA.Data.UI.Templates.Profile
 
 
         }
+        public  async Task<Result<DataBuildUserProfile>> OnUpdateProfileUserAsync(DataBuildUserProfile data)
+        {
+            //return await builderApi.UpdateProfileUserAsync(data);
+            try
+            {
+                var response = await builderApi.UpdateProfileUserAsync(data);
+                if (response.Succeeded)
+                {
+                    var rev = mapper.Map<DataBuildUserProfile>(data);
 
+                    return Result<DataBuildUserProfile>.Success(rev);
+                }
+                else
+                {
+                    return Result<DataBuildUserProfile>.Fail(response.Messages);
+                }
+           
+            }
+            catch (Exception e)
+            {
+
+                return Result<DataBuildUserProfile>.Fail(e.Message);
+            }
+        }
         private async Task<Result<List<SessionTokenAuth>>> OnGetSessionsAccessTokensAsync()
         {
             return await builderApi.GetSessionsAccessTokensAsync();
