@@ -135,9 +135,6 @@ namespace LAHJA.Data.UI.Templates.AuthSession
         {
 
         }
-
-   
-
        
         public override async Task<Result<List<SessionTokenAuth>>> GetSessionsAccessTokensAsync()
         {
@@ -193,8 +190,6 @@ namespace LAHJA.Data.UI.Templates.AuthSession
 
         public List<string> Errors { get => _errors; }
 
-
-         
 
         public TemplateAuthSession(
             IMapper mapper,

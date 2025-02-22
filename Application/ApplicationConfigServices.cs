@@ -1,6 +1,7 @@
 ﻿using Application.Services.Auth;
 using Application.Services.AuthorizationSession;
 using Application.Services.Checkout;
+using Application.Services.ModelAi;
 using Application.Services.Plans;
 using Application.Services.Profile;
 using Application.Services.Prroduct;
@@ -9,11 +10,13 @@ using Application.Services.Subscriptions;
 using Application.UseCase;
 using Application.UseCase.Auth;
 using Application.UseCase.AuthorizationSession;
+using Application.UseCase.ModelAi;
 using Application.UseCase.Plans;
 using Application.UseCase.Plans.Get;
 using Application.UseCase.Request;
 using Application.UseCase.Service;
 using Application.UseCase.Space;
+using Domain.ShareData.Base;
 using Infrastructure.DataSource.ApiClient.Plans;
 using Infrastructure.Mappings.Plans;
 using Microsoft.Extensions.DependencyInjection;
@@ -157,7 +160,28 @@ namespace Infrastructure
             serviceCollection.AddScoped<DeleteAuthorizationSessionUseCase>();
             serviceCollection.AddScoped<ResumeSessionTokenUseCase>();
             serviceCollection.AddScoped<PauseSessionTokenUseCase>();
-      
+
+
+            // ModelAi
+       
+            serviceCollection.AddScoped<GetModelsByCategoryUseCase>();
+            serviceCollection.AddScoped<GetModelAiUseCase>();
+            serviceCollection.AddScoped<GetStartStudioUseCase>();
+            serviceCollection.AddScoped<GetValueFilterServiceUseCase>();
+            serviceCollection.AddScoped<GetSettingModelAiUseCase>();
+            serviceCollection.AddScoped<GetModelChatStudioUseCase>();
+            serviceCollection.AddScoped<GetModelsAiUseCase>();
+            serviceCollection.AddScoped<GetModelsByDialectUseCase>();
+            serviceCollection.AddScoped<GetModelsByGenderUseCase>();
+            serviceCollection.AddScoped<GetModelsByLanguageUseCase>();
+            serviceCollection.AddScoped<GetModelsByIsStandardUseCase>();
+            serviceCollection.AddScoped<GetModelsByLanguageAndDialectUseCase>();
+            serviceCollection.AddScoped<GetModelsByTypeAndGenderUseCase>();
+            serviceCollection.AddScoped<GetModelsByLanguageDialectTypeUseCase>();
+            serviceCollection.AddScoped<GetModelSpeechStudioUseCase>();
+            serviceCollection.AddScoped<GetModelTextStudioUseCase>();
+
+
 
         }
 
@@ -177,6 +201,7 @@ namespace Infrastructure
             serviceCollection.AddScoped<RequestService>();
             serviceCollection.AddScoped<SpaceService>();
             serviceCollection.AddScoped<AuthorizationSessionService>();
+            serviceCollection.AddScoped<ModelAiService>();
 
         }
 

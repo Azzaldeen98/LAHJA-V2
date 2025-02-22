@@ -1,7 +1,8 @@
 ﻿
+@using LAHJA.Data.UI.Templates.ModelAi
 @using LAHJA.UI.Components.ServiceCard
 @using LAHJA.UI.Components.StudioLahjaAi
-
+@inject TemplateModelAi Template
 
  
 @* <MainCardService  /> *@
@@ -12,6 +13,17 @@
  
 @code
 {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
 
-    
+            if (Template.BuilderComponents.GetModelsAi != null)
+            {
+                var response = await Template.BuilderComponents.GetModelsAi();
+            }
+          
+        }
+    }
+
 }

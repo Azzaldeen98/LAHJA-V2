@@ -13,13 +13,13 @@ using Infrastructure.Models.Price.Request;
 using Infrastructure.Models.Price.Response;
 using Infrastructure.Models.Product.Request;
 using Infrastructure.Models.Product.Response;
-using Infrastructure.Models.Profile.Response;
 using Infrastructure.Models.Service.Request;
 using Infrastructure.Models.Service.Response;
 using Infrastructure.Models.Setting.Request;
 using Infrastructure.Models.Subscriptions.Response;
 using Infrastructure.Nswag;
 using Domain.Entities.Profile.Request;
+using Domain.Entities.ModelAi;
 
 
 namespace Infrastructure.Mappings.Plans
@@ -136,6 +136,15 @@ namespace Infrastructure.Mappings.Plans
             CreateMap<AuthorizationSessionEncryptResponseModel, TokenVm>().ReverseMap();
        
             CreateMap<SessionVm, SessionTokenAuthResponseModel>().ReverseMap();
+
+
+
+            // ModelAi
+            CreateMap<ModelAiResponse, ModelAiResponseEntity>().ReverseMap();
+            CreateMap<ModelPropertyValues, ModelPropertyValuesEntity>().ReverseMap();
+            CreateMap<Item, ItemEntity>().ReverseMap();
+            CreateMap<FilterModelPropertyValues, FilterModelPropertyValuesEntity>().ReverseMap();
+            CreateMap<ValueFilterModel, ValueFilterModelEntity>().ReverseMap();
 
 
 

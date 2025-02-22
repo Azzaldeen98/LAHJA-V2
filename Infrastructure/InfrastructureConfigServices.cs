@@ -42,6 +42,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Domain.Repository.ModelAi;
 
 namespace Infrastructure
 {
@@ -91,6 +92,7 @@ namespace Infrastructure
             serviceCollection.AddScoped<ModelGatewayApiClient>();
             serviceCollection.AddScoped<AuthorizationSessionApiClient>();
             serviceCollection.AddScoped<SpaceApiClient>();
+            serviceCollection.AddScoped<ModelAiApiClient>();
         }
         private static void InstallSeeds(this IServiceCollection serviceCollection)
         {
@@ -104,8 +106,6 @@ namespace Infrastructure
             serviceCollection.AddSingleton<SeedsSubscriptionsPlans>();
             serviceCollection.AddSingleton<SeedsSubscriptionsData>();
             serviceCollection.AddSingleton<SeedsServiceAiModelsData>();
-
-
 
         }
 
@@ -134,6 +134,7 @@ namespace Infrastructure
             serviceCollection.AddScoped<ICreditCardRepository, CreditCardRepository>();
             serviceCollection.AddScoped<IRequestRepository, RequestRepository>();
             serviceCollection.AddScoped<IAuthorizationSessionRepository,AuthorizationSessionRepository>();
+            serviceCollection.AddScoped<IModelAiRepository, ModelAiRepository>();
 
         }    
       

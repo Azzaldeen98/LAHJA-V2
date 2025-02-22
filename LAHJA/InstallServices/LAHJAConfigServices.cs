@@ -28,6 +28,9 @@ using LAHJA.ApplicationLayer.Checkout;
 using Application.Services.Service;
 using LAHJA.ApplicationLayer.AuthorizationSession;
 using LAHJA.Data.UI.Templates.AuthSession;
+using LAHJA.ApplicationLayer.ModelAi;
+using LAHJA.Data.UI.Models.ModelAi;
+using LAHJA.Data.UI.Templates.ModelAi;
 
 
 namespace LAHJA
@@ -135,6 +138,12 @@ namespace LAHJA
             serviceCollection.AddScoped<TemplateAuthSessionShare<AuthorizationSessionClientService, DataBuildSessionTokenAuth>>();
             serviceCollection.AddScoped<TemplateAuthSession>();
 
+            //// ModelAi
+            serviceCollection.AddScoped<IBuilderModelAiApi<DataBuildModelAi>, BuilderModelAiApiClient>();
+            serviceCollection.AddScoped<IBuilderModelAiComponent<DataBuildModelAi>, BuilderModelAiComponent<DataBuildModelAi>>();
+            serviceCollection.AddScoped<TemplateModelAiShare<ModelAiClientService, DataBuildModelAi>>();
+            serviceCollection.AddScoped<TemplateModelAi>();
+
         }
         private static void InstallServices(this IServiceCollection serviceCollection)
         {
@@ -153,6 +162,7 @@ namespace LAHJA
             serviceCollection.AddScoped<RequestClientService>();
             serviceCollection.AddScoped<SpaceClientService>();
             serviceCollection.AddScoped<AuthorizationSessionClientService>();
+            serviceCollection.AddScoped<ModelAiClientService>();
            
            
         }
