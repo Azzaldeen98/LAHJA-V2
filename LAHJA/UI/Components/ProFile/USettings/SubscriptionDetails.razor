@@ -229,7 +229,7 @@
     [Parameter] public EventCallback<DataBuildUserSubscriptionInfo> SubmitPause { get; set; }
     [Parameter] public EventCallback<DataBuildUserSubscriptionInfo> SubmitResume { set; get; }
     [Parameter] public EventCallback<DataBuildUserSubscriptionInfo> SubmitDelete { set; get; }
-    [Parameter] public EventCallback SubmitCheckoutManage { set; get; }
+    [Parameter] public EventCallback<DataBuildUserSubscriptionInfo> SubmitCheckoutManage { set; get; }
 
     [Parameter] public DataBuildUserSubscriptionInfo DataBuild {
         get =>dataBuild;
@@ -259,9 +259,9 @@
     private async Task OnSubmitCheckoutManage()
     {
 
-        if (SubmitCheckoutManage.HasDelegate)
+        if (SubmitCheckoutManage.HasDelegate && dataBuild!=null)
         {
-            await SubmitCheckoutManage.InvokeAsync();
+            await SubmitCheckoutManage.InvokeAsync(dataBuild);
         }
     }
     private async Task OnStatusChanged(bool action)

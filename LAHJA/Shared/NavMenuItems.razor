@@ -1,53 +1,62 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.Extensions.Localization
 @inject NavigationManager NavigationManager
 
+@inject IStringLocalizer<MainLayout> Localizer
 
-@if (Translation != null)
-{
+@* @if (Translation != null) *@
+@* { *@
 
     @if (IsDisplay)
     {
 
         <MudLink class="isMenu-show" OnClick="ClickItem" Href="/" Style="@("color:" + _iconfill + "!important")">
-            @Translation[CurrentLanguage]["Home"]
+            @Localizer["Home"]
         </MudLink>
 
         <AuthorizeView>
             <NotAuthorized>
                 <MudLink OnClick="ClickItem" Style="@("color:" + _iconfill + "!important")" Href="/Login">
-                    @Translation[CurrentLanguage]["Register"]
+                    @* @Translation[CurrentLanguage]["Register"] *@
+                    @Localizer["Register"]
                 </MudLink>
             </NotAuthorized>
         </AuthorizeView>
 
         <MudLink class="isMenu-show" OnClick="ClickItem" Style="@("color:" + _iconfill + "!important")" Href="/Plans">
-            @Translation[CurrentLanguage]["Plans"]
+            @* @Translation[CurrentLanguage]["Plans"] *@
+            @Localizer["Plans"]
         </MudLink>
 
         <MudLink class="isMenu-show" OnClick="ClickItem" Style="@("color:" + Iconfill + "!important")" Href="/CategoriesPlan">
-            @Translation[CurrentLanguage]["Categories"]
+     @*        @Translation[CurrentLanguage]["Categories"] *@
+            @Localizer["Categories"]
         </MudLink>
         <AuthorizeView>
             <MudLink class="isMenu-show" OnClick="ClickItem" Style="@("color:" + _iconfill + "!important")" Href="/services">
-                @Translation[CurrentLanguage]["Services"]
+                @* @Translation[CurrentLanguage]["Services"] *@
+                @Localizer["Services"]
             </MudLink>
         </AuthorizeView>
 
         <AuthorizeView>
-            <MudLink class="isMenu-show" OnClick="ClickItem" Style="@("color:" + _iconfill + "!important")" Href="/studio">
-                @Translation[CurrentLanguage]["Studio"]
+            <MudLink class="isMenu-show" OnClick="ClickItem" Style="@("color:" + _iconfill + "!important")" Href="/studio/start">
+                @* @Translation[CurrentLanguage]["Studio"] *@
+                @Localizer["Studio"]
             </MudLink>
         </AuthorizeView>
 
         <AuthorizeView>
             <MudLink class="isMenu-show" OnClick="ClickItem" Style="@("color:" + _iconfill + "!important")" Href="/trainingModel">
-                @Translation[CurrentLanguage]["TrainingModel"]
+                @* @Translation[CurrentLanguage]["TrainingModel"] *@
+                @Localizer["Training Models"]
             </MudLink>
         </AuthorizeView>
         <AuthorizeView>
             <MudLink Style="@("color:" + _iconfill + "!important")" OnClick="@(() => logout(true))">
                 <MudIcon Icon="@Icons.Material.Filled.Logout" />
-                @Translation[CurrentLanguage]["Logout"]
+                @* @Translation[CurrentLanguage]["Logout"] *@
+                @Localizer["Logout"]
             </MudLink>
         </AuthorizeView>
 
@@ -62,15 +71,15 @@
 
     }
 
-}
+@* } *@
 
 @code {
 
-    [Parameter] public Dictionary<string, Dictionary<string, string>> Translation { get; set; }
+    // [Parameter] public Dictionary<string, Dictionary<string, string>> Translation { get; set; }
     [Parameter] public bool IsDisplay { get; set; }
-    [Parameter] public bool RightToLeft { get; set; }
+    // [Parameter] public bool RightToLeft { get; set; }
     [Parameter] public bool Flagauth { get; set; }
-    [Parameter] public string CurrentLanguage { get; set; }
+    // [Parameter] public string CurrentLanguage { get; set; }
     [Parameter] public string Iconfill { get => _iconfill; set { _iconfill = value; StateHasChanged(); } }
     [Parameter] public EventCallback<bool> Logout { get; set; }
     [Parameter] public EventCallback ClickItem { get; set; }

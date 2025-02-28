@@ -1,6 +1,7 @@
 ﻿
 @using Domain.ShareData
 @using LAHJA.Data.UI.Components
+@using LAHJA.Helpers
 @using LAHJA.UI.Components.ProFile.USettings
 @using LAHJA.UI.Components.ServiceCard
 @using LAHJA.UI.Components.TabelCard
@@ -47,7 +48,7 @@
     [Parameter] public EventCallback<DataBuildUserSubscriptionInfo> SubmitResume { set; get; }
     [Parameter] public EventCallback<DataBuildUserSubscriptionInfo> SubmitDelete { set; get; }
     [Parameter] public EventCallback<DataBuildUserSubscriptionInfo> SubmitCancel { set; get; }
-    [Parameter] public EventCallback SubmitCheckoutManage { set; get; }
+    [Parameter] public EventCallback<DataBuildUserSubscriptionInfo> SubmitCheckoutManage { set; get; }
 
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -69,14 +70,18 @@
                 ["Text1"] = "Upgrate your Subscription",
                 ["Text2"] = "AI لهجة",
                 ["Description"] = "LAHJA platform provides a smart way to communicate with AI in your own dialect.",
-                ["ButtonLink"] = "Create Space"
+                ["ButtonLink"] = "Create Space",
+                ["Active"] = "Subscriptions Active",
+                ["UnActive"] = "Subscriptions UnActive"
             },
             ["ar"] = new()
             {
                 ["Text1"] = "حدث  اشتراك ",
                 ["Text2"] = "لهجة AI",
                 ["Description"] = "توفر  منصة لهجة  طريقة ذكية للتواصل مع الذكاء الاصطناعي بلهجتك الخاصة.",
-                ["ButtonLink"] = "تحديث الاشتراك  "
+                ["ButtonLink"] = "تحديث الاشتراك",
+                ["Active"] = "الاشتراكات النشطة",
+                ["UnActive"] = "الاشتراكات غير  النشطة",
             }
         };
 
@@ -105,14 +110,14 @@
                 new()
                 {
                     Value=DataBuild.Where(x=>x.Active).Count().ToString(),
-                    Label="Active"
+                    Label=TranslationsLST[lg]["Active"]
 
                 },
 
                  new()
                 {
-                     Value=DataBuild.Where(x=>x.Active==false).Count().ToString(),
-                    Label="UnActive"
+                    Value=DataBuild.Where(x=>x.Active==false).Count().ToString(),
+                    Label=TranslationsLST[lg]["UnActive"]
                 }
             };
         }
@@ -195,8 +200,11 @@
         {
 
             { x =>x.DataBuild1,null },
-
             {x => x.DataBuildCheck,null},
+            {x => x.Language,lg},
+            {x => x.UrlRedirect,Helper.GetFullPath(Navigation,RouterPage.DASHBOARD_SUBSCRIPTION)},
+            {x => x.UrlCancel,Helper.GetFullPath(Navigation,RouterPage.DASHBOARD_SUBSCRIPTION)},
+            {x => x.Data,null},
             {x=>x.SrcIframe,"https://lahja-core.onrender.com/createspace"}
         };
 

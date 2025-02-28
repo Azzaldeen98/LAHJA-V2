@@ -19,7 +19,7 @@ namespace Shared.Constants
         public static string CONFIRM_EMAIL_PAGE_URL = "ConfirmEmail";
         public static string RESET_PASSWORDL_PAGE_URL = "ResetPassword";
         public static string LOGOUT = "LogOut";
-        public static string SETTINGS = "settings";
+        //public static string DASHBOARD = "dashboard";
         public static string RETEURN_EXTERNAL_LOGIN_PAGE= "ReturnExternalLoginPage";
     }
 }

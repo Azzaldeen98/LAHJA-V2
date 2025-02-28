@@ -1,40 +1,41 @@
 ﻿@using LAHJA.Them
 @using Microsoft.AspNetCore.Authorization
+@using Microsoft.Extensions.Localization
 @inject NavigationManager NavigationManager
-
+@inject IStringLocalizer<MainLayout> Localizer
 @attribute [Authorize]
 
     <div class="mt-4 d-flex flex-column nav-bar_font">
     <MudLink Style="@("color:" + _iconfill + "!important")" Href="/dashboard" OnClick="ClickItem">
             <MudIcon Icon="@Icons.Material.Filled.Dashboard" />
-            @translations[CurrentLanguage]["Dashboard"]
+                @Localizer["Dashboard"]
         </MudLink>
         <MudLink Style="@("color:" + _iconfill + "!important")" Href="/services" OnClick="ClickItem">
             <MudIcon Icon="@Icons.Material.Filled.Dashboard" />
-            @translations[CurrentLanguage]["Servers"]
+        @Localizer["Servers"]
         </MudLink>
         <MudLink Style="@("color:" + _iconfill + "!important")" Href="/billing" OnClick="ClickItem">
             <MudIcon Icon="@Icons.Material.Filled.AccountBalance" />
-            @translations[CurrentLanguage]["Billing"]
+        @Localizer["Billing"]
         </MudLink>
        @*  <MudNavGroup Style="@("color:" + _iconfill + "!important")" Title="@translations[CurrentLanguage]["Settings"]" Expanded="true"> *@
         <MudLink  Style="@("color:" + _iconfill + "!important")" Href="/dummy" OnClick="ClickItem">
             <MudIcon Icon="@Icons.Material.Filled.People" />
-            @translations[CurrentLanguage]["Users"]
+        @Localizer["Users"]
         </MudLink>
         <MudLink Style="@("color:" + _iconfill + "!important")" Href="/dummy" OnClick="ClickItem">
             <MudIcon Icon="@Icons.Material.Filled.Security" />
-            @translations[CurrentLanguage]["Security"]
+        @Localizer["Security"]
         </MudLink>
         @* </MudNavGroup> *@
         <MudLink Href="/dummy" Style="@("color:" + _iconfill + "!important")" OnClick="ClickItem">
             <MudIcon Icon="@Icons.Material.Filled.Info" />
-            @translations[CurrentLanguage]["About"]
+        @Localizer["About"]
         </MudLink>
 
         <MudLink Style="@("color:" + _iconfill + "!important")" OnClick="OnLogOut">
                 <MudIcon Icon="@Icons.Material.Filled.Logout" />
-                @translations[CurrentLanguage]["Logout"]
+        @Localizer["Logout"]
         </MudLink> 
     </div>
 

@@ -22,13 +22,25 @@ using LAHJA.ApiClient;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.ResponseCompression;
 using LAHJA.Notification;
+using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.Extensions.Configuration;
+using Blazored.LocalStorage;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+builder.Services.AddRazorPages()
+    .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
+    .AddDataAnnotationsLocalization();
+
 // تسجيل IHttpContextAccessor لاستخدام HttpContext داخل Blazor
 builder.Services.AddHttpContextAccessor();
 
+builder.Services.AddBlazoredLocalStorage();
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
@@ -44,21 +56,13 @@ builder.Services.AddScoped<AuthenticationStateProvider>(sp => sp.GetRequiredServ
 
 
 
-builder.Services.AddLocalization(options => options.ResourcesPath = "Locales");
-
-
-
-
-
 // Add services to the container.  
-
-
 var jwtSettings = builder.Configuration.GetSection("JWTSettings").Get<JWTSettings>();
 builder.Services.AddSingleton<JWTSettings>(jwtSettings);
 
 
-/////////////////////////////////////////////////////
-
+////////////////////////////////////////////////////
+///
 builder.Services.InstallSharedConfigServices();
 builder.Services.InstallInfrastructureConfigServices(configuration: builder.Configuration);
 builder.Services.InstallApplicationConfigServices();
@@ -137,8 +141,7 @@ builder.Services.AddMudBlazorSnackbar(config =>
     config.SnackbarVariant = Variant.Text; // ����� �����
 });
 
-//////////////////////////////////////////
-builder.Services.AddRazorPages();
+
 
 builder.Services.AddServerSideBlazor()
     .AddCircuitOptions(options => { options.DetailedErrors = true; });
@@ -168,18 +171,22 @@ builder.Services.AddResponseCompression(opts =>
     opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
         ["application/octet-stream"]);
 });
+
+
+
 var app = builder.Build();
 
 
-// ����� ����� ���������� ���� ������
-string[] supportedCultures = ["en-US", "ar-AR"];
-app.UseRequestLocalization(new RequestLocalizationOptions
-{
-    DefaultRequestCulture = new RequestCulture("ar"),
-    SupportedCultures = supportedCultures.Select(c => new CultureInfo(c)).ToList(),
-    SupportedUICultures = supportedCultures.Select(c => new CultureInfo(c)).ToList(),
-});
+//var supportedCultures = new[] { "en", "ar" };
+var supportedCultures = builder.Configuration.GetSection("Cultures")
+      .GetChildren().ToDictionary(x => x.Key, x => x.Value).Keys.ToArray();
+var localizationOptions = new RequestLocalizationOptions().SetDefaultCulture(supportedCultures[0])
+    .AddSupportedCultures(supportedCultures)
+    .AddSupportedUICultures(supportedCultures);
 
+
+
+app.UseRequestLocalization(localizationOptions);
 
 app.UseResponseCompression();
 

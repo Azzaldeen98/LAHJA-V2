@@ -60,7 +60,6 @@
     {
         if (firstRender)
         {
-   
                 if (PlanId != null)
                 {
                     await initializePlanAsync();
@@ -130,20 +129,14 @@
     }
     private async Task onSubmitCheckout(SubscriptionPlanInfo plan)
     {
-
         if (templatePayment.BuilderComponents.SubmitCheckout != null && plan!=null)
             await templatePayment.BuilderComponents.SubmitCheckout(new DataBuildPaymentBase { PlanId = plan.Id });
-
     }
-    
-    
     private async Task onSubmitActiveCreditCard(CardDetails card)
     {
         if (templateCreditCard.BuilderComponents.SubmitActiveCreditCard != null && card != null)
             await templateCreditCard.BuilderComponents.SubmitActiveCreditCard(new DataBuildCreditCardBase { CreditCard = card });
     }
-
-
     private async Task OnSubmitCreateCard(CardDetails data)
     {
         if (templateCreditCard.BuilderComponents.SubmitCreateCreditCardDetails!=null)
@@ -165,7 +158,6 @@
             await templateCreditCard.BuilderComponents.SubmitDeleteCreditCardDetails(new DataBuildCreditCardBase { CreditCard = data });
         }
     }
-
     private async Task CheckoutAsync()
     {
 
@@ -175,7 +167,6 @@
 
             Navigation.NavigateTo(res.Data.Url ?? RouterPage.HOME);
     }
-   
 
 }
 

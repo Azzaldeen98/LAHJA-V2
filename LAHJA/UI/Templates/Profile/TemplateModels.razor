@@ -54,14 +54,14 @@
             new()
             {
                 Value=_dataBuild.Where(x=>x.IsStandard==true).Count().ToString(),
-                Label="Standard"
+                Label=TranslationsLST[lg]["Standard"]
 
             },
 
              new()
             {
                  Value=_dataBuild.Where(x=>x.IsStandard==false).Count().ToString(),
-                Label="UnIsStandard"
+                Label=TranslationsLST[lg]["UnStandard"]
             },
 
         };
@@ -77,13 +77,13 @@
                 ,
                 Name="انشاء"
             },
-            new()
-            {
-                Icon=@Icons.Material.Filled.Delete
-                ,
-                IsMudChip=false,
-                Tag="delete"
-            }
+            // new()
+            // {
+            //     Icon=@Icons.Material.Filled.Delete
+            //     ,
+            //     IsMudChip=false,
+            //     Tag="delete"
+            // }
         };
             groupAction.ChipClicked += OnChipClicked;
 
@@ -140,14 +140,18 @@
                 ["Text1"] = "create your spaces",
                 ["Text2"] = "AI لهجة",
                 ["Description"] = "LAHJA platform provides a smart way to communicate with AI in your own dialect.",
-                ["ButtonLink"] = "Create Space"
+                ["ButtonLink"] = "Create Model",
+                ["Standard"] = "Models Standard",
+                ["UnStandard"] = "Models UnStandard"
             },
             ["ar"] = new()
             {
                 ["Text1"] = "اخنر  نماذج الذكاء الاصطناعي" ,
                 ["Text2"] = "لهجة AI",
                 ["Description"] = "توفر  منصة لهجة  طريقة ذكية للتواصل مع الذكاء الاصطناعي بلهجتك الخاصة.",
-                ["ButtonLink"] = "انشاء نموذج "
+                ["ButtonLink"] = "انشاء نموذج ",
+                ["Standard"] = "النماذج القياسية",
+                ["UnStandard"] = "النماذج غير القياسية"
             }
         };
 

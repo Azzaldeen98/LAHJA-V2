@@ -28,7 +28,15 @@ namespace LAHJA.Helpers.Services
         {
             await _jsRuntime.InvokeVoidAsync("localStorageHelper.setItem", "email", email);
         }
-        
+        public async Task SaveThemeAsync(string theme)
+        {
+            await _jsRuntime.InvokeVoidAsync("localStorageHelper.setItem", "theme", theme);
+        }
+
+        public async Task<string> GetThemeAsync()
+        {
+           return  await _jsRuntime.InvokeAsync<string>("localStorageHelper.getItem", "theme");
+        }
         public async Task<UserApp> GetDataAsync()
         {
             var email = await _jsRuntime.InvokeAsync<string>("localStorageHelper.getItem", "email") ?? "";

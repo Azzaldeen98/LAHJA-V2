@@ -58,6 +58,7 @@ namespace LAHJA
         private static void InstallHelperServices(this IServiceCollection serviceCollection)
         {
             serviceCollection.AddTransient<IManageLanguageService,ManageLanguageService>();
+            serviceCollection.AddScoped<SessionUserManager>();
             serviceCollection.AddScoped<LanguageService>();
             serviceCollection.AddScoped<MessageBox>();
 

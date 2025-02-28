@@ -8,6 +8,6 @@
         public string Dialect { get; set; }
         public string Gender { get; set; }
         public string Type { get; set; }
-        public string SsStandard { get; set; }
+        public string IsStandard { get; set; }
     }
 }

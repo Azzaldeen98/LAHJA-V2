@@ -6,6 +6,15 @@ using System.Threading.Tasks;
 
 namespace Domain.Exceptions
 {
+    public class ApiExceptionResult
+    {
+        public string Title { get;  set; }
+        public string Message { get;  set; }
+        public string Code { get;  set; }
+        
+
+
+    }
     public class ServerException:Exception
     {
             

@@ -28,6 +28,8 @@ using Domain.Entities.AuthorizationSession;
 using LAHJA.Data.UI.Models;
 using Domain.Entities.Service.Response;
 using Domain.Entities.Profile.Request;
+using LAHJA.Data.UI.Components.ServiceCard;
+using Domain.Entities.ModelAi;
 
 namespace LAHJA.Mappings
 {
@@ -146,45 +148,29 @@ namespace LAHJA.Mappings
              CreateMap<ProfileResponse, DataBuildUserProfile>()
                 .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.Image))
                 .ReverseMap();   
-            
             CreateMap<ProfileRequest, DataBuildUserProfile>()
                 .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.Image))
                 .ReverseMap();
-
-
-                CreateMap<RequestResponse, DataBuildServiceBase>()
-                //.ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Image))
-                .ReverseMap();  
-            
-            
-               CreateMap< DataBuildServiceBase, Data.UI.Models.QueryRequestTextToText>()
+            CreateMap<RequestResponse, DataBuildServiceBase>().ReverseMap();  
+            CreateMap< DataBuildServiceBase, Data.UI.Models.QueryRequestTextToText>()
                 .ForMember(dest => dest.Text, opt => opt.MapFrom(src => src.Text))
                 .ReverseMap();  
-            
-   
-            
-             CreateMap<RequestResponse, Data.UI.Models.QueryRequestTextToText>()
+            CreateMap<RequestResponse, Data.UI.Models.QueryRequestTextToText>()
                 .ForMember(dest => dest.Key, opt => opt.MapFrom(src => src.Token))
                 .ReverseMap();  
-            
             CreateMap<RequestResponse, EventRequest>().ReverseMap();   
-            
-                CreateMap<DataBuildServiceBase, Data.UI.Models.QueryRequestTextToSpeech>()
+            CreateMap<DataBuildServiceBase, Data.UI.Models.QueryRequestTextToSpeech>()
                 .ForMember(dest => dest.Data, opt => opt.MapFrom(src => src.Text))
                 .ReverseMap();
-            
-               CreateMap<DataBuildServiceBase, RequestCreate>()
+            CreateMap<DataBuildServiceBase, RequestCreate>()
                 .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Text))
                 .ReverseMap();
-
             CreateMap<DataBuildUserProfile,ProfileUserRequest>()
                 .ForMember(dest => dest.Image, opt => opt.MapFrom(src => src.ImageUri))
                 .ReverseMap();
 
-
             CreateMap<DataBuildSpace,ProfileSpaceResponse>().ReverseMap();
             CreateMap<DataBuildServiceInfo, ServiceResponse>().ReverseMap();
-
             CreateMap<DataBuildUserSubscriptionInfo, ProfileSubscriptionResponse>().ReverseMap();
             CreateMap<DataBuildUserSubscriptionInfo, SubscriptionResponse>().ReverseMap();
             CreateMap<DataBuildUserProfile, ProfileUserResponse>().ReverseMap();
@@ -194,6 +180,15 @@ namespace LAHJA.Mappings
                 .ForMember(dest => dest.CreationDate, opt => opt.MapFrom(src => src.CreationDate.DateTime))
                 .ForMember(dest => dest.EndTime, opt => opt.MapFrom(src => src.EndTime.Value.DateTime))
                 .ReverseMap();
+
+
+
+            //// Services - (ModelAi)
+            CreateMap<ModelPropertyValues, ModelPropertyValuesEntity>().ReverseMap();
+            CreateMap<ModelAiResponse, ModelAiResponseEntity>().ReverseMap();
+
+
+
 
 
             //.ForMember(dest => dest.ServiceDetailsList, opt => opt.MapFrom(src => src.Features

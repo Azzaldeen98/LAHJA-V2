@@ -4,6 +4,7 @@ using LAHJA.Data.UI.Templates.Services;
 using LAHJA.Helpers;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using Shared.Constants.Router;
 
 namespace LAHJA.Data.UI.Components.StudioLahjaAiVM
 {
@@ -11,16 +12,21 @@ namespace LAHJA.Data.UI.Components.StudioLahjaAiVM
     {
 
         [Inject] TemplateAuthSession templateAuthSession { get; set; }
+        [Inject] NavigationManager Navigation { get; set; }
 
         [Inject] public TemplateServices templateServices { get; set; }
         [Inject] public ISnackbar Snackbar { get; set; }
+        public static bool IsDialogBox = false;
 
 
         protected string _srcFrame;
         protected bool isLoading = true;
+        protected string UrlCancel{ get => Helper.GetFullPath(Navigation, RouterPage.STUDIO); }
+
         [Parameter] public string SrcIFrame { get=> _srcFrame; set=> _srcFrame=value; }
      
         [Parameter] public string ServiceId { get; set; }
+        [Parameter] public string UrlPage { get; set; }
 
         [Parameter]
         public string CurrentLanguage { get=> base.CurrentLanguage; set=> base.CurrentLanguage=value; }
@@ -114,6 +120,12 @@ namespace LAHJA.Data.UI.Components.StudioLahjaAiVM
                 {
                     _srcFrame = Helper.GetServiceSrcFrame(res.Data.UrlCore, res.Data.SessionToken);
                     StateHasChanged();
+                }
+                else
+                {
+                    Snackbar.Add((res.Messages.Any() &&  res.Messages[0].Contains("400")? "Your subscription is canceled or expired": res.Messages[0]??"Error"), Severity.Error);
+                    if (!IsDialogBox)
+                        Navigation.NavigateTo($"{RouterPage.STUDIO}/start");
                 }
             }
         }

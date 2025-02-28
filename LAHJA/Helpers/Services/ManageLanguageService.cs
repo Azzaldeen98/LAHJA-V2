@@ -81,7 +81,7 @@ namespace LAHJA.Helpers.Services
             try
             {
                 //semaphore.WaitOne();
-                var lang= await _jsRuntime.InvokeAsync<string>("localStorageHelper.getItem", ConstantsApp.LANGUAGE_STORAGE) ?? LanguagesCode.AR.ToString().ToLower();
+                var lang= await _jsRuntime.InvokeAsync<string>("localStorageHelper.getItem", ConstantsApp.LANGUAGE_STORAGE) ?? LanguagesCode.EN.ToString().ToLower();
                 changeLanguageApp(lang=="ar"? LanguagesCode.AR: LanguagesCode.EN);
                 return lang;
             }
@@ -114,9 +114,32 @@ namespace LAHJA.Helpers.Services
                 {
                     semaphore.WaitOne();
                     await SetLanguageInSessionAsync(code);
+
                     await _jsRuntime.InvokeVoidAsync("localStorageHelper.setItem", ConstantsApp.LANGUAGE_STORAGE, (code.ToString().ToLower()));
                     changeLanguageApp(code);
-                    await _jsRuntime.InvokeVoidAsync("reloadPage");
+                    //await _jsRuntime.InvokeVoidAsync("reloadPage");
+                }
+                catch (Exception ex)
+                {
+
+                }
+                finally
+                {
+                    semaphore.Release();
+                }
+            }
+        }
+        
+        public async Task SetStringLanguageAsync(string culture)
+        {
+            if (!string.IsNullOrEmpty(culture))
+            {
+                try
+                {
+                    semaphore.WaitOne();
+                    await _jsRuntime.InvokeVoidAsync("localStorageHelper.setItem", ConstantsApp.LANGUAGE_STORAGE, culture);
+                    await PSession.SetAsync(ConstantsApp.LANGUAGE_STORAGE, culture);
+                    //await _jsRuntime.InvokeVoidAsync("reloadPage");
                 }
                 catch (Exception ex)
                 {

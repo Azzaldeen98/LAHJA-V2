@@ -34,7 +34,7 @@
 
                 <MudContainer Class="w-100" >
                     <MudContainer Class="pt-1 border px-3 border-gray-100 rounded-xl bg-gradient-to-l  p-0" style="background-color:none!important">
-                    <UserAvaterCard Name="@(data.DisplayName??data.FirstName)" PhoneNumber="@data.PhoneNumber" ImageUrl="@data.Image" />
+                    <UserAvaterCard Name="@(data.DisplayName??data.FirstName)"  ImageUrl="@data.Image" />
                         <MudDivider Class="my-3 py-1" />
                         <MudList T="string" >
                             @foreach (var item in NavItems)
@@ -60,14 +60,17 @@
                </MudContainer>
             </div>
             <div class="nav-menu-continer-items-sm w-100">
-                <div class="d-flex flex-row justify-content-start align-items-start w-100" style="position:fixed;z-index:200; justify-content:end !important;">
-                    <MudIconButton Icon="@Icons.Material.Filled.Menu" OnClick="ToggleMenu" />
-                </div>
+            
+            <div class="d-flex flex-row justify-content-start align-items-start w-100" style="position:fixed;z-index:200; justify-content:end !important;">
+                <MudCard Class="p-2 d-flex flex-row justify-center align-items-center" Style="width:50px;height:50px;border-radius:0px 0px 15px 0px">
+                    <MudIconButton Class="m-1" Color="@AppColors.BASE_COLOR_ENUM" Size="Size.Medium" Icon="@Icons.Material.Filled.Menu" OnClick="ToggleMenu" />
+                </MudCard>
+            </div>
 
                  <MudMainContent Class="nav-profile-menu-continer-items-sm w-100 ">
                     <MudDrawer @bind-Open="@_open" Fixed="true" Elevation="0" Class="h-100" Anchor="Anchor.End" Variant="@DrawerVariant.Temporary">
                         <MudNavMenu Class="font-size-nav-v2" >
-                        <UserAvaterCard Name="@(data.DisplayName??data.FirstName)" PhoneNumber="@data.PhoneNumber" ImageUrl="@data.Image" />
+                        <UserAvaterCard Name="@(data.DisplayName??data.FirstName)"  ImageUrl="@data.Image" />
                             <MudDivider Class="my-3 py-1" />
                             @foreach (var item in NavItems)
                             {
@@ -100,7 +103,7 @@
                         }
                         else
                         {
-                             <Statistics />
+                             <Statistics  />
                         }
             </div>
             <div style="height:50px"></div>
@@ -132,7 +135,7 @@
 
         } }
 
-    private static string CurrentLanguage = "ar";
+    private static string lg = "ar";
 
     private DataBuildUserProfile data = new DataBuildUserProfile();
     private void ToggleMenu()
@@ -143,7 +146,7 @@
     protected override void OnInitialized()
     {
 
-        ChangeLanguage(CurrentLanguage);
+        ChangeLanguage(lg);
 
     }
 
@@ -152,7 +155,7 @@
 
         if (firstRender)
         {
-            CurrentLanguage = await _manageLanguageService.GetLanguageAsync();
+            lg = await _manageLanguageService.GetLanguageAsync();
             var result = await Template.GetProfileUserAsync();
 
             if (result.Succeeded)
@@ -168,41 +171,41 @@
 
     private static string GetLabel(string key)
     {
-        return Translations[CurrentLanguage].ContainsKey(key) ? Translations[CurrentLanguage][key] : key;
+        return Translations[lg].ContainsKey(key) ? Translations[lg][key] : key;
     }
 
     private List<NavItem> NavItems;
 
     private void ChangeLanguage(string language)
     {
-        CurrentLanguage = language;
+        lg = language;
         NavItems=  new()
         {
             new NavItem { Label = GetLabel("Statistics"), Url = "dashboard/Statistics" ,Icon=@Icons.Material.Filled.QueryStats},
             new NavItem { Label = GetLabel("Profile"), Url = "dashboard/profile",Icon=@Icons.Material.Filled.ManageAccounts },
-   
             new NavItem { Label = GetLabel("Subscriptions"), Url = "dashboard/SubscriptionTemplate",Icon=@Icons.Material.Filled.Subscriptions },
             new NavItem { Label = GetLabel("Spaces"), Url = "dashboard/spaces",Icon=@Icons.Material.Filled.SpaceDashboard },
             new NavItem { Label = GetLabel("models"), Url = "dashboard/models" ,Icon=@Icons.Material.Filled.ModelTraining},
             new NavItem { Label = GetLabel("CreditCards"), Url = "dashboard/CreditCards",Icon=@Icons.Material.Filled.CreditCard },
-
-            new NavItem { Label = GetLabel("Billing"), Url = "dashboard/billing", },
+            new NavItem { Label = GetLabel("Billing"), Url = "dashboard/billing",Icon=@Icons.Material.Filled.Cached },
+            new NavItem { Label = GetLabel("Access Tokens"), Url = "dashboard/AccessTokens",Icon=@Icons.Material.Filled.Token },
             new NavItem { Label = GetLabel("Authentication"), Url = "dashboard/authentication",Icon=@Icons.Material.Filled.PrivacyTip, },
-            new NavItem { Label = GetLabel("Access Tokens"), Url = "dashboard/AccessTokens",Icon=@Icons.Material.Filled.Token, },
+
           //  new NavItem { Label = GetLabel("SSH and GPG Keys"), Url = "dashboard/keys" },
             new NavItem { Label = GetLabel("Webhooks"), Url = "dashboard/webhooks",Icon=@Icons.Material.Filled.Webhook, },
            // new NavItem { Label = GetLabel("Papers"), Url = "dashboard/papers" },
             new NavItem { Label = GetLabel("Notifications"), Url = "dashboard/notifications",Icon=@Icons.Material.Filled.Notifications },
             //new NavItem { Label = GetLabel("Local Apps and"), Url = "dashboard/local-apps", Badge = "NEW" },
            // new NavItem { Label = GetLabel("Gated Repositories"), Url = "dashboard/gated-repos" },
-           new NavItem { Label = GetLabel("Profile"), Url = "dashboard/profile",Icon=@Icons.Material.Filled.Person },
-            new NavItem { Label = GetLabel("Account"), Url = "dashboard/Account" ,Icon=@Icons.Material.Filled.ManageAccounts},
+
+            // new NavItem { Label = GetLabel("Account"), Url = "dashboard/Account" ,Icon=@Icons.Material.Filled.ManageAccounts},
 
            // new NavItem { Label = GetLabel("Connected Apps"), Url = "dashboard/applications" },
             new NavItem { Label = GetLabel("Theme"), Url = "dashboard/theme" }
         };
+
         StateHasChanged();
-        InvokeAsync(StateHasChanged);
+
     }
 
     public void SetActiveTab(string url)
@@ -252,8 +255,6 @@
               };
 
 
-
-        // تحديد المكون بناءً على `url`
         if (componentMap.TryGetValue(Url, out var componentType))
         {
             builder.OpenComponent(0, componentType);
@@ -263,13 +264,11 @@
                 builder.AddAttribute(1, "subscriptionId", data?.Subscription?.Id);
             }
                
-            // builder.AddAttribute(1,);
             builder.CloseComponent();
         }
         else
         {
-            // مكون افتراضي إذا لم يتم العثور على `url`
-            builder.OpenComponent(0, typeof(BillingSection));
+            builder.OpenComponent(0, typeof(Statistics));
             builder.CloseComponent();
         }
     };

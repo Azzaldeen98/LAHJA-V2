@@ -23,6 +23,8 @@
   </ItemGroup>
 	<ItemGroup>
 
+		<PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
+
 		<PackageReference Include="Blazorise.Captcha" Version="1.6.2" />
 
 		<PackageReference Include="Blazorise.Captcha.ReCaptcha" Version="1.6.2" />
@@ -52,6 +54,7 @@
 	  <Folder Include="Data\UI\Components\Profile\" />
 	  <Folder Include="Data\UI\Templates\Request\" />
 	  <Folder Include="Data\UI\Templates\Setting\" />
+	  <Folder Include="Resources\Pages\" />
 	  <Folder Include="UI\Components\FeatureServices\" />
 	  <Folder Include="UI\Components\Training\" />
 	  <Folder Include="UI\Components\SidebarMen\" />

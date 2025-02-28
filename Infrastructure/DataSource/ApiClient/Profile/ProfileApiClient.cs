@@ -87,7 +87,7 @@ namespace Infrastructure.DataSource.ApiClient.Profile
             {
                 var model = _mapper.Map<UserRequest>(request);
                 var client = await GetApiClient();
-                await client.UpdateProfileAsync(model);
+                await client.UpdateAsync(model);
             
                 return Result<ProfileUserResponse>.Success();
 

@@ -24,8 +24,6 @@ namespace LAHJA.Data.UI.Templates.Payment
 
         public string ReturnUrl { get; set; }  
     }
-
-
     public interface IBuilderPaymentComponent<T> : IBuilderComponents<T>
     {
 
@@ -36,9 +34,6 @@ namespace LAHJA.Data.UI.Templates.Payment
 
 
     }
-
-
-
     public interface IBuilderCheckoutApi<T> : IBuilderApi<T>
     {
 
@@ -51,7 +46,6 @@ namespace LAHJA.Data.UI.Templates.Payment
 
 
     }
-
     public abstract class BuilderCheckoutApi<T, E> : BuilderApi<T, E>, IBuilderCheckoutApi<E>
     {
 
@@ -74,8 +68,6 @@ namespace LAHJA.Data.UI.Templates.Payment
         public Func<T, Task> SubmitCheckout { get; set; }
         public Func<T, Task> SubmitCheckoutManage { get; set; }
     }
-
-
     public class TemplatePaymentShare<T, E> : TemplateBase<T, E>
     {
         protected readonly NavigationManager navigation;
@@ -111,14 +103,11 @@ namespace LAHJA.Data.UI.Templates.Payment
         }
 
     }
-
-     
     public class BuilderCheckoutApiClient : BuilderCheckoutApi<CheckoutClientService, DataBuildPaymentBase>, IBuilderCheckoutApi<DataBuildPaymentBase>
     {
         public BuilderCheckoutApiClient(IMapper mapper, CheckoutClientService service) : base(mapper, service)
         {
         }
-
 
         public override async Task<Result<CheckoutResponse>> CheckoutAsync(DataBuildPaymentBase data)
         {
@@ -154,16 +143,9 @@ namespace LAHJA.Data.UI.Templates.Payment
             }
         }
     }
-
-
     public class TemplatePayment : TemplatePaymentShare<CheckoutClientService, DataBuildPaymentBase>
     {
-
-   
         public List<string> Errors { get => _errors; }
-
-   
-
 
         public TemplatePayment(
             IMapper mapper,
@@ -181,11 +163,10 @@ namespace LAHJA.Data.UI.Templates.Payment
 
         }
 
-
-
         private async Task onSubmitCheckout(DataBuildPaymentBase data) {
             
-            data.SuccessUrl = Helper.GetInstance().GetFullPath("settings/SubscriptionTemplate");
+            
+            data.SuccessUrl = Helper.GetInstance().GetFullPath(RouterPage.DASHBOARD_SUBSCRIPTION);
             data.CancelUrl = Helper.GetInstance().GetFullPath($"payment/{data.PlanId}");
             
 			var res=await  builderApi.CheckoutAsync(data);
@@ -197,7 +178,7 @@ namespace LAHJA.Data.UI.Templates.Payment
                 }
                 else
                 {
-                    navigation.NavigateTo("settings/SubscriptionTemplate", true);
+                    navigation.NavigateTo(RouterPage.DASHBOARD_SUBSCRIPTION, true);
                 }
               
             }
@@ -240,7 +221,10 @@ namespace LAHJA.Data.UI.Templates.Payment
         private async Task onSubmitCheckoutManage(DataBuildPaymentBase data)
         {
 
-            data.ReturnUrl = Helper.GetInstance().GetFullPath("settings/SubscriptionTemplate");
+            data.ReturnUrl = Helper.GetInstance().GetFullPath(RouterPage.DASHBOARD_SUBSCRIPTION);
+            data.CancelUrl = Helper.GetInstance().GetFullPath(RouterPage.DASHBOARD_SUBSCRIPTION);
+            data.SuccessUrl = Helper.GetInstance().GetFullPath(RouterPage.DASHBOARD_SUBSCRIPTION);
+
             var res = await builderApi.CheckoutManageAsync(data);
             if (res.Succeeded  && !string.IsNullOrEmpty(res.Data.Url))
             {
@@ -277,16 +261,12 @@ namespace LAHJA.Data.UI.Templates.Payment
             }
 
         }
-
         public async Task<Result<CheckoutResponse>> CheckoutAsync(DataBuildPaymentBase DataBuildPaymentBase)
         {
       
                return await builderApi.CheckoutAsync(DataBuildPaymentBase);
 
         }
-
-   
-
 
     }
 

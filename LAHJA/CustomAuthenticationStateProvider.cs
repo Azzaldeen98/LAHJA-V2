@@ -41,10 +41,10 @@ namespace LAHJA
 
            return  AuthenticatedState(token);
         }
-        public async Task StartUpWebAsync()
-        {
+        //public async Task StartUpWebAsync()
+        //{
 
-        }
+        //}
         public async Task InitializeAsync()
         {
             var token = await _tokenService.GetTokenAsync();
@@ -63,7 +63,7 @@ namespace LAHJA
 
         }
      
-    public AuthenticationState AuthenticatedState(string userId = "userId",string name="UserName", string role="User")
+        public AuthenticationState AuthenticatedState(string userId = "userId",string name="UserName", string role="User")
         {
             
 

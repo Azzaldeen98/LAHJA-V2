@@ -9,6 +9,28 @@ window.createObjectURL = (file) => {
 };
 
 
+window.preventRefreshLoss = (message) => {
+    window.onbeforeunload = function () {
+        return message;
+    };
+};
+
+function toggleDarkMode(isDark) {
+  
+    const iframe = document.querySelector("iframe");
+    if (iframe.contentWindow) {
+        iframe.contentWindow.postMessage({ darkMode: isDark }, "*");
+    }
+}
+
+
+//document.getElementById("darkModeToggle").addEventListener("click", function () {
+   
+//    const isDark = document.body.classList.toggle("dark-mode");
+//    alert("-A")
+//    toggleDarkMode(isDark);
+//});
+
 window.downloadAudioFromElement = (audioElementId, fileName) => {
     const audioElement = document.getElementById(audioElementId);
 

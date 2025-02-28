@@ -1,9 +1,20 @@
 ﻿
+using Domain.Entities.ModelAi;
 using System.Collections.Generic;
 
 namespace LAHJA.Data.UI.Components.ServiceCard
 {
 
+    public class ModelPropertyValues: ModelPropertyValuesEntity
+    {
+
+    }
+    public class ModelAiResponse : ModelAiResponseEntity 
+    {
+        public bool IsSelected { get; set; }
+        public string Image { get; set; } = "";
+        public string Auther { get; set; } = "";    
+    }
     public class ModelProperties
     {
         public string Id { get; set; }

@@ -1,58 +1,51 @@
 ﻿using AutoMapper;
 using Domain.Entities.ModelAi;
-using Domain.Repository.ModelAi;
 using Domain.Wrapper;
-using LAHJA.Data.UI.Templates.ModelAi;
 using LAHJA.Data.UI.Templates.Base;
 using LAHJA.Helpers.Services;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using LAHJA.ApplicationLayer.AuthorizationSession;
-using LAHJA.Data.UI.Components;
-using LAHJA.Data.UI.Templates.ModelAi;
-using LAHJA.Data.UI.Templates.ModelAi;
 using LAHJA.ApplicationLayer.ModelAi;
 using LAHJA.Data.UI.Models.ModelAi;
-using Microsoft.Extensions.DependencyInjection;
-using Infrastructure.DataSource.ApiClient.Payment;
+using LAHJA.Data.UI.Components.ServiceCard;
 
 namespace LAHJA.Data.UI.Templates.ModelAi
 {
     public interface IBuilderModelAiComponent<T>
     {
-        Func<T, Task<Result<ICollection<ModelAiResponseEntity>>>> GetModelsByCategory { get; set; }
-        Func<T, Task<Result<ModelAiResponseEntity>>> GetModelAi { get; set; }
+        Func<T, Task<Result<ICollection<ModelAiResponse>>>> GetModelsByCategory { get; set; }
+        Func<T, Task<Result<ModelAiResponse>>> GetModelAi { get; set; }
         Func<T, Task<Result<ItemEntity>>> GetStartStudio { get; set; }
         Func<T, Task<Result<ICollection<ValueFilterModelEntity>>>> GetValueFilterService { get; set; }
-        Func<T, Task<Result<ModelPropertyValuesEntity>>> GetSettingModelAi { get; set; }
+        Func<T, Task<Result<ModelPropertyValues>>> GetSettingModelAi { get; set; }
         Func<T, Task<Result<IDictionary<string, object>>>> GetModelChatStudio { get; set; }
-        Func<Task<Result<ICollection<ModelAiResponseEntity>>>> GetModelsAi { get; set; }
-        Func<T, Task<Result<ICollection<ModelAiResponseEntity>>>> GetModelsByDialect { get; set; }
-        Func<T, Task<Result<ICollection<ModelAiResponseEntity>>>> GetModelsByGender { get; set; }
-        Func<T, Task<Result<ICollection<ModelAiResponseEntity>>>> GetModelsByLanguage { get; set; }
-        Func<T, Task<Result<ICollection<ModelAiResponseEntity>>>> GetModelsByIsStandard { get; set; }
-        Func<T, Task<Result<ICollection<ModelAiResponseEntity>>>> GetModelsByLanguageAndDialect { get; set; }
-        Func<T, Task<Result<ICollection<ModelAiResponseEntity>>>> GetModelsByTypeAndGender { get; set; }
-        Func<T, Task<Result<ICollection<ModelAiResponseEntity>>>> GetModelsByLanguageDialectType { get; set; }
+        Func<Task<Result<ICollection<ModelAiResponse>>>> GetModelsAi { get; set; }
+        Func<T, Task<Result<ICollection<ModelAiResponse>>>> GetModelsByDialect { get; set; }
+        Func<T, Task<Result<ICollection<ModelAiResponse>>>> GetModelsByGender { get; set; }
+        Func<T, Task<Result<ICollection<ModelAiResponse>>>> GetModelsByLanguage { get; set; }
+        Func<T, Task<Result<ICollection<ModelAiResponse>>>> GetModelsByIsStandard { get; set; }
+        Func<T, Task<Result<ICollection<ModelAiResponse>>>> GetModelsByLanguageAndDialect { get; set; }
+        Func<T, Task<Result<ICollection<ModelAiResponse>>>> GetModelsByTypeAndGender { get; set; }
+        Func<T, Task<Result<ICollection<ModelAiResponse>>>> GetModelsByLanguageDialectType { get; set; }
         Func<T, Task<Result<IDictionary<string, object>>>> GetModelSpeechStudio { get; set; }
         Func<T, Task<Result<IDictionary<string, object>>>> GetModelTextStudio { get; set; }
     }
     public interface IBuilderModelAiApi<T>
     {
-        Task<Result<ICollection<ModelAiResponseEntity>>> GetModelsByCategoryAsync(T dataBuild);
-        Task<Result<ModelAiResponseEntity>> GetModelAiAsync(T dataBuild);
+        Task<Result<ICollection<ModelAiResponse>>> GetModelsByCategoryAsync(T dataBuild);
+        Task<Result<ModelAiResponse>> GetModelAiAsync(T dataBuild);
         Task<Result<ItemEntity>> GetStartStudioAsync(T dataBuild);
         Task<Result<ICollection<ValueFilterModelEntity>>> GetValueFilterServiceAsync(T dataBuild);
-        Task<Result<ModelPropertyValuesEntity>> GetSettingModelAiAsync(T dataBuild);
+        Task<Result<ModelPropertyValues>> GetSettingModelAiAsync(T dataBuild);
         Task<Result<IDictionary<string, object>>> GetModelChatStudioAsync(T dataBuild);
-        Task<Result<ICollection<ModelAiResponseEntity>>> GetModelsAiAsync();
-        Task<Result<ICollection<ModelAiResponseEntity>>> GetModelsByDialectAsync(T dataBuild);
-        Task<Result<ICollection<ModelAiResponseEntity>>> GetModelsByGenderAsync(T dataBuild);
-        Task<Result<ICollection<ModelAiResponseEntity>>> GetModelsByLanguageAsync(T dataBuild);
-        Task<Result<ICollection<ModelAiResponseEntity>>> GetModelsByIsStandardAsync(T dataBuild);
-        Task<Result<ICollection<ModelAiResponseEntity>>> GetModelsByLanguageAndDialectAsync(T dataBuild);
-        Task<Result<ICollection<ModelAiResponseEntity>>> GetModelsByTypeAndGenderAsync(T dataBuild);
-        Task<Result<ICollection<ModelAiResponseEntity>>> GetModelsByLanguageDialectTypeAsync(T dataBuild);
+        Task<Result<ICollection<ModelAiResponse>>> GetModelsAiAsync();
+        Task<Result<ICollection<ModelAiResponse>>> GetModelsByDialectAsync(T dataBuild);
+        Task<Result<ICollection<ModelAiResponse>>> GetModelsByGenderAsync(T dataBuild);
+        Task<Result<ICollection<ModelAiResponse>>> GetModelsByLanguageAsync(T dataBuild);
+        Task<Result<ICollection<ModelAiResponse>>> GetModelsByIsStandardAsync(T dataBuild);
+        Task<Result<ICollection<ModelAiResponse>>> GetModelsByLanguageAndDialectAsync(T dataBuild);
+        Task<Result<ICollection<ModelAiResponse>>> GetModelsByTypeAndGenderAsync(T dataBuild);
+        Task<Result<ICollection<ModelAiResponse>>> GetModelsByLanguageDialectTypeAsync(T dataBuild);
         Task<Result<IDictionary<string, object>>> GetModelSpeechStudioAsync(T dataBuild);
         Task<Result<IDictionary<string, object>>> GetModelTextStudioAsync(T dataBuild);
     }
@@ -66,40 +59,40 @@ namespace LAHJA.Data.UI.Templates.ModelAi
         }
 
        
-        public abstract Task<Result<ICollection<ModelAiResponseEntity>>> GetModelsByCategoryAsync(E dataBuild);
-        public abstract Task<Result<ModelAiResponseEntity>> GetModelAiAsync(E dataBuild);
+        public abstract Task<Result<ICollection<ModelAiResponse>>> GetModelsByCategoryAsync(E dataBuild);
+        public abstract Task<Result<ModelAiResponse>> GetModelAiAsync(E dataBuild);
         public abstract Task<Result<ItemEntity>> GetStartStudioAsync(E dataBuild);
         public abstract Task<Result<ICollection<ValueFilterModelEntity>>> GetValueFilterServiceAsync(E dataBuild);
-        public abstract Task<Result<ModelPropertyValuesEntity>> GetSettingModelAiAsync(E dataBuild);
+        public abstract Task<Result<ModelPropertyValues>> GetSettingModelAiAsync(E dataBuild);
         public abstract Task<Result<IDictionary<string, object>>> GetModelChatStudioAsync(E dataBuild);
-        public abstract Task<Result<ICollection<ModelAiResponseEntity>>> GetModelsAiAsync();
-        public abstract Task<Result<ICollection<ModelAiResponseEntity>>> GetModelsByDialectAsync(E dataBuild);
-        public abstract Task<Result<ICollection<ModelAiResponseEntity>>> GetModelsByGenderAsync(E dataBuild);
-        public abstract Task<Result<ICollection<ModelAiResponseEntity>>> GetModelsByLanguageAsync(E dataBuild);
-        public abstract Task<Result<ICollection<ModelAiResponseEntity>>> GetModelsByIsStandardAsync(E dataBuild);
-        public abstract Task<Result<ICollection<ModelAiResponseEntity>>> GetModelsByLanguageAndDialectAsync(E dataBuild);
-        public abstract Task<Result<ICollection<ModelAiResponseEntity>>> GetModelsByTypeAndGenderAsync(E dataBuild);
-        public abstract Task<Result<ICollection<ModelAiResponseEntity>>> GetModelsByLanguageDialectTypeAsync(E dataBuild);
+        public abstract Task<Result<ICollection<ModelAiResponse>>> GetModelsAiAsync();
+        public abstract Task<Result<ICollection<ModelAiResponse>>> GetModelsByDialectAsync(E dataBuild);
+        public abstract Task<Result<ICollection<ModelAiResponse>>> GetModelsByGenderAsync(E dataBuild);
+        public abstract Task<Result<ICollection<ModelAiResponse>>> GetModelsByLanguageAsync(E dataBuild);
+        public abstract Task<Result<ICollection<ModelAiResponse>>> GetModelsByIsStandardAsync(E dataBuild);
+        public abstract Task<Result<ICollection<ModelAiResponse>>> GetModelsByLanguageAndDialectAsync(E dataBuild);
+        public abstract Task<Result<ICollection<ModelAiResponse>>> GetModelsByTypeAndGenderAsync(E dataBuild);
+        public abstract Task<Result<ICollection<ModelAiResponse>>> GetModelsByLanguageDialectTypeAsync(E dataBuild);
         public abstract Task<Result<IDictionary<string, object>>> GetModelSpeechStudioAsync(E dataBuild);
         public abstract Task<Result<IDictionary<string, object>>> GetModelTextStudioAsync(E dataBuild);
     }
 
     public class BuilderModelAiComponent<T> : IBuilderModelAiComponent<T>
     {
-        public Func<T, Task<Result<ICollection<ModelAiResponseEntity>>>> GetModelsByCategory { get; set; }
-        public Func<T, Task<Result<ModelAiResponseEntity>>> GetModelAi { get; set; }
+        public Func<T, Task<Result<ICollection<ModelAiResponse>>>> GetModelsByCategory { get; set; }
+        public Func<T, Task<Result<ModelAiResponse>>> GetModelAi { get; set; }
         public Func<T, Task<Result<ItemEntity>>> GetStartStudio { get; set; }
         public Func<T, Task<Result<ICollection<ValueFilterModelEntity>>>> GetValueFilterService { get; set; }
-        public Func<T, Task<Result<ModelPropertyValuesEntity>>> GetSettingModelAi { get; set; }
+        public Func<T, Task<Result<ModelPropertyValues>>> GetSettingModelAi { get; set; }
         public Func<T, Task<Result<IDictionary<string, object>>>> GetModelChatStudio { get; set; }
-        public Func<Task<Result<ICollection<ModelAiResponseEntity>>>> GetModelsAi { get; set; }
-        public Func<T, Task<Result<ICollection<ModelAiResponseEntity>>>> GetModelsByDialect { get; set; }
-        public Func<T, Task<Result<ICollection<ModelAiResponseEntity>>>> GetModelsByGender { get; set; }
-        public Func<T, Task<Result<ICollection<ModelAiResponseEntity>>>> GetModelsByLanguage { get; set; }
-        public Func<T, Task<Result<ICollection<ModelAiResponseEntity>>>> GetModelsByIsStandard { get; set; }
-        public Func<T, Task<Result<ICollection<ModelAiResponseEntity>>>> GetModelsByLanguageAndDialect { get; set; }
-        public Func<T, Task<Result<ICollection<ModelAiResponseEntity>>>> GetModelsByTypeAndGender { get; set; }
-        public Func<T,  Task<Result<ICollection<ModelAiResponseEntity>>>> GetModelsByLanguageDialectType { get; set; }
+        public Func<Task<Result<ICollection<ModelAiResponse>>>> GetModelsAi { get; set; }
+        public Func<T, Task<Result<ICollection<ModelAiResponse>>>> GetModelsByDialect { get; set; }
+        public Func<T, Task<Result<ICollection<ModelAiResponse>>>> GetModelsByGender { get; set; }
+        public Func<T, Task<Result<ICollection<ModelAiResponse>>>> GetModelsByLanguage { get; set; }
+        public Func<T, Task<Result<ICollection<ModelAiResponse>>>> GetModelsByIsStandard { get; set; }
+        public Func<T, Task<Result<ICollection<ModelAiResponse>>>> GetModelsByLanguageAndDialect { get; set; }
+        public Func<T, Task<Result<ICollection<ModelAiResponse>>>> GetModelsByTypeAndGender { get; set; }
+        public Func<T,  Task<Result<ICollection<ModelAiResponse>>>> GetModelsByLanguageDialectType { get; set; }
         public Func<T, Task<Result<IDictionary<string, object>>>> GetModelSpeechStudio { get; set; }
         public Func<T, Task<Result<IDictionary<string, object>>>> GetModelTextStudio { get; set; }
     }
@@ -148,14 +141,32 @@ namespace LAHJA.Data.UI.Templates.ModelAi
             
         }
 
-        public override async Task<Result<ICollection<ModelAiResponseEntity>>> GetModelsByCategoryAsync(DataBuildModelAi dataBuild)
+        public override async Task<Result<ICollection<ModelAiResponse>>> GetModelsByCategoryAsync(DataBuildModelAi dataBuild)
         {
-            return await Service.GetModelsByCategoryAsync(dataBuild.Category);
+            var response = await Service.GetModelsByCategoryAsync(dataBuild.Category);
+            if (response.Succeeded)
+            {
+                var mData = Mapper.Map<ICollection<ModelAiResponse>>(response.Data);
+                return Result<ICollection<ModelAiResponse>>.Success(mData);
+            }
+            else
+            {
+                return Result<ICollection<ModelAiResponse>>.Fail(response.Messages, response.HttpCode);
+            }
         }
 
-        public override async Task<Result<ModelAiResponseEntity>> GetModelAiAsync(DataBuildModelAi dataBuild)
+        public override async Task<Result<ModelAiResponse>> GetModelAiAsync(DataBuildModelAi dataBuild)
         {
-            return await Service.GetModelAiAsync(dataBuild.Id);
+            var response = await Service.GetModelAiAsync(dataBuild.Id);
+            if (response.Succeeded)
+            {
+                var mData = Mapper.Map<ModelAiResponse>(response.Data);
+                return Result<ModelAiResponse>.Success(mData);
+            }
+            else
+            {
+                return Result<ModelAiResponse>.Fail(response.Messages, response.HttpCode);
+            }
         }
 
         public override async Task<Result<ItemEntity>> GetStartStudioAsync(DataBuildModelAi dataBuild)
@@ -166,11 +177,21 @@ namespace LAHJA.Data.UI.Templates.ModelAi
         public override async Task<Result<ICollection<ValueFilterModelEntity>>> GetValueFilterServiceAsync(DataBuildModelAi dataBuild)
         {
             return await Service.GetValueFilterServiceAsync(dataBuild.Language);
+
         }
 
-        public override async Task<Result<ModelPropertyValuesEntity>> GetSettingModelAiAsync(DataBuildModelAi dataBuild)
+        public override async Task<Result<ModelPropertyValues>> GetSettingModelAiAsync(DataBuildModelAi dataBuild)
         {
-            return await Service.GetSettingModelAiAsync(dataBuild.Language);
+            var response= await Service.GetSettingModelAiAsync(dataBuild.Language);
+            if (response.Succeeded)
+            {
+                var mData = Mapper.Map<ModelPropertyValues>(response.Data);
+               return Result<ModelPropertyValues>.Success(mData);
+            }
+            else
+            {
+              return  Result<ModelPropertyValues>.Fail(response.Messages, response.HttpCode);
+            }
         }
 
         public override async Task<Result<IDictionary<string, object>>> GetModelChatStudioAsync(DataBuildModelAi dataBuild)
@@ -178,44 +199,122 @@ namespace LAHJA.Data.UI.Templates.ModelAi
             return await Service.GetModelChatStudioAsync(dataBuild.Language);
         }
 
-        public override async Task<Result<ICollection<ModelAiResponseEntity>>> GetModelsAiAsync()
+        public override async Task<Result<ICollection<ModelAiResponse>>> GetModelsAiAsync()
         {
-            return await Service.GetModelsAiAsync();
+            
+            var response = await Service.GetModelsAiAsync();
+            if (response.Succeeded)
+            {
+                var mData = Mapper.Map<ICollection<ModelAiResponse>>(response.Data);
+                return Result<ICollection<ModelAiResponse>>.Success(mData);
+            }
+            else
+            {
+                return Result<ICollection<ModelAiResponse>>.Fail(response.Messages, response.HttpCode);
+            }
         }
 
-        public override async Task<Result<ICollection<ModelAiResponseEntity>>> GetModelsByDialectAsync(DataBuildModelAi dataBuild)
+        public override async Task<Result<ICollection<ModelAiResponse>>> GetModelsByDialectAsync(DataBuildModelAi dataBuild)
         {
-            return await Service.GetModelsByDialectAsync(dataBuild.Dialect);
+           
+            var response = await Service.GetModelsByDialectAsync(dataBuild.Dialect);
+            if (response.Succeeded)
+            {
+                var mData = Mapper.Map<ICollection<ModelAiResponse>>(response.Data);
+                return Result<ICollection<ModelAiResponse>>.Success(mData);
+            }
+            else
+            {
+                return Result<ICollection<ModelAiResponse>>.Fail(response.Messages, response.HttpCode);
+            }
         }
 
-        public override async Task<Result<ICollection<ModelAiResponseEntity>>> GetModelsByGenderAsync(DataBuildModelAi dataBuild)
+        public override async Task<Result<ICollection<ModelAiResponse>>> GetModelsByGenderAsync(DataBuildModelAi dataBuild)
         {
-            return await Service.GetModelsByGenderAsync(dataBuild.Gender);
+            
+            var response = await Service.GetModelsByGenderAsync(dataBuild.Gender);
+            if (response.Succeeded)
+            {
+                var mData = Mapper.Map<ICollection<ModelAiResponse>>(response.Data);
+                return Result<ICollection<ModelAiResponse>>.Success(mData);
+            }
+            else
+            {
+                return Result<ICollection<ModelAiResponse>>.Fail(response.Messages, response.HttpCode);
+            }
         }
 
-        public override async Task<Result<ICollection<ModelAiResponseEntity>>> GetModelsByLanguageAsync(DataBuildModelAi dataBuild)
+        public override async Task<Result<ICollection<ModelAiResponse>>> GetModelsByLanguageAsync(DataBuildModelAi dataBuild)
         {
-            return await Service.GetModelsByLanguageAsync(dataBuild.Language);
+            
+            var response = await Service.GetModelsByLanguageAsync(dataBuild.Language);
+            if (response.Succeeded)
+            {
+                var mData = Mapper.Map<ICollection<ModelAiResponse>>(response.Data);
+                return Result<ICollection<ModelAiResponse>>.Success(mData);
+            }
+            else
+            {
+                return Result<ICollection<ModelAiResponse>>.Fail(response.Messages, response.HttpCode);
+            }
         }
 
-        public override async Task<Result<ICollection<ModelAiResponseEntity>>> GetModelsByIsStandardAsync(DataBuildModelAi dataBuild)
+        public override async Task<Result<ICollection<ModelAiResponse>>> GetModelsByIsStandardAsync(DataBuildModelAi dataBuild)
         {
-            return await Service.GetModelsByIsStandardAsync(dataBuild.SsStandard);
+            
+            var response = await Service.GetModelsByIsStandardAsync(dataBuild.IsStandard);
+            if (response.Succeeded)
+            {
+                var mData = Mapper.Map<ICollection<ModelAiResponse>>(response.Data);
+                return Result<ICollection<ModelAiResponse>>.Success(mData);
+            }
+            else
+            {
+                return Result<ICollection<ModelAiResponse>>.Fail(response.Messages, response.HttpCode);
+            }
         }
 
-        public override async Task<Result<ICollection<ModelAiResponseEntity>>> GetModelsByLanguageAndDialectAsync(DataBuildModelAi dataBuild)
+        public override async Task<Result<ICollection<ModelAiResponse>>> GetModelsByLanguageAndDialectAsync(DataBuildModelAi dataBuild)
         {
-            return await Service.GetModelsByLanguageAndDialectAsync(dataBuild.Language, dataBuild.Dialect);
+            var response= await Service.GetModelsByLanguageAndDialectAsync(dataBuild.Language, dataBuild.Dialect);
+            if (response.Succeeded)
+            {
+                var mData = Mapper.Map<ICollection<ModelAiResponse>>(response.Data);
+                return Result<ICollection<ModelAiResponse>>.Success(mData);
+            }
+            else
+            {
+                return Result<ICollection<ModelAiResponse>>.Fail(response.Messages, response.HttpCode);
+            }
         }
 
-        public override async Task<Result<ICollection<ModelAiResponseEntity>>> GetModelsByTypeAndGenderAsync(DataBuildModelAi dataBuild)
+        public override async Task<Result<ICollection<ModelAiResponse>>> GetModelsByTypeAndGenderAsync(DataBuildModelAi dataBuild)
         {
-            return await Service.GetModelsByTypeAndGenderAsync(dataBuild.Type, dataBuild.Gender);
+            var response = await Service.GetModelsByTypeAndGenderAsync(dataBuild.Type, dataBuild.Gender);
+            if (response.Succeeded)
+            {
+                var mData = Mapper.Map<ICollection<ModelAiResponse>>(response.Data);
+                return Result<ICollection<ModelAiResponse>>.Success(mData);
+            }
+            else
+            {
+                return Result<ICollection<ModelAiResponse>>.Fail(response.Messages, response.HttpCode);
+            }
         }
 
-        public override async Task<Result<ICollection<ModelAiResponseEntity>>> GetModelsByLanguageDialectTypeAsync(DataBuildModelAi dataBuild)
+        public override async Task<Result<ICollection<ModelAiResponse>>> GetModelsByLanguageDialectTypeAsync(DataBuildModelAi dataBuild)
         {
-            return await Service.GetModelsByLanguageDialectTypeAsync(dataBuild.Language, dataBuild.Dialect, dataBuild.Type);
+            var response= await Service.GetModelsByLanguageDialectTypeAsync(dataBuild.Language, dataBuild.Dialect, dataBuild.Type);
+            
+            if (response.Succeeded)
+            {
+                var mData = Mapper.Map<ICollection<ModelAiResponse>>(response.Data);
+                return Result<ICollection<ModelAiResponse>>.Success(mData);
+            }
+            else
+            {
+                return Result<ICollection<ModelAiResponse>>.Fail(response.Messages, response.HttpCode);
+            }
         }
 
         public override async Task<Result<IDictionary<string, object>>> GetModelSpeechStudioAsync(DataBuildModelAi dataBuild)
@@ -264,12 +363,12 @@ namespace LAHJA.Data.UI.Templates.ModelAi
             _builderComponents.GetModelTextStudio = OnGetModelTextStudioAsync;
         }
 
-        private async Task<Result<ICollection<ModelAiResponseEntity>>> OnGetModelsByCategoryAsync(DataBuildModelAi dataBuild)
+        private async Task<Result<ICollection<ModelAiResponse>>> OnGetModelsByCategoryAsync(DataBuildModelAi dataBuild)
         {
             return await _builderApi.GetModelsByCategoryAsync(dataBuild);
         }
 
-        private async Task<Result<ModelAiResponseEntity>> OnGetModelAiAsync(DataBuildModelAi dataBuild)
+        private async Task<Result<ModelAiResponse>> OnGetModelAiAsync(DataBuildModelAi dataBuild)
         {
             return await _builderApi.GetModelAiAsync(dataBuild);
         }
@@ -284,9 +383,10 @@ namespace LAHJA.Data.UI.Templates.ModelAi
             return await _builderApi.GetValueFilterServiceAsync(dataBuild);
         }
 
-        private async Task<Result<ModelPropertyValuesEntity>> OnGetSettingModelAiAsync(DataBuildModelAi dataBuild)
+        private async Task<Result<ModelPropertyValues>> OnGetSettingModelAiAsync(DataBuildModelAi dataBuild)
         {
             return await _builderApi.GetSettingModelAiAsync(dataBuild);
+ 
         }
 
         private async Task<Result<IDictionary<string, object>>> OnGetModelChatStudioAsync(DataBuildModelAi dataBuild)
@@ -294,42 +394,42 @@ namespace LAHJA.Data.UI.Templates.ModelAi
             return await _builderApi.GetModelChatStudioAsync(dataBuild);
         }
 
-        private async Task<Result<ICollection<ModelAiResponseEntity>>> OnGetModelsAiAsync()
+        private async Task<Result<ICollection<ModelAiResponse>>> OnGetModelsAiAsync()
         {
             return await _builderApi.GetModelsAiAsync();
         }
 
-        private async Task<Result<ICollection<ModelAiResponseEntity>>> OnGetModelsByDialectAsync(DataBuildModelAi dataBuild)
+        private async Task<Result<ICollection<ModelAiResponse>>> OnGetModelsByDialectAsync(DataBuildModelAi dataBuild)
         {
             return await _builderApi.GetModelsByDialectAsync(dataBuild);
         }
 
-        private async Task<Result<ICollection<ModelAiResponseEntity>>> OnGetModelsByGenderAsync(DataBuildModelAi dataBuild)
+        private async Task<Result<ICollection<ModelAiResponse>>> OnGetModelsByGenderAsync(DataBuildModelAi dataBuild)
         {
             return await _builderApi.GetModelsByGenderAsync(dataBuild);
         }
 
-        private async Task<Result<ICollection<ModelAiResponseEntity>>> OnGetModelsByLanguageAsync(DataBuildModelAi dataBuild)
+        private async Task<Result<ICollection<ModelAiResponse>>> OnGetModelsByLanguageAsync(DataBuildModelAi dataBuild)
         {
             return await _builderApi.GetModelsByLanguageAsync(dataBuild);
         }
 
-        private async Task<Result<ICollection<ModelAiResponseEntity>>> OnGetModelsByIsStandardAsync(DataBuildModelAi dataBuild)
+        private async Task<Result<ICollection<ModelAiResponse>>> OnGetModelsByIsStandardAsync(DataBuildModelAi dataBuild)
         {
             return await _builderApi.GetModelsByIsStandardAsync(dataBuild);
         }
 
-        private async Task<Result<ICollection<ModelAiResponseEntity>>> OnGetModelsByLanguageAndDialectAsync(DataBuildModelAi dataBuild)
+        private async Task<Result<ICollection<ModelAiResponse>>> OnGetModelsByLanguageAndDialectAsync(DataBuildModelAi dataBuild)
         {
             return await _builderApi.GetModelsByLanguageAndDialectAsync(dataBuild);
         }
 
-        private async Task<Result<ICollection<ModelAiResponseEntity>>> OnGetModelsByTypeAndGenderAsync(DataBuildModelAi dataBuild)
+        private async Task<Result<ICollection<ModelAiResponse>>> OnGetModelsByTypeAndGenderAsync(DataBuildModelAi dataBuild)
         {
             return await _builderApi.GetModelsByTypeAndGenderAsync(dataBuild);
         }
 
-        private async Task<Result<ICollection<ModelAiResponseEntity>>> OnGetModelsByLanguageDialectTypeAsync(DataBuildModelAi dataBuild)
+        private async Task<Result<ICollection<ModelAiResponse>>> OnGetModelsByLanguageDialectTypeAsync(DataBuildModelAi dataBuild)
         {
             return await _builderApi.GetModelsByLanguageDialectTypeAsync(dataBuild);
         }

@@ -38,12 +38,12 @@
 
 
 
-    private async Task OnSubmitCheckoutManage()
+    private async Task OnSubmitCheckoutManage(DataBuildUserSubscriptionInfo dataBuild)
     {
         ///TemplatePayment.BuilderComponents.SubmitCheckoutManage = EventCallback.Factory.Create<DataBuildPaymentBase>(this, OnRowClicked);
         if (TemplatePayment.BuilderComponents.SubmitCheckoutManage != null)
         {
-           await TemplatePayment.BuilderComponents.SubmitCheckoutManage(new());
+            await TemplatePayment.BuilderComponents.SubmitCheckoutManage(new() { PlanId = dataBuild.PlanId });
         }
     }
 

@@ -1,11 +1,15 @@
-﻿@using Domain.ShareData
+﻿ @* @page "/studio" *@
+ @page "/studio/{*Url}"
+@using Domain.ShareData
+@using LAHJA.Data.UI.Components.StudioLahjaAiVM
 @using LAHJA.Helpers.Services
 @using LAHJA.Them
 @using Microsoft.AspNetCore.Authorization
 @inject LanguageService languageService
 @inject IManageLanguageService _manageLanguageService
 @inject ISnackbar snackbar
-
+@inject NavigationManager  Navigation
+@* @inherits StudioAi *@
 @attribute [Authorize]
 
 <MudPaper Style="overflow:hidden;height:100%;position:fixed;left:0;width:100%" Elevation="0">
@@ -138,19 +142,21 @@
             </MudDrawer> *@
            
             <MudPaper  Class="pa-0 overflow-y-auto h-100" Style="height:100%"  Elevation="0">
-             
 
-                @if (SelectedComponent != null)
-                {
-                    @SelectedComponent
-                }
-                else
-                {
-                 
-                        <T2Text />
-                      
-                    
-                }
+                        @if (!string.IsNullOrEmpty(Url))
+                        {
+                            @RenderComponentBasedOnUrl
+                        }
+                        else
+                        {
+                            @if(SelectedComponent!=null)
+                                @SelectedComponent
+
+                            else{
+                                <StartStudio />
+                            }
+                        }
+             
             </MudPaper>
          
         </MudMainContent>
@@ -179,26 +185,25 @@
     private string? _errorTypeLahjaMsg = "";
     private string? _errorModelReleaseMsg = "";
 
+    private RenderFragment? SelectedComponent;
 
-    void ShowEX()
-    {
 
-    }
-    public class CategoryData
+
+    [Parameter] public string Url { get; set; }
+
+    private class CategoryData
     {
         public int Id { get; set; } = 0;
         public string Identifier { get; set; }
         public Dictionary<string, string> Text { get; set; }
         public string Icon { get; set; }
         public Type Component { get; set; }
+        public string UrlPage { get; set; }
         public string TypeModel { get; set; }
         public string ServiceId { get; set; }
     }
 
-    // private bool _open = false;
-    // public string itemtab = "Start";
-    // private bool _openStart = false;
-    // private bool _openEnd = false;
+
     private CategoryData _selectedComponent;
     private CategoryData SelectedTypeSound;
     private CategoryData SelectedTypeLangague;
@@ -212,18 +217,18 @@
 
     [Parameter] public bool TypeLanguage { get; set; } = false;
 
+
+
     protected override void OnInitialized()
     {
+     
         SelectMenuItem(Categories[0]);
-        languageService.OnLanguageChanged += changeLanguage;
-        // TypeLahja = getTypeLahja("Arabic");
-        // selectedModelsReleases = getListArabicModelRelease("M");
         changeLanguage("ar");
         StateHasChanged();
 
     }
     // Selected Component
-    private RenderFragment? SelectedComponent;
+
 
     private void ToggleMenu()
     {
@@ -231,19 +236,116 @@
         StateHasChanged();
     }
 
+
+    void ShowEX()
+    {
+
+    }
+
+    public void SetActiveTab(string url)
+    {
+        if (string.IsNullOrEmpty(url))
+            return;
+
+        // Url = url;
+        Navigation.NavigateTo(url);
+
+    }
+
+    private RenderFragment RenderComponentBasedOnUrl => builder =>
+    {
+        if (builder == null)
+        {
+            throw new ArgumentNullException(nameof(builder));
+        }
+
+        if (string.IsNullOrEmpty(Url))
+        {
+            Url = "start";
+        }
+
+        // var componentMap = new Dictionary<string, Type>
+        //                         {
+        //                 { "start", typeof(StartStudio) },
+        //                 { "t2Text", typeof(T2Text) },
+        //                 { "t2Speech", typeof(T2Speech) },
+        //                 { "t2SpeechLive", typeof(T2SpeechLive) },
+        //                 { "chatT2Text", typeof(ChatT2Text) },
+        //                 { "voiceChat", typeof(VoiceChat) },
+        //               };   
+
+
+        var componentMap = new Dictionary<string, CategoryData>
+                            {
+                    { "start", Categories[0] },
+                    { "t2Text", Categories[1]},
+                    { "t2Speech", Categories[2] },
+                    { "t2SpeechLive", Categories[3] },
+                    { "chatT2Text", Categories[4]},
+                    { "voiceChat", Categories[5] },
+                  };
+
+        if (componentMap.TryGetValue(Url, out var item))
+        {
+
+            builder.OpenComponent(0, item.Component);
+            if (item.UrlPage != "studio/start")
+            {
+                if (!string.IsNullOrEmpty(item.ServiceId))
+                    builder.AddAttribute(1, "ServiceId", item.ServiceId);
+
+                if (!string.IsNullOrEmpty(item.UrlPage))
+                    builder.AddAttribute(1, "UrlPage", item.UrlPage); 
+
+
+                // builder.AddAttribute(1, "UrlCancel", "studio/start");
+            }
+
+
+            builder.CloseComponent();
+
+        }
+        else
+        {
+
+            builder.OpenComponent(0, typeof(StartStudio));
+            builder.CloseComponent();
+        }
+
+        // ToggleMenu();
+    };
+
+
+
     private void SelectMenuItem(CategoryData item)
     {
+        if (!string.IsNullOrEmpty(Url))
+            SetActiveTab(item.UrlPage);
+        else
+            SelectMenuItem2(item);
+
+    } 
+    
+
+    private void SelectMenuItem2(CategoryData item)
+    {
+      
+
         _selectedComponent = item;
 
         var parameters = new Dictionary<string, object>();
 
         if (!string.IsNullOrEmpty(item.ServiceId))
-            parameters.Add("ServiceId", item.ServiceId);
+            parameters.Add("ServiceId", item.ServiceId); 
+
+        if (!string.IsNullOrEmpty(item.UrlPage))
+            parameters.Add("UrlPage", item.UrlPage);
 
         SelectedComponent = RenderComponent(item.Component, parameters);
- 
+
         ToggleMenu();
     }
+
     public static RenderFragment RenderComponent(Type componentType, Dictionary<string, object> parameters = null)
     {
         return builder =>
@@ -255,7 +357,7 @@
                 foreach (var param in parameters)
                 {
                     if (!string.IsNullOrEmpty(param.Key) && param.Value!=null)
-                         builder.AddAttribute(1, param.Key, param.Value);
+                        builder.AddAttribute(1, param.Key, param.Value);
                 }
             }
 
@@ -269,164 +371,8 @@
         StateHasChanged();
     }
     // Helper to dynamically render components
-    public class RenderFragmentHelper
-    {
-        public static RenderFragment RenderComponent(Type componentType,int index=0,string key="",string value="") =>
-            builder =>
-            {
-                builder.OpenComponent(index, componentType);
-                if (!string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(value))
-                    builder.AddAttribute(1, key, value);
-                // builder.AddAttribute(1, "OnSubmit", EventCallback.Factory.Create(this, OnSubmitT2Speech));
-                builder.CloseComponent();
-            };
-    }
-
-    private void OnSubmitT2Speech()
-    {
-
-    }
-    private void SelectLangauge(CategoryData item)
-    {
-
-        SelectedTypeLangague = item;
-
-        // IsSettingsMenuVisible = false;
-
-        StateHasChanged();
-
-    }    
-
-    private void SelectTypeSound(CategoryData item)
-    {
-        if (SelectedTypeLangague != null)
-        {
-
-            _errorLanguage = false;
-            _errorLanguageMsg = "";
-
-            SelectedTypeSound = item;
-            if (TypeLahja != null && TypeLahja.Count() > 0)
-            {
-                TypeLahja.Clear();
-                SelectedTypeLahagaModel= null;
-                _expandedTypeLahja = false;
-                StateHasChanged();
-            }
-       
-            
-            TypeLahja = getTypeLahja(SelectedTypeLangague.Identifier);
-            
 
 
-           
-            if (selectedModelsReleases != null && selectedModelsReleases.Count() > 0)
-            {
-                SelectedModelRelease = null;
-                selectedModelsReleases.Clear();
-                _expandedModelRelease = false;
-                StateHasChanged();
-            }
-
-            // = SelectedTypeLangague.Identifier == "Arabic" ? getListArabicModelRelease(SelectedTypeSound.Identifier) : getListEnglishModelRelease();
-        }
-        else
-        {
-            snackbar.Add("من فضلك قم بتحديد اللغة لتتمكن من عرض  بقية الاعدادات", Severity.Warning);
-            _errorLanguage=true;
-            _errorLanguageMsg = "! Selected the language !!";
-        }
-
-        // IsSettingsMenuVisible = false;
-
-        StateHasChanged();
-
-    }  
-
-    private void SelectTypeLahja(CategoryData item)
-    {
-        if (SelectedTypeLangague != null)
-        {
-            if (SelectedTypeSound != null)
-            {
-                SelectedTypeLahagaModel = item;
-
-                selectedModelsReleases = SelectedTypeLangague.Identifier == "Arabic" ? getListArabicModelRelease(SelectedTypeSound.Identifier) : getListEnglishModelRelease();
-
-                _errorTypeSound = false;
-                _errorLanguage = false;
-                _errorLanguageMsg = "";
-                _errorTypeSoundMsg = "";
-
-          
-                StateHasChanged();
-            }
-            else
-            {
-                _errorTypeSound = true;
-                _errorTypeSoundMsg = "! Selected the  Type Sound !!";
-            }
-
-        }
-        else
-        {
-
-            _errorLanguage = true;
-            _errorLanguageMsg = "! Selected the language !!";
-        }
-
-
-    }  
-    private void SelectModelReleases(CategoryData item)
-    {
-        if (SelectedTypeLangague != null && item!=null)
-        {
-            if (SelectedTypeSound != null)
-            {
-                if (SelectedTypeLahagaModel != null)
-                {
-                    _errorTypeLahja = false;
-                    _errorTypeSound = false;
-                    _errorLanguage = false;
-                    _errorLanguageMsg = "";
-                    _errorTypeSoundMsg = "";
-                    _errorTypeLahjaMsg = "";
-
-                    SelectedModelRelease = item;
-                    // if (_selectedComponent != null && _selectedComponent.Component != null && _selectedComponent.TypeModel == "T2S")
-                    if (item.TypeModel == "T2S")
-                        SelectedComponent = RenderFragmentHelper.RenderComponent(typeof(T2Speech), item.Id, "ModelId", item.Identifier);
-                    StateHasChanged();
-                }
-                else
-                {
-                    snackbar.Add("من فضلك يجب تحديد اللغة وجنس المتحدث واللهجة لتتمكن من عرض  بقية الاعدادات", Severity.Warning);
-                    _errorTypeLahja = true;
-                    _errorTypeLahjaMsg = "! Selected the Type Lahaga Model Or Type Sound !!";
-                }
-
-            } 
-            else
-            {
-                snackbar.Add("من فضلك يجب تحديد اللغة وجنس المتحدث  لتتمكن من عرض  بقية الاعدادات", Severity.Warning);
-                _errorTypeSound = true;
-
-                _errorTypeSoundMsg = "! Selected the  Type Sound !!";
-
-            }
-
-        }
-        else
-        {
-            snackbar.Add("من فضلك يجب تحديد اللغة لتتمكن من عرض  بقية الاعدادات", Severity.Warning);
-            _errorLanguage = true;
-            _errorLanguageMsg = "! Selected the language !!";
-        }
-
-
-    }
-
-   
     protected override async void OnAfterRender(bool firstRender)
 
     {
@@ -443,7 +389,7 @@
     {
         CurrentLanguage = currentLangCode;
         TranslationLabels = currentLangCode == "ar" ? ArabicLabels : EnglishLabels;
-        InvokeAsync(StateHasChanged);
+        StateHasChanged();
     }
 
     private string GetText(string key)
@@ -455,101 +401,7 @@
         }
         return key; 
     }
-    private Dictionary<string, string> EnglishLabels = new()
-{
-    { "Studio", "Studio LAHJA AI" },
-    { "Settings", "Settings" },
-    { "Languages", "Languages" },
-    { "Type Lahja", "Type Lahja" },
-    { "Sound Types", "Sound Types" },
-    { "Models", "Models" },
-};
 
-    private Dictionary<string, string> ArabicLabels = new()
-{
-    { "Studio", "استديو لهجة AI" },
-    { "Settings", "الإعدادات" },
-    { "Languages", "اللغات" },
-    { "Type Lahja", "نوع اللهجة" },
-    { "Sound Types", "أنواع الصوت" },
-    { "Models", "النماذج" },
-};
-
-    private List<CategoryData> Categories = new()
-{
-    new CategoryData
-    {   Id=0,
-        Identifier = "Start",
-        Component = typeof(StartStudio),
-        Text = new Dictionary<string, string>
-        {
-            { "ar", "تطبيقات البداية" },
-            { "en", "Start Applications" }
-        },
-        Icon = Icons.Material.Filled.Apps
-    },
-    new CategoryData
-    {   Id=1,
-        ServiceId = "serv_cec8071f426d4180ad5dd29bb618bc12",
-        Identifier = "studio-t2text",
-        Component = typeof(T2Text),
-        Text = new Dictionary<string, string>
-        {
-            { "ar", "نص إلى نص" },
-            { "en", "Text to Text" }
-        },
-        Icon = Icons.Material.Filled.TextDecrease
-    },
-    new CategoryData
-    {   Id=2,
-        Identifier = "T2Speech",
-        ServiceId = "serv_8284631079cc40ff8fb8afa15dd86dcd",
-        Component = typeof(T2Speech),
-        Text = new Dictionary<string, string>
-        {
-            { "ar", "نص إلى كلام" },
-            { "en", "Text to Speech" }
-        },
-        Icon = Icons.Material.Filled.Speaker
-    },
-    new CategoryData
-    {   Id=3,
-        ServiceId = "serv_8284631079cc40ff8fb8afa15dd86dcd",
-        Identifier = "studio-t2speech",
-        Component = typeof(T2SpeechLive),
-        Text = new Dictionary<string, string>
-        {
-            { "ar", "نص إلى كلام مباشر" },
-            { "en", "Real-time Text to Speech" }
-        },
-        Icon = Icons.Material.Filled.Living
-    },
-    new CategoryData
-    {   Id=4,
-         ServiceId = "serv_4d5a62dc4eb246338619db0f18a52479",
-        Identifier = "chatbot",
-        Component = typeof(ChatT2Text),
-        Text = new Dictionary<string, string>
-        {
-            { "ar", "دردشة نصية" },
-            { "en", "Text Chat" }
-        },
-        Icon = Icons.Material.Filled.Chat
-    },   
-    new CategoryData
-    {   Id=4,
-         ServiceId = "serv_8284631079cc40ff8fb8afa15dd86dcd",
-        Identifier = "VoiceChat",
-        Component = typeof(VoiceChat),
-        Text = new Dictionary<string, string>
-        {
-            { "ar", "دردشة صوتية" },
-            { "en", "Voice Chat" }
-        },
-        Icon = Icons.Material.Filled.VoiceChat
-    },
-
-};
 
     private List<CategoryData> getListEnglishModelRelease ()
     {
@@ -719,6 +571,273 @@
         };
         }
     }
+
+
+    private void SelectLangauge(CategoryData item)
+    {
+
+        SelectedTypeLangague = item;
+
+        // IsSettingsMenuVisible = false;
+
+        StateHasChanged();
+
+    }
+    private void SelectTypeSound(CategoryData item)
+    {
+        if (SelectedTypeLangague != null)
+        {
+
+            _errorLanguage = false;
+            _errorLanguageMsg = "";
+
+            SelectedTypeSound = item;
+            if (TypeLahja != null && TypeLahja.Count() > 0)
+            {
+                TypeLahja.Clear();
+                SelectedTypeLahagaModel = null;
+                _expandedTypeLahja = false;
+                StateHasChanged();
+            }
+
+
+            TypeLahja = getTypeLahja(SelectedTypeLangague.Identifier);
+
+
+
+
+            if (selectedModelsReleases != null && selectedModelsReleases.Count() > 0)
+            {
+                SelectedModelRelease = null;
+                selectedModelsReleases.Clear();
+                _expandedModelRelease = false;
+                StateHasChanged();
+            }
+
+            // = SelectedTypeLangague.Identifier == "Arabic" ? getListArabicModelRelease(SelectedTypeSound.Identifier) : getListEnglishModelRelease();
+        }
+        else
+        {
+            snackbar.Add("من فضلك قم بتحديد اللغة لتتمكن من عرض  بقية الاعدادات", Severity.Warning);
+            _errorLanguage = true;
+            _errorLanguageMsg = "! Selected the language !!";
+        }
+
+        // IsSettingsMenuVisible = false;
+
+        StateHasChanged();
+
+    }
+    private void SelectTypeLahja(CategoryData item)
+    {
+        if (SelectedTypeLangague != null)
+        {
+            if (SelectedTypeSound != null)
+            {
+                SelectedTypeLahagaModel = item;
+
+                selectedModelsReleases = SelectedTypeLangague.Identifier == "Arabic" ? getListArabicModelRelease(SelectedTypeSound.Identifier) : getListEnglishModelRelease();
+
+                _errorTypeSound = false;
+                _errorLanguage = false;
+                _errorLanguageMsg = "";
+                _errorTypeSoundMsg = "";
+
+
+                StateHasChanged();
+            }
+            else
+            {
+                _errorTypeSound = true;
+                _errorTypeSoundMsg = "! Selected the  Type Sound !!";
+            }
+
+        }
+        else
+        {
+
+            _errorLanguage = true;
+            _errorLanguageMsg = "! Selected the language !!";
+        }
+
+
+    }
+    private void SelectModelReleases(CategoryData item)
+    {
+        if (SelectedTypeLangague != null && item != null)
+        {
+            if (SelectedTypeSound != null)
+            {
+                if (SelectedTypeLahagaModel != null)
+                {
+                    _errorTypeLahja = false;
+                    _errorTypeSound = false;
+                    _errorLanguage = false;
+                    _errorLanguageMsg = "";
+                    _errorTypeSoundMsg = "";
+                    _errorTypeLahjaMsg = "";
+
+                    SelectedModelRelease = item;
+                    // if (_selectedComponent != null && _selectedComponent.Component != null && _selectedComponent.TypeModel == "T2S")
+                    if (item.TypeModel == "T2S")
+                        SelectedComponent = RenderFragmentHelper.RenderComponent(typeof(T2Speech), item.Id, "ModelId", item.Identifier);
+                    StateHasChanged();
+                }
+                else
+                {
+                    snackbar.Add("من فضلك يجب تحديد اللغة وجنس المتحدث واللهجة لتتمكن من عرض  بقية الاعدادات", Severity.Warning);
+                    _errorTypeLahja = true;
+                    _errorTypeLahjaMsg = "! Selected the Type Lahaga Model Or Type Sound !!";
+                }
+
+            }
+            else
+            {
+                snackbar.Add("من فضلك يجب تحديد اللغة وجنس المتحدث  لتتمكن من عرض  بقية الاعدادات", Severity.Warning);
+                _errorTypeSound = true;
+
+                _errorTypeSoundMsg = "! Selected the  Type Sound !!";
+
+            }
+
+        }
+        else
+        {
+            snackbar.Add("من فضلك يجب تحديد اللغة لتتمكن من عرض  بقية الاعدادات", Severity.Warning);
+            _errorLanguage = true;
+            _errorLanguageMsg = "! Selected the language !!";
+        }
+
+
+    }
+
+
+    public class RenderFragmentHelper
+    {
+        public static RenderFragment RenderComponent(Type componentType, int index = 0, string key = "", string value = "") =>
+            builder =>
+            {
+                builder.OpenComponent(index, componentType);
+                if (!string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(value))
+                    builder.AddAttribute(1, key, value);
+                // builder.AddAttribute(1, "OnSubmit", EventCallback.Factory.Create(this, OnSubmitT2Speech));
+                builder.CloseComponent();
+            };
+    }
+
+    private void OnSubmitT2Speech()
+    {
+
+    }
+
+
+   
+private List<CategoryData> Categories = new()
+{
+    new CategoryData
+    {   Id=0,
+        Identifier = "Start",
+        // UrlPage = "studio/start",
+        Component = typeof(StartStudio),
+        Text = new Dictionary<string, string>
+        {
+            { "ar", "تطبيقات البداية" },
+            { "en", "Start Applications" }
+        },
+        Icon = Icons.Material.Filled.Apps
+    },
+    new CategoryData
+    {   Id=1,
+        ServiceId = "serv_cec8071f426d4180ad5dd29bb618bc12",
+        Identifier = "studio-t2text",
+        UrlPage = "studio/t2Text",
+        Component = typeof(T2Text),
+        Text = new Dictionary<string, string>
+        {
+            { "ar", "نص إلى نص" },
+            { "en", "Text to Text" }
+        },
+        Icon = Icons.Material.Filled.TextDecrease
+    },
+    new CategoryData
+    {   Id=2,
+        Identifier = "T2Speech",
+        ServiceId = "serv_8284631079cc40ff8fb8afa15dd86dcd",
+        UrlPage = "studio/t2Speech",
+        Component = typeof(T2Speech),
+        Text = new Dictionary<string, string>
+        {
+            { "ar", "نص إلى كلام" },
+            { "en", "Text to Speech" }
+        },
+        Icon = Icons.Material.Filled.Speaker
+    },
+    new CategoryData
+    {   Id=3,
+        ServiceId = "serv_8284631079cc40ff8fb8afa15dd86dcd",
+        Identifier = "studio-t2speech",
+        UrlPage = "studio/t2SpeechLive",
+        Component = typeof(T2SpeechLive),
+        Text = new Dictionary<string, string>
+        {
+            { "ar", "نص إلى كلام مباشر" },
+            { "en", "Real-time Text to Speech" }
+        },
+        Icon = Icons.Material.Filled.Living
+    },
+    new CategoryData
+    {   Id=4,
+         ServiceId = "serv_4d5a62dc4eb246338619db0f18a52479",
+        Identifier = "chatbot",
+        Component = typeof(ChatT2Text),
+        UrlPage = "studio/chatT2Text",
+        Text = new Dictionary<string, string>
+        {
+            { "ar", "دردشة نصية" },
+            { "en", "Text Chat" }
+        },
+        Icon = Icons.Material.Filled.Chat
+    },
+    new CategoryData
+    {   Id=4,
+         ServiceId = "serv_8284631079cc40ff8fb8afa15dd86dcd",
+        Identifier = "VoiceChat",
+        Component = typeof(VoiceChat),
+        UrlPage = "studio/voiceChat",
+        Text = new Dictionary<string, string>
+        {
+            { "ar", "دردشة صوتية" },
+            { "en", "Voice Chat" }
+        },
+        Icon = Icons.Material.Filled.VoiceChat
+    },
+
+};
+
+
+
+
+    private Dictionary<string, string> EnglishLabels = new()
+{
+    { "Studio", "Studio LAHJA AI" },
+    { "Settings", "Settings" },
+    { "Languages", "Languages" },
+    { "Type Lahja", "Type Lahja" },
+    { "Sound Types", "Sound Types" },
+    { "Models", "Models" },
+};
+
+    private Dictionary<string, string> ArabicLabels = new()
+{
+    { "Studio", "استديو لهجة AI" },
+    { "Settings", "الإعدادات" },
+    { "Languages", "اللغات" },
+    { "Type Lahja", "نوع اللهجة" },
+    { "Sound Types", "أنواع الصوت" },
+    { "Models", "النماذج" },
+};
+
+
     // private void SelectSetting(SettingItem setting)
     // {
     //     IsSettingsMenuVisible = false; Close settings menu after selection

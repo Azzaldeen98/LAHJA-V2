@@ -5,6 +5,9 @@ using Microsoft.Extensions.Configuration;
 using Infrastructure.DataSource.ApiClient.Base;
 using Infrastructure.Models.AuthorizationSession;
 using Domain.ShareData.Base;
+using Domain.Wrapper;
+using Newtonsoft.Json.Linq;
+using Domain.Exceptions;
 
 
 
@@ -23,84 +26,159 @@ namespace Infrastructure.DataSource.ApiClient.AuthorizationSession
         }
         public async Task<List<SessionTokenAuthResponseModel>> GetSessionsAsync()
         {
+            try
+            {
+                var client = await GetApiClient();
+                var response = await client.GetSessionsAsync();
+                var resModel = _mapper.Map<List<SessionTokenAuthResponseModel>>(response?.ToList());
 
-            var client = await GetApiClient();
-            var response = await client.GetSessionsAsync();
-            var resModel = _mapper.Map<List<SessionTokenAuthResponseModel>>(response?.ToList());
-
-            return resModel;
+                return resModel;
+            }
+            catch (ApiException ex)
+            {
+                throw new ServerException(ex.Message, ex.StatusCode);
+            }
+        
 
         }
         public async Task<AuthorizationSessionWebResponseModel> CreateAuthorizationSessionAsync(AuthorizationWebRequestModel request)
         {
-        
-                var client = await GetApiClient();
-                var model = _mapper.Map<CreateAuthorizationWebRequest>(request);
-                var response = await client.CreateAuthorizationSessionAsync(model);
-                var resModel = _mapper.Map<AuthorizationSessionWebResponseModel>(response);
+            
+                try
+                {
+                    var client = await GetApiClient();
+                    var model = _mapper.Map<CreateAuthorizationWebRequest>(request);
+                    var response = await client.CreateAuthorizationSessionAsync(model);
+                    var resModel = _mapper.Map<AuthorizationSessionWebResponseModel>(response);
 
-                return resModel;
+                    return resModel;
+                }
+                catch (ApiException<ApiExceptionResult> ex)
+                {
+                    throw new ServerException(ex.Result.Message, ex.StatusCode);  
+                }    
+                catch (HttpRequestException e)
+                {
+                    throw new ServerException(e.Message, (int)(e.StatusCode??0));
+                }
+                catch (Exception e)
+                {
+                    throw;
+                }
+     
             
         }
         public async Task<DeleteResponse> PauseAuthorizationSessionAsync(string id)
         {
 
-            var client = await GetApiClient();
-            var response = await client.PauseAuthorizationSessionAsync(id);
-            var resModel = _mapper.Map<DeleteResponse>(response);
-            return resModel;
+   
+            try
+            {
+                var client = await GetApiClient();
+                var response = await client.PauseAuthorizationSessionAsync(id);
+                var resModel = _mapper.Map<DeleteResponse>(response);
+                return resModel;
+            }
+            catch (ApiException ex)
+            {
+                throw new ServerException(ex.Message, ex.StatusCode);  
+            }
 
         }
         public async Task<DeleteResponse> ResumeAuthorizationSessionAsync(string id)
         {
-
-            var client = await GetApiClient();
-            var response = await client.ResumeAuthorizationSessionAsync(id);
-            var resModel = _mapper.Map<DeleteResponse>(response);
-            return resModel;
+            try
+            {
+                var client = await GetApiClient();
+                var response = await client.ResumeAuthorizationSessionAsync(id);
+                var resModel = _mapper.Map<DeleteResponse>(response);
+                return resModel;
+            }
+            catch (ApiException ex)
+            {
+                throw new ServerException(ex.Message, ex.StatusCode);
+            }
+    
 
         }
         public async Task<AuthorizationSessionCoreResponseModel> AuthorizationSessionAsync(ValidateTokenRequestModel request)
         {
-          
+            try
+            {
                 var client = await GetApiClient();
                 var model = _mapper.Map<ValidateTokenRequest>(request);
                 var response = await client.AuthorizationSessionAsync(model);
                 var resModel = _mapper.Map<AuthorizationSessionCoreResponseModel>(response);
-                return resModel;  
+                return resModel;
+            }
+            catch (ApiException ex)
+            {
+                throw new ServerException(ex.Message, ex.StatusCode);
+            }
+
+    
           
         }
         public async Task ValidateSessionTokenAsync(string  token)
         {
-       
-                var client = await GetApiClient(); 
-          
-                await client.ValidateSessionTokenAsync(token);  
+            try
+            {
+                var client = await GetApiClient();
+
+                await client.ValidateSessionTokenAsync(token);
+            }
+            catch (ApiException ex)
+            {
+                throw new ServerException(ex.Message, ex.StatusCode);
+            }
+     
 
         }
         public async Task<AuthorizationSessionEncryptResponseModel> EncryptFromWebAsync()
         {
-      
+            try
+            {
                 var client = await GetApiClient();
-               var response= await client.EncryptFromWebAsync(new EncryptTokenRequest {AuthorizationType= "internal", Expires= DateTimeOffset.UtcNow}); 
-               return new AuthorizationSessionEncryptResponseModel(){ EncrptedToken= response.EncryptedToken };
+                var response = await client.EncryptFromWebAsync(new EncryptTokenRequest { AuthorizationType = "internal", Expires = DateTimeOffset.UtcNow });
+                return new AuthorizationSessionEncryptResponseModel() { EncrptedToken = response.EncryptedToken };
+            }
+            catch (ApiException ex)
+            {
+                throw new ServerException(ex.Message, ex.StatusCode);
+            }
+         
         }
 
         public async Task<AuthorizationSessionEncryptResponseModel> EncryptFromCoreAsync(string sessionToken)
         {
-         
+            try
+            {
                 var client = await GetApiClient();
                 var response = await client.EncryptFromCoreAsync(sessionToken);
-               return new AuthorizationSessionEncryptResponseModel() { EncrptedToken = response.EncryptedToken };
+                return new AuthorizationSessionEncryptResponseModel() { EncrptedToken = response.EncryptedToken };
+            }
+            catch (ApiException ex)
+            {
+                throw new ServerException(ex.Message, ex.StatusCode);
+            }
+
+    
         }
 
         public async Task<DeleteResponse> DeleteAuthorizationSessionAsync(string sessionId)
         {
-     
-                var client = await GetApiClient();  
-                var response = await client.DeleteAuthorizationSessionAsync(sessionId);  
+            try
+            {
+                var client = await GetApiClient();
+                var response = await client.DeleteAuthorizationSessionAsync(sessionId);
                 var resModel = _mapper.Map<DeleteResponse>(response);
                 return resModel;
+            }
+            catch (ApiException ex)
+            {
+                throw new ServerException(ex.Message, ex.StatusCode);
+            }
+       
             
         }
 

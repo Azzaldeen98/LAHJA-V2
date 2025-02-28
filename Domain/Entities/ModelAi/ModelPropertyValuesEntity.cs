@@ -8,7 +8,6 @@
 
         public ICollection<string> ModelImageUrl { get; set; }
 
-
         public ICollection<string> Type { get; set; }
 
         public ICollection<string> Voice { get; set; }

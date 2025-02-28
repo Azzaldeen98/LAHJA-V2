@@ -38,7 +38,6 @@
             }
         }
         get => _dataBuild; }
-
     [Parameter] public EventCallback<SessionTokenAuth> SubmitCreate { set; get; }
     [Parameter] public List<DataBuildServiceInfo> Services { set; get; } = new();
     [Parameter] public EventCallback<string> SubmitValidate { set; get; }
@@ -64,7 +63,6 @@
                     OnRowClicked = EventCallback.Factory.Create<SessionTokenAuth>(this, OnRowClicked)
                 }
             };
-
         if (_dataBuild != null)
         {
             cardStates = new()
@@ -73,15 +71,16 @@
                     new()
                     {
                         Value=_dataBuild.Where(x=>x.IsActive).Count().ToString(),
-                        Label="Active"
+                        Label=TranslationsLST[lg]["Active"]
 
                     },
 
                      new()
                     {
                          Value=_dataBuild.Where(x=>x.IsActive==false).Count().ToString(),
-                        Label="UnActive"
-                    },
+                       Label=TranslationsLST[lg]["UnActive"]
+                    },   
+    
                     
                 };
         }
@@ -112,7 +111,6 @@
             initializeData(_dataBuild);
 
     }
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
 
@@ -122,9 +120,6 @@
             StateHasChanged();
         }
     }
-
-
-
     private Task OnChipClicked(CardActionTabel action)
     {
         if (action.Tag == "delete")
@@ -140,23 +135,14 @@
         return Task.CompletedTask;
 
     }
-
     private void OpenDialog()
     {
-
-
-
         var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.False, FullWidth = false };
-
-
         var parameters = new DialogParameters<FormSessionToken>
         {
-
             { x =>x.Services,Services },
             { x =>x.SubmitSaved,EventCallback.Factory.Create<DataBuildServiceInfo>(this, OnCreateNewSessionToken) },
-
         };
-
         dialog=DialogService.Show<FormSessionToken>("", parameters, options);
     }
 
@@ -166,7 +152,6 @@
         {
             await SubmitCreateSessionToken.InvokeAsync(data);
         }
-
         dialog.Close();
         refreshPage();
     }
@@ -363,14 +348,18 @@
                 ["Text1"] = "create your Tokens",
                 ["Text2"] = "AI لهجة",
                 ["Description"] = "LAHJA platform provides a smart way to communicate with AI in your own dialect.",
-                ["ButtonLink"] = "Create Token"
+                ["ButtonLink"] = "Create Token",
+                ["Active"] = "Tokens Active",
+                ["UnActive"] = "Tokens UnActive"
             },
             ["ar"] = new()
             {
                 ["Text1"] = "انشى رموز الوصول  ",
                 ["Text2"] = "لهجة AI",
                 ["Description"] = "توفر  منصة لهجة  طريقة ذكية للتواصل مع الذكاء الاصطناعي بلهجتك الخاصة.",
-                ["ButtonLink"] = "انشاء رمز الوصول "
+                ["ButtonLink"] = "انشاء رمز الوصول ",
+                ["Active"] = "رموز الوصول النشطة",
+                ["UnActive"] = "رموز الوصول غير النشطة",
             }
         };
 

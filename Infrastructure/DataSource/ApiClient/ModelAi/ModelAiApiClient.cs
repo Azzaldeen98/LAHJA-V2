@@ -15,6 +15,21 @@ namespace Infrastructure.DataSource.ApiClient.Payment
         {
         }
 
+        public async Task<ICollection<ModelAiResponseEntity>> GetModelsAiAsync()
+        {
+
+            try
+            {
+                var client = await GetApiClient();
+                var response = await client.GetModelsAiAsync();
+                return _mapper.Map<ICollection<ModelAiResponseEntity>>(response);
+            }
+            catch (ApiException e)
+            {
+
+                throw new ServerException(e.Message, e.StatusCode);
+            }
+        }
         public  async Task<ICollection<ModelAiResponseEntity>> GetModelsByCategoryAsync(string category)
         {
 
@@ -29,6 +44,40 @@ namespace Infrastructure.DataSource.ApiClient.Payment
                 throw new ServerException(e.Message,e.StatusCode);
             }
         }
+
+        //public async Task<ModelAiResponseEntity> CreateModelAiAsync(ModelAiCreateEntity model)
+        //{
+
+        //    try
+        //    {
+        //        var client = await GetApiClient();
+        //        var response = await client.CreateModelAiAsync(id);
+        //        return _mapper.Map<ModelAiResponseEntity>(response);
+        //    }
+        //    catch (ApiException e)
+        //    {
+
+        //        throw new ServerException(e.Message, e.StatusCode);
+        //    }
+        //}
+
+
+        //public async Task<ModelAiResponseEntity> UpdateModelAiAsync(ModelAiUpdateEntity model)
+        //{
+
+        //    try
+        //    {
+        //        var client = await GetApiClient();
+        //        var response = await client.UpdateModelAiAsync(id);
+        //        return _mapper.Map<ModelAiResponseEntity>(response);
+        //    }
+        //    catch (ApiException e)
+        //    {
+
+        //        throw new ServerException(e.Message, e.StatusCode);
+        //    }
+        //}
+
         public async Task<ModelAiResponseEntity> GetModelAiAsync(string id)
         {
 
@@ -106,21 +155,7 @@ namespace Infrastructure.DataSource.ApiClient.Payment
                 throw new ServerException(e.Message, e.StatusCode);
             }
         }
-        public async Task<ICollection<ModelAiResponseEntity>> GetModelsAiAsync()
-        {
 
-            try
-            {
-                var client = await GetApiClient();
-                var response = await client.GetModelsAiAsync();
-                return _mapper.Map<ICollection<ModelAiResponseEntity>>(response);
-            }
-            catch (ApiException e)
-            {
-
-                throw new ServerException(e.Message, e.StatusCode);
-            }
-        }
 
         public async Task<ICollection<ModelAiResponseEntity>> GetModelsByDialectAsync(string dialect)
         {
@@ -179,7 +214,6 @@ namespace Infrastructure.DataSource.ApiClient.Payment
             }
             catch (ApiException e)
             {
-
                 throw new ServerException(e.Message, e.StatusCode);
             }
         }

@@ -55,7 +55,7 @@
                                     Label="@T("Remove")" OnClick="DeleteImage" />
                         }
 
-                        <MudText Class="mt-2">@T("Note")</MudText>
+                        @* <MudText Class="mt-2">@T("Note")</MudText> *@
 
                         @* <MudButton Color="@AppColors.BASE_COLOR_ENUM"  ButtonType="ButtonType.Reset" Class="@($"{AppTextStyle.TEXT_TRANSFORM_NORMAL} my-2 text-start")" Href="@($"/ProfileResetPassword/{_buildData.Email}")">@T("ResetPassword")</MudButton> *@
                     </MudCardActions>
@@ -117,11 +117,14 @@
 
                         @if (isUpdate)
                         {
-                            <MudCardActions Class="d-flex justify-between px-3 mt-4">
+                            <MudCardActions Class="d-flex flex-wrap justify-content-between align-items-center px-3 mt-4">
 
-                                <MudButton Disabled="@isProcessing" Color="Color.Error" Variant="Variant.Outlined" Class="px-5 py-3">@T("DeleteProfile")</MudButton> 
-                                <MudButton Disabled="@isProcessing" Color="@AppColors.BASE_COLOR_ENUM" Variant="Variant.Filled" OnClick="UpdateProfileUserAsync" Class="ml-3 px-5 py-3">@T("UpdateProfile")</MudButton>
-                                 @* <CustomButton Color="Color.Error"  Text="@T("DeleteProfile")" OnClick="OnDeletedProfile" StyleClass="px-5 py-3" /> *@
+                                 <MudButton Disabled="@isProcessing" Color="@AppColors.BASE_COLOR_ENUM" Variant="Variant.Filled"
+                                OnClick="UpdateProfileUserAsync" Class="ml-3 px-5 py-3 m-2 w30">@T("UpdateProfile")</MudButton>
+
+                                <MudButton Disabled="@isProcessing" Color="Color.Error" Variant="Variant.Outlined" Class="px-5 py-3 m-2 w30">@T("DeleteProfile")</MudButton>
+
+                                @* <CustomButton Color="Color.Error"  Text="@T("DeleteProfile")" OnClick="OnDeletedProfile" StyleClass="px-5 py-3" /> *@
                                  @* <CustomButton Text="@T("UpdateProfile")" OnClick="UpdateProfileUserAsync" StyleClass="ml-3 px-5 py-3" /> *@
                             </MudCardActions>
                         }
@@ -216,7 +219,7 @@
 
         if (file != null)
         {
-            using var stream = file.OpenReadStream(maxAllowedSize: 1048576); 
+            using var stream = file.OpenReadStream();// maxAllowedSize: 1048576); 
             using var memoryStream = new MemoryStream();
             await stream.CopyToAsync(memoryStream);
             var bytes = memoryStream.ToArray();

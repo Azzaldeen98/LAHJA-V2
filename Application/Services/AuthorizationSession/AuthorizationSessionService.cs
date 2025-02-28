@@ -70,10 +70,8 @@ namespace Application.Services.AuthorizationSession
                     }
                 }
 
-             
-
-
-                return  Result<AuthorizationSessionWebResponse>.Fail();
+            
+                return  Result<AuthorizationSessionWebResponse>.Fail("Not Found Service !!");
             }
             catch (ServerException e) {
 

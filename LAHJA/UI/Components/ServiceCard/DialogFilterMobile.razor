@@ -1,5 +1,4 @@
-﻿@using LAHJA.Data.UI.Components.ServiceCard
-@using LAHJA.Data.UI.Components.ServiceCard
+﻿
 @using System.Threading
 @using Domain.ShareData
 @using LAHJA.Data.UI.Components.ServiceCard
@@ -7,7 +6,6 @@
 @using LAHJA.Them
 @using LAHJA.UI.Components.FeatureServices
 @inject ISnackbar Snackbar
- 
 @inject NavigationManager Navigation;
 
 <style>
@@ -47,91 +45,93 @@
 
 
 </style>
+
+
 <MudDialog>
 
-
-
     <DialogContent>
-        <MudGrid>
-            <MudItem xs="12" md="4" Style=" border:1px solid;"  >
-                <MudStack Spacing="2" Class="custom-stack">
-                    <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Small" Class="mt-0"></MudTextField>
+            @if (_dataBuildModelSettings!=null){
+                <MudGrid>
 
-                    <MudSelect @bind-Value="@selectedType" Variant="Variant.Outlined" Label="@(TypeLanguage ? "Type" : "النوع ")" Dense="true" Style="width:100px; font-size:12px;">
-                        @foreach (var property in propertyValues["Type"])
-                        {
-                            <MudSelectItem Value="@property" Style="font-size:12px;"> @property</MudSelectItem>
+                    <MudItem xs="12" md="4" Style=" border:1px solid;"  >
+                        <MudStack Spacing="2" Class="custom-stack">
+                            <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Small" Class="mt-0"></MudTextField>
 
-                        }
-                    </MudSelect>
-                    <MudSelect @bind-Value="@selectedLanguage" Variant="Variant.Outlined" Label="@(TypeLanguage ? "Language" : "اللغة ")" Dense="true" Style="width:100px; font-size:12px;">
-                        @foreach (var property in propertyValues["Language"])
-                        {
-                            <MudSelectItem Value="@property" Style="font-size:12px;"> @property</MudSelectItem>
+                            <MudSelect @bind-Value="@selectedType" Variant="Variant.Outlined" Label="@(TypeLanguage ? "Type" : "النوع ")" Dense="true" Style="width:100px; font-size:12px;">
+                            @foreach (var property in _dataBuildModelSettings.Type)
+                                {
+                                    <MudSelectItem Value="@property" Style="font-size:12px;"> @property</MudSelectItem>
 
-                        }
-                    </MudSelect>
+                                }
+                            </MudSelect>
+                            <MudSelect @bind-Value="@selectedLanguage" Variant="Variant.Outlined" Label="@(TypeLanguage ? "Language" : "اللغة ")" Dense="true" Style="width:100px; font-size:12px;">
+                            @foreach (var property in _dataBuildModelSettings.Language)
+                                {
+                                    <MudSelectItem Value="@property" Style="font-size:12px;"> @property</MudSelectItem>
 
-                    <MudSelect @bind-Value="@selectedDialect" Variant="Variant.Outlined" Label="@(TypeLanguage ? "Dialect" : "اللهجة ")" Dense="true" Style="width:100px; font-size:12px;">
-                        @foreach (var property in propertyValues["Dialect"])
-                        {
-                            <MudSelectItem Value="@property" Style="font-size:12px;"> @property</MudSelectItem>
+                                }
+                            </MudSelect>
 
-                        }
-                    </MudSelect>
+                            <MudSelect @bind-Value="@selectedDialect" Variant="Variant.Outlined" Label="@(TypeLanguage ? "Dialect" : "اللهجة ")" Dense="true" Style="width:100px; font-size:12px;">
+                            @foreach (var property in _dataBuildModelSettings.Dialect)
+                                {
+                                    <MudSelectItem Value="@property" Style="font-size:12px;"> @property</MudSelectItem>
 
-
-                </MudStack>
-                <MudDivider Class="my-6" />
-                <MudStack Spacing="2" Class="custom-stack" Style="padding-top:5px!important">
+                                }
+                            </MudSelect>
 
 
+                        </MudStack>
+                        <MudDivider Class="my-6" />
+                        <MudStack Spacing="2" Class="custom-stack" Style="padding-top:5px!important">
 
 
-                    <MudNavGroup Title="@(TypeLanguage ? "Voice" : "الصوت ")" @bind-Value="@selectedVoice" Class="mud-nav-group small-font" Expanded="true">
-                        @foreach (var property in propertyValues["Voice"])
-                        {
-                            <MudCheckBox T="string"
-                                         Color="@AppColors.BASE_COLOR_ENUM" Value="@property">
-                                @property
-                            </MudCheckBox>
-                        }
-                    </MudNavGroup>
-
-                    <MudNavGroup Title="@(TypeLanguage ? "Quality" : "الجودة ")" @bind-Value="@selectedQuality" Class="mud-nav-group small-font" Expanded="true">
-                        @foreach (var property in propertyValues["Quality"])
-                        {
-                            <MudCheckBox T="string" Value="@property"
-                                         Color="@AppColors.BASE_COLOR_ENUM">
-                                @property
-                            </MudCheckBox>
-                        }
-                    </MudNavGroup>
-
-                    <MudNavGroup Title="@(TypeLanguage ? "Speed" : "السرعة ")" @bind-Value="@selectedSpeed" Class="mud-nav-group small-font" Expanded="true">
-                        @foreach (var property in propertyValues["Speed"])
-                        {
-                            <MudCheckBox T="string"
-                                         Color="@AppColors.BASE_COLOR_ENUM" Value="@property">
-                                @property
-                            </MudCheckBox>
-                        }
-                    </MudNavGroup>
 
 
-                    <MudButton 
-                               Variant="Variant.Outlined"
-                               OnClick="ApplyFilter"
-                               Color="@AppColors.BASE_COLOR_ENUM"
-                               Style="font-size:12px;" Dense="true" FullWidth="true">
-                        @(TypeLanguage ? "Apply Filter" : "تطبيق")
-                    </MudButton>
-                </MudStack>
-            </MudItem>
+                            <MudNavGroup Title="@(TypeLanguage ? "Voice" : "الصوت ")" @bind-Value="@selectedVoice" Class="mud-nav-group small-font" Expanded="true">
+                            @foreach (var property in _dataBuildModelSettings.Voice)
+                                {
+                                    <MudCheckBox T="string"
+                                                 Color="@AppColors.BASE_COLOR_ENUM" Value="@property">
+                                        @property
+                                    </MudCheckBox>
+                                }
+                            </MudNavGroup>
 
-        </MudGrid>
+                            <MudNavGroup Title="@(TypeLanguage ? "Quality" : "الجودة ")" @bind-Value="@selectedQuality" Class="mud-nav-group small-font" Expanded="true">
+                            @foreach (var property in _dataBuildModelSettings.Quality)
+                                {
+                                    <MudCheckBox T="string" Value="@property"
+                                                 Color="@AppColors.BASE_COLOR_ENUM">
+                                        @property
+                                    </MudCheckBox>
+                                }
+                            </MudNavGroup>
+
+                            <MudNavGroup Title="@(TypeLanguage ? "Speed" : "السرعة ")" @bind-Value="@selectedSpeed" Class="mud-nav-group small-font" Expanded="true">
+                            @foreach (var property in _dataBuildModelSettings.Speed)
+                                {
+                                    <MudCheckBox T="string"
+                                                 Color="@AppColors.BASE_COLOR_ENUM" Value="@property">
+                                        @property
+                                    </MudCheckBox>
+                                }
+                            </MudNavGroup>
 
 
+                            <MudButton 
+                                       Variant="Variant.Outlined"
+                                       OnClick="ApplyFilter"
+                                       Color="@AppColors.BASE_COLOR_ENUM"
+                                       Style="font-size:12px;" Dense="true" FullWidth="true">
+                                @(TypeLanguage ? "Apply Filter" : "تطبيق")
+                            </MudButton>
+                        </MudStack>
+                    </MudItem>
+
+                </MudGrid>
+
+           }
  
                  
     </DialogContent>
@@ -144,142 +144,131 @@
 
 @code {
 
+    private ModelPropertyValues _dataBuildModelSettings = null;
+    private List<ModelAiResponse> _dataBuildModelsAi = null;
+
     [CascadingParameter]
     private MudDialogInstance MudDialog { get; set; }
+
+    [Parameter] public ModelPropertyValues DataBuildModelSettings { get => _dataBuildModelSettings; set => _dataBuildModelSettings = value; }
+    [Parameter] public List<ModelAiResponse> DataBuildModelsAi { get => _dataBuildModelsAi; set => _dataBuildModelsAi = value; }
+
+
+
     [Parameter]
-
-
-    public  Dictionary<string, List<string>> propertyValues { get; set; }
-
-    [Parameter]
-
     public string TypeMode { get; set; } = " ";
 
     [Parameter] public bool TypeLanguage { get; set; } = true;
   
     private void CloseDialog() => MudDialog.Close(DialogResult.Ok(true));
-    [Parameter]
+    // [Parameter]
 
-    public List<ModelProperties> DataBuild { get; set; } = null;
+    // public List<ModelPropertyValues> _dataBuildModelsAi { get; set; } = null;
  
     private void ApplyFilter()
 
     {
 
-
         try
         {
 
-          
+            // if (!string.IsNullOrWhiteSpace(selectedType))
+            // {
 
-            if (!string.IsNullOrWhiteSpace(selectedType))
+            //     _dataBuildModelsAi = _dataBuildModelsAi.Where((x => x.Type == selectedType)).ToList();
+            // }
 
-            {
+            // if (!string.IsNullOrWhiteSpace(selectedFramework))
 
+            // {
 
+            //     Snackbar.Add(selectedType, Severity.Error);
 
+            //     _dataBuildModelsAi = _dataBuildModelsAi.Where((x => x.Framework == selectedFramework)).ToList();
 
 
-                DataBuild = DataBuild.Where((x => x.Type == selectedType)).ToList();
 
+            // }
 
 
 
+            // if (!string.IsNullOrWhiteSpace(selectedVoice))
 
-            }
+            // {
 
-            if (!string.IsNullOrWhiteSpace(selectedFramework))
+            //     Snackbar.Add(selectedType, Severity.Error);
 
-            {
+            //     _dataBuildModelsAi = _dataBuildModelsAi.Where((x => x.Voice == selectedVoice)).ToList();
 
-                // Snackbar.Add(selectedType, Severity.Error);
 
-                DataBuild = DataBuild.Where((x => x.Framework == selectedFramework)).ToList();
 
+            // }
 
+            // if (!string.IsNullOrWhiteSpace(selectedLanguage))
 
-            }
+            // {
 
+            //     Snackbar.Add(selectedType, Severity.Error);
 
+            //     _dataBuildModelsAi = _dataBuildModelsAi.Where((x => x.Language == selectedLanguage)).ToList();
 
-            if (!string.IsNullOrWhiteSpace(selectedVoice))
 
-            {
 
-                // Snackbar.Add(selectedType, Severity.Error);
+            // }
 
-                DataBuild = DataBuild.Where((x => x.Voice == selectedVoice)).ToList();
+            // if (!string.IsNullOrWhiteSpace(selectedDialect))
 
+            // {
 
+            //     Snackbar.Add(selectedType, Severity.Error);
 
-            }
+            //     _dataBuildModelsAi = _dataBuildModelsAi.Where((x => x.Dialect == selectedDialect)).ToList();
 
-            if (!string.IsNullOrWhiteSpace(selectedLanguage))
 
-            {
 
-                // Snackbar.Add(selectedType, Severity.Error);
+            // }
 
-                DataBuild = DataBuild.Where((x => x.Language == selectedLanguage)).ToList();
+            // if (!string.IsNullOrWhiteSpace(selectedQuality))
+            // {
 
+            //     Snackbar.Add(selectedType, Severity.Error);
 
+            //     _dataBuildModelsAi = _dataBuildModelsAi.Where((x => x.Quality == selectedQuality)).ToList();
 
-            }
 
-            if (!string.IsNullOrWhiteSpace(selectedDialect))
 
-            {
+            // }
 
-                // Snackbar.Add(selectedType, Severity.Error);
 
-                DataBuild = DataBuild.Where((x => x.Dialect == selectedDialect)).ToList();
 
+            // if (!string.IsNullOrWhiteSpace(selectedAccuracy))
 
+            // {
 
-            }
+            //     Snackbar.Add(selectedType, Severity.Error);
 
-            if (!string.IsNullOrWhiteSpace(selectedQuality))
+            //     _dataBuildModelsAi = _dataBuildModelsAi.Where((x => x.Accuracy == selectedAccuracy)).ToList();
 
-            {
 
-                // Snackbar.Add(selectedType, Severity.Error);
 
-                DataBuild = DataBuild.Where((x => x.Quality == selectedQuality)).ToList();
+            // }
 
+            // if (!string.IsNullOrWhiteSpace(selectedSpeed))
 
+            // {
 
-            }
+            //     Snackbar.Add(selectedType, Severity.Error);
 
+            //     _dataBuildModelsAi = _dataBuildModelsAi.Where((x => x.Speed == selectedSpeed)).ToList();
 
 
-            if (!string.IsNullOrWhiteSpace(selectedAccuracy))
 
-            {
-
-                // Snackbar.Add(selectedType, Severity.Error);
-
-                DataBuild = DataBuild.Where((x => x.Accuracy == selectedAccuracy)).ToList();
-
-
-
-            }
-
-            if (!string.IsNullOrWhiteSpace(selectedSpeed))
-
-            {
-
-                // Snackbar.Add(selectedType, Severity.Error);
-
-                DataBuild = DataBuild.Where((x => x.Speed == selectedSpeed)).ToList();
-
-
-
-            }
+            // }
 
 
 
             clear();
-                MudDialog.Close(DialogResult.Ok(DataBuild));
+                MudDialog.Close(DialogResult.Ok(_dataBuildModelSettings));
 
 
 
@@ -387,7 +376,7 @@
 
     private string value1;
 
-    List<ModelProperties> DataBuild1 = null;
+
 
 
 
@@ -447,11 +436,11 @@
 
     private string searchString1 = "";
 
-    private ModelProperties selectedItem1 = null;
+    private ModelPropertyValues selectedItem1 = null;
 
-    private HashSet<ModelProperties> selectedItems = new HashSet<ModelProperties>();
+    private HashSet<ModelPropertyValues> selectedItems = new HashSet<ModelPropertyValues>();
 
-    private IEnumerable<ModelProperties> Elements = new List<ModelProperties>();
+    private IEnumerable<ModelPropertyValues> Elements = new List<ModelPropertyValues>();
 
 
     private bool _selectOnRowClick = true;
