@@ -141,6 +141,7 @@ namespace LAHJA.Mappings
             ///  Subscription
             CreateMap<SubscriptionResponse, DataBuildUserSubscriptionInfo>().ReverseMap();
             CreateMap<DataBuildUserSubscriptionInfo, SubscriptionRequest>().ReverseMap();
+            CreateMap<DataBuildUserSubscriptionInfo, SubscriptionCreate>().ReverseMap();
 
 
             /// Profile

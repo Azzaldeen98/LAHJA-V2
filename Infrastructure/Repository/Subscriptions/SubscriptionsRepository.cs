@@ -132,47 +132,51 @@ namespace Infrastructure.Repository.Subscription
 
         }
 
-        public async Task<Result<SubscriptionResponse>> CreateAsync(SubscriptionRequest request)
+        public async Task<SubscriptionCreateResponse> CreateAsync(SubscriptionCreate request)
         {
-            var response = await ExecutorAppMode.ExecuteAsync<Result<SubscriptionResponseModel>>(
-                  async () => Result<SubscriptionResponseModel>.Success(),
+            var smodel=_mapper.Map<SubscriptionCreateModel>(request);
+            var response = await ExecutorAppMode.ExecuteAsync(
+                  async () => await subscriptionApiClient.CreateSubscriptionAsync(smodel),
                   async () =>
                   {
-                      var email = await _sessionUserManager.GetEmailAsync();
-                      if(email == null)
-                          return Result<SubscriptionResponseModel>.Fail();
+                      return await subscriptionApiClient.CreateSubscriptionAsync(smodel);
+                      //var email = await _sessionUserManager.GetEmailAsync();
+                      //if(email == null)
+                      //    return Result<SubscriptionResponseModel>.Fail();
 
-                      var plan= seedsPlans.getOne(request.PlanId);
-                      if (plan == null)
-                          return Result<SubscriptionResponseModel>.Fail();
+                      //var plan= seedsPlans.getOne(request.PlanId);
+                      //if (plan == null)
+                      //    return Result<SubscriptionResponseModel>.Fail();
 
-                      var model=_mapper.Map<SubscriptionModel>(request);
-                      model.UserId = email;
-                      model.PlanId = plan.Id;
-                      model.SubscriptionPlan = plan;
-                      model.SubscriptionPlan.Active = true; 
-                      model.StartDate = DateTime.Now;
-                      model.CancelAtPeriodEnd = true;
+                      //var model=_mapper.Map<SubscriptionModel>(request);
+                      //model.UserId = email;
+                      //model.PlanId = plan.Id;
+                      //model.SubscriptionPlan = plan;
+                      //model.SubscriptionPlan.Active = true; 
+                      //model.StartDate = DateTime.Now;
+                      //model.CancelAtPeriodEnd = true;
 
-                      seedsSubscriptionsData.AddSubscription(model);
-                      var res = seedsSubscriptionsData.SearchSubscriptions(x => x.UserId == email).FirstOrDefault();
-                      if (res != null)
-                      {
-                          var data = _mapper.Map<SubscriptionResponseModel>(res);
-                          return Result<SubscriptionResponseModel>.Success(data);
-                      }
-                      return Result<SubscriptionResponseModel>.Fail();
+                      //seedsSubscriptionsData.AddSubscription(model);
+                      //var res = seedsSubscriptionsData.SearchSubscriptions(x => x.UserId == email).FirstOrDefault();
+                      //if (res != null)
+                      //{
+                      //    var data = _mapper.Map<SubscriptionResponseModel>(res);
+                      //    return Result<SubscriptionResponseModel>.Success(data);
+                      //}
+                      //return Result<SubscriptionResponseModel>.Fail();
                   });
 
-            if (response.Succeeded)
-            {
-                var result = (response.Data != null) ? _mapper.Map<SubscriptionResponse>(response.Data) : null;
-                return Result<SubscriptionResponse>.Success(result);
-            }
-            else
-            {
-                return Result<SubscriptionResponse>.Fail(response.Messages);
-            }
+            return _mapper.Map<SubscriptionCreateResponse>(response);
+
+            //if (response.Succeeded)
+            //{
+            //    var result = (response.Data != null) ? _mapper.Map<SubscriptionCreateResponse>(response) : null;
+            //    return Result<SubscriptionResponse>.Success(result);
+            //}
+            //else
+            //{
+            //    return Result<SubscriptionResponse>.Fail(response.Messages);
+            //}
         }
         public async Task<Result<SubscriptionResponse>> ResumeAsync(string id)
         {

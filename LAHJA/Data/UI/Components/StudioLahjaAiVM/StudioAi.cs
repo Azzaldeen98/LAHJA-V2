@@ -2,15 +2,18 @@
 using LAHJA.Data.UI.Templates.AuthSession;
 using LAHJA.Data.UI.Templates.Services;
 using LAHJA.Helpers;
+using LAHJA.Helpers.Services;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using Shared.Constants.Router;
+using System.Globalization;
 
 namespace LAHJA.Data.UI.Components.StudioLahjaAiVM
 {
     public class StudioAi: StudioAiCard<DataBuildStudioBase>
     {
-
+        [Inject]
+        SessionUserManager sessionUserManager { get; set; }
         [Inject] TemplateAuthSession templateAuthSession { get; set; }
         [Inject] NavigationManager Navigation { get; set; }
 
@@ -20,8 +23,11 @@ namespace LAHJA.Data.UI.Components.StudioLahjaAiVM
 
 
         protected string _srcFrame;
+        protected string Lg { get => CultureInfo.CurrentUICulture.Name; }
+
         protected bool isLoading = true;
         protected string UrlCancel{ get => Helper.GetFullPath(Navigation, RouterPage.STUDIO); }
+        //protected string UrlRedirect { get => Helper.GetFullPath(Navigation, RouterPage.STUDIO); }
 
         [Parameter] public string SrcIFrame { get=> _srcFrame; set=> _srcFrame=value; }
      
@@ -73,6 +79,9 @@ namespace LAHJA.Data.UI.Components.StudioLahjaAiVM
         //protected DataBuildStudioBase DataBuild;
 
         protected SelectedStudioFilter selectedStudioFilter = new SelectedStudioFilter();
+    
+
+        //protected string url_cancel= $"{RouterPage.STUDIO}/start";
 
         protected void OnFrameLoaded()
         {
@@ -118,7 +127,11 @@ namespace LAHJA.Data.UI.Components.StudioLahjaAiVM
                 var res = await templateAuthSession.BuilderComponents.SubmitCreateSessionToken(new DataBuildSessionTokenAuth { ServiceId = serviceId });
                 if (res.Succeeded)
                 {
+                    //var theme = await sessionUserManager.GetThemeAsync();
+                     //lg = CultureInfo.CurrentUICulture.Name;
+                    //var urlRedirect = Helper.GetFullPath(Navigation, UrlPage);
                     _srcFrame = Helper.GetServiceSrcFrame(res.Data.UrlCore, res.Data.SessionToken);
+                    //_srcFrame = Helper.GetServiceSrcFrame(url:url,lg:lang,theme:theme, urlRedirect, UrlCancel);
                     StateHasChanged();
                 }
                 else
@@ -152,6 +165,9 @@ namespace LAHJA.Data.UI.Components.StudioLahjaAiVM
 
         protected override void OnInitialized()
         {
+            CurrentLanguage = CultureInfo.CurrentUICulture.Name;// await manageLanguageService.GetLanguageAsync();
+            ChangeLanguage(CurrentLanguage);
+
             if (DataBuild == null)
             {
                 DataBuild = new DataBuildStudioBase();
@@ -164,10 +180,10 @@ namespace LAHJA.Data.UI.Components.StudioLahjaAiVM
                 selectedStudioFilter.SelectedCategory = GetCategories().Options[0];
                 selectedStudioFilter.SelectedSpeakerName = GetSpeakerName().Options[0];
                 selectedStudioFilter.SelectedModelRelease = GetModelReleases().Options[0];
-                LoadFilters();
+               
             }
-       
-            
+            LoadFilters();
+
         }
 
         protected override async void OnAfterRender(bool firstRender)
@@ -175,13 +191,13 @@ namespace LAHJA.Data.UI.Components.StudioLahjaAiVM
         {
             if (firstRender)
             {
-                CurrentLanguage = await manageLanguageService.GetLanguageAsync();
-                ChangeLanguage(CurrentLanguage);
-                if (DataBuild != null)
-                {
-                    LoadFilters();
-                }
-                StateHasChanged();
+                //CurrentLanguage = CultureInfo.CurrentUICulture.Name;// await manageLanguageService.GetLanguageAsync();
+                //ChangeLanguage(CurrentLanguage);
+                //if (DataBuild != null)
+                //{
+                //    LoadFilters();
+                //}
+                //StateHasChanged();
 
             }
 
@@ -593,7 +609,7 @@ namespace LAHJA.Data.UI.Components.StudioLahjaAiVM
         {
             CurrentLanguage = currentLangCode;
             TranslationLabels = currentLangCode == "ar" ? ArabicLabels : EnglishLabels;
-            InvokeAsync(StateHasChanged);
+           await InvokeAsync(StateHasChanged);
         }
         public string GetText(string key)
         {

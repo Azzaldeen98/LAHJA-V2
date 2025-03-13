@@ -15,7 +15,8 @@ namespace Domain.Repository.Subscriptions
         Task<Result<SubscriptionResponse>> ResumeAsync(string id);
         Task<Result<SubscriptionResponse>> PauseAsync(string id);
         Task<Result<List<SubscriptionResponse>>> getAllAsync();
-        Task<Result<SubscriptionResponse>> CreateAsync(SubscriptionRequest request);
+        //Task<Result<SubscriptionResponse>> CreateAsync(SubscriptionRequest request);
+        Task<SubscriptionCreateResponse> CreateAsync(SubscriptionCreate request);
         Task<Result<SubscriptionResponse>> UpdateAsync(SubscriptionRequest request);
     }
 }

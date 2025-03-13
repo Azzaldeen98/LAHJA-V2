@@ -7,14 +7,7 @@
 @inject TemplateAuthSession templateAuthSession
 @attribute [Authorize]
 @inject SessionUserManager sessionUserManager
-@if (!string.IsNullOrEmpty(srcIframe))
-{
-    <iframe src="@srcIframe"
-    class="@CSSClass"
-    style="@styleCss"
-    onload="@OnFrameLoaded">
-    </iframe>
-}
+
 
 @if (isLoading)
 {
@@ -39,19 +32,30 @@
                 <MudSkeleton Animation="Animation.Wave" Width="100%" />
                 <MudSkeleton Animation="Animation.Pulse" Width="100%" />
             </MudCardContent>
-             <MudCardActions>
+            <MudCardActions>
                 <MudSkeleton SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Height="250px" Width="100%" />
             </MudCardActions>
         </MudCardContent>
-       
+
         <MudCardActions>
             <MudSkeleton Animation="Animation.Wave" Width="100%" />
             <MudSkeleton Animation="Animation.Pulse" Width="100%" />
-            @*             <MudSkeleton SkeletonType="SkeletonType.Circle" Animation="Animation.Wave" Height="30px" Width="30px" Class="ml-2 mb-2" />
-            <MudSkeleton SkeletonType="SkeletonType.Circle" Animation="Animation.Wave" Height="30px" Width="30px" Class="ml-3 mb-2" /> *@
+
         </MudCardActions>
     </MudCard>
 }
+
+
+
+@if (!string.IsNullOrEmpty(srcIframe))
+{
+    <iframe src="@srcIframe"
+    class="@CSSClass"
+    style="@styleCss"
+    onload="@OnFrameLoaded">
+    </iframe>
+}
+
 
 @code {
 
@@ -112,12 +116,11 @@
     public string SrcIFrame
     {
         get => srcIframe; 
-        set {
+        set  {
 
             if (!string.IsNullOrEmpty(value))
             {
-                srcIframe = HandelIFrameSrcAsync(value).Result;
-                StateHasChanged();
+                _ = UpdateSrcIFrameAsync(value);
             }
         }
     }
@@ -145,6 +148,11 @@
     {
         if (firstRender)
         {
+            if (string.IsNullOrEmpty(_theme))
+            {
+                _theme = await sessionUserManager.GetThemeAsync();
+            }
+
             if (string.IsNullOrEmpty(srcIframe))
                 await CreateSessionTokenAsync();
         }
@@ -153,16 +161,22 @@
     {
         isLoading = false;
         StateHasChanged();
+
         if (OnLoadFrame.HasDelegate)
         {
             await OnLoadFrame.InvokeAsync();
         }
     }
+    private async Task UpdateSrcIFrameAsync(string value)
+    {
+        srcIframe = await HandelIFrameSrcAsync(value);
+        StateHasChanged();
+    }
     private async Task<string> HandelIFrameSrcAsync(string url)
     {
         if (string.IsNullOrEmpty(_theme))
         {
-            _theme = await sessionUserManager.GetThemeAsync();
+             _theme = await sessionUserManager.GetThemeAsync();
         }
 
         return  Helper.GetServiceSrcFrame(url,
@@ -217,7 +231,7 @@
             if (res.Succeeded)
             {
 
-                _theme = await HelperThemeManager.GetStringThemeAsync();
+                _theme = await sessionUserManager.GetThemeAsync();
 
                 srcIframe =  Helper.GetServiceSrcFrame(
                     urlCore: res.Data.UrlCore, 
@@ -232,17 +246,17 @@
             }
             else
             {
-                if (!string.IsNullOrEmpty(backupPageUrl))
-                {
-                    srcIframe = await HandelIFrameSrcAsync(backupPageUrl);
-                    StateHasChanged();
-                }
-                else
-                {
-                    Snackbar.Add((res.Messages.Any() && res.Messages[0].Contains("400") ? "Your subscription is canceled or expired" : res.Messages[0] ?? "Error"), Severity.Error);
+                // if (!string.IsNullOrEmpty(backupPageUrl))
+                // {
+                //     srcIframe = await HandelIFrameSrcAsync(backupPageUrl);
+                //     StateHasChanged();
+                // }
+                // else
+                // {
+                Snackbar.Add((res.Messages.Any() && res.Messages[0].Contains("400") ? res.Messages[0]+"Your subscription is canceled or expired" : res.Messages[0] ?? "Error"), Severity.Error);
                     if (!string.IsNullOrEmpty(url_cancel))
                         Navigation.NavigateTo(url_cancel);
-                }
+                // }
              
       
             }

@@ -41,6 +41,7 @@ namespace LAHJA.Data.UI.Templates.Subscription
         public Func<T, Task> SubmitPause { get; set; }
         public Func<T, Task> SubmitResume { get; set; }
         public Func<T, Task> SubmitDelete { get; set; }
+        public Func<T, Task<Result<SubscriptionCreateResponse>>> SubmitCreate { get; set; }
         public Func<T, Task> SubmitUpdate { get; set; }
 
 
@@ -53,7 +54,7 @@ namespace LAHJA.Data.UI.Templates.Subscription
         //Task<Result<List<SubscriptionResponse>>> SearchAsync(T data);
         Task<Result<List<UserSubscription>>> GetAllAsync();
         Task<Result<bool>> HasActiveSubscriptionAsync();
-        //Task<Result<SubscriptionResponse>> CreateAsync(T data);
+        Task<Result<SubscriptionCreateResponse>> CreateAsync(T data);
         Task<Result<UserSubscription>> ResumeAsync(T data);
         Task<Result<UserSubscription>> PauseAsync(T data);
         Task<Result<DeleteResponse>> DeleteAsync(T data);
@@ -77,7 +78,7 @@ namespace LAHJA.Data.UI.Templates.Subscription
         public abstract Task<Result<List<UserSubscription>>> GetAllAsync();
         public abstract Task<Result<bool>> HasActiveSubscriptionAsync();
 
-        public abstract Task<Result<UserSubscription>> CreateAsync(E data);
+        public abstract Task<Result<SubscriptionCreateResponse>> CreateAsync(E data);
         public abstract Task<Result<UserSubscription>> PauseAsync(E data);
         public abstract Task<Result<UserSubscription>> ResumeAsync(E data);
         public abstract Task<Result<DeleteResponse>> DeleteAsync(E dataId);
@@ -96,6 +97,7 @@ namespace LAHJA.Data.UI.Templates.Subscription
         public Func<T, Task> SubmitResume { get; set; }
         public Func<T, Task> SubmitDelete { get; set; }
         public Func<T, Task> SubmitUpdate { get; set; }
+        public Func<T, Task<Result<SubscriptionCreateResponse>>> SubmitCreate{ get; set; }
 
 
     }
@@ -237,27 +239,27 @@ namespace LAHJA.Data.UI.Templates.Subscription
             }
         }
 
-        public override async Task<Result<UserSubscription>> CreateAsync(DataBuildUserSubscriptionInfo data)
+        public override async Task<Result<SubscriptionCreateResponse>> CreateAsync(DataBuildUserSubscriptionInfo data)
         {
-            var model = Mapper.Map<SubscriptionRequest>(data);
-            var res = await Service.CreateAsync(model);
-            if (res.Succeeded)
-            {
-                try
-                {
-                    var map = Mapper.Map<UserSubscription>(res.Data);
-                    return Result<UserSubscription>.Success(map);
+            var model = Mapper.Map<SubscriptionCreate>(data);
+            return await Service.CreateAsync(model);
+            //if (res.Succeeded)
+            //{
+            //    try
+            //    {
+            //        var map = Mapper.Map<UserSubscription>(res.Data);
+            //        return Result<UserSubscription>.Success(map);
 
-                }
-                catch (Exception e)
-                {
-                    return Result<UserSubscription>.Fail();
-                }
-            }
-            else
-            {
-                return Result<UserSubscription>.Fail(res.Messages);
-            }
+            //    }
+            //    catch (Exception e)
+            //    {
+            //        return Result<UserSubscription>.Fail();
+            //    }
+            //}
+            //else
+            //{
+            //    return Result<UserSubscription>.Fail(res.Messages);
+            //}
         }
 
 
@@ -311,7 +313,7 @@ namespace LAHJA.Data.UI.Templates.Subscription
             IDialogService dialogService,
             ISnackbar snackbar) : base(mapper, AuthService, client, builderComponents, navigation, dialogService, snackbar)
         {
-            //this.BuilderComponents.SubmitCreate = OnSubmitCreateSubscription;
+            this.BuilderComponents.SubmitCreate = OnSubmitCreateSubscription;
 
             this.BuilderComponents.SubmitGetAll = OnSubmitGetAllSubscriptions;
 
@@ -362,6 +364,16 @@ namespace LAHJA.Data.UI.Templates.Subscription
                     _errors = response.Messages;
                 }
             }
+
+        }     
+        
+        private async Task<Result<SubscriptionCreateResponse>> OnSubmitCreateSubscription(DataBuildUserSubscriptionInfo DataBuildUserSubscriptionInfo)
+        {
+
+
+                return await builderApi.CreateAsync(DataBuildUserSubscriptionInfo);
+             
+            
 
         }
         private async Task OnSubmitUResumeSubscription(DataBuildUserSubscriptionInfo DataBuildUserSubscriptionInfo)

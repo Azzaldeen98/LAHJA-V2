@@ -38,7 +38,7 @@ namespace Application.Services.Subscriptions
         {
             return await hasActiveSubscriptionUseCase.ExecuteAsync();
         }
-        public async Task<Result<SubscriptionResponse>> CreateAsync(SubscriptionRequest request)
+        public async Task<Result<SubscriptionCreateResponse>> CreateAsync(SubscriptionCreate request)
         {
             return await createSubscriptionUseCase.ExecuteAsync(request);
         }

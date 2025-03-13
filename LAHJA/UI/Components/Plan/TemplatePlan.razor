@@ -9,7 +9,8 @@
 @inject ISnackbar Snackbar
 @inject IManageLanguageService _manageLanguageService
 @using LAHJA.Them
- @* @attribute [Allow] *@
+@using System.Globalization
+@* @attribute [Allow] *@
 @if (Params != null)
 {
 
@@ -19,18 +20,18 @@
 
         <MudCard Class="@("p-0  position-relative m-auto "+@Params.ClassImport)">
 
-         @*    @if (_isLoading)
+            @*    @if (_isLoading)
             {
                 <Loading IsLoading="_isLoading" />
 
             }else{ *@
-                <MudText Typo="Typo.h6"  Class="@(Params.HeaderImport+" w-100")"> @Params.Name</MudText>
-                <small  class="mx-3">@Params.Description</small>
-                <MudCardContent>
+            <MudText Typo="Typo.h6"  Class="@(Params.HeaderImport+" w-100")"> @Params.Name</MudText>
+            <small  class="mx-3">@Params.Description</small>
+            <MudCardContent>
                 <MudText Typo="Typo.body1" Class="mb-1">
                     @if (Params.IsPaid==true)
                     {
-                        <MudText Typo="Typo.h5"> @(Params.MonthlyPrice)$ <small style="font-size:9px">/ @DMonth[CurrentLanguage]</small> </MudText>
+                        <MudText Typo="Typo.h5"> @(Params.MonthlyPrice)$ <small style="font-size:9px">/ @DMonth[lg]</small> </MudText>
                     }
                 </MudText>
                 <MudList Dense="true" T="object">
@@ -48,7 +49,7 @@
                         //Services List
                         <MudListItem Text="Services" @bind-Expanded="_expanded">
                             <NestedList>
-                              
+
                                 @foreach (var feature in Params.Features)
                                 {
                                     <MudListItem>
@@ -63,21 +64,21 @@
 
                     }
                 </MudList>
-                   <MudDivider />
-                    <MudCardActions Class="w-100">
+                <MudDivider />
+                <MudCardActions Class="w-100">
                     @if (!_isDisplayButton)
                     {
                         @if (_isUpgrade)
                         {
 
                             <MudButton Class="@(@AppTextStyle.TEXT_TRANSFORM_NORMAL+" w-100")" Variant="Variant.Filled"
-                                       Color="@AppColors.BASE_COLOR_ENUM" OnClick="@(()=>OnSubmitUpgrade(@Params))">@GetTranslation("Upgrade")</MudButton>
-                            
+                            Color="@AppColors.BASE_COLOR_ENUM" OnClick="@(()=>OnSubmitUpgrade(@Params))">@GetTranslation("Upgrade")</MudButton>
+
                         }
                         else if (_allowUpdate)
                         {
 
-                           @*  <MudButton Class="@(@AppTextStyle.TEXT_TRANSFORM_NORMAL+"  w-100")"
+                            @*  <MudButton Class="@(@AppTextStyle.TEXT_TRANSFORM_NORMAL+"  w-100")"
                             Variant="Variant.Filled" Color="@AppColors.BASE_COLOR_ENUM"
                                        OnClick="@(()=>OnSubmitConfirm(@Params))">@GetTranslation("Confirm")</MudButton> *@
 
@@ -85,7 +86,7 @@
 
                         @* <MudButton Class="@(@AppTextStyle.TEXT_TRANSFORM_NORMAL+" px-3")" Variant="Variant.Filled" Color="Color.Default" OnClick="@(()=>OnSubmitCancel(@Params))">Cancel</MudButton> *@
                     }
-                    
+
                 </MudCardActions>
             </MudCardContent>
             @* } *@
@@ -125,21 +126,27 @@
     private bool _allowUpdate = false;
 
     private bool _isUpgrade { get; set; } = false;
-    private string CurrentLanguage { get; set; } = "ar";
+    private string lg { get; set; } = "en";
     private Dictionary<string, string> DMonth = new()
     {
         { "en", "month" },
         { "ar", "شهر" }
     };
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override void OnInitialized()
     {
-        if (firstRender)
-        {
-            CurrentLanguage = await _manageLanguageService.GetLanguageAsync();
-            StateHasChanged();
-        }
+        lg= CultureInfo.CurrentUICulture.Name;
     }
+
+
+    // protected override async Task OnAfterRenderAsync(bool firstRender)
+    // {
+    //     if (firstRender)
+    //     {
+    //         lg = await _manageLanguageService.GetLanguageAsync();
+    //         StateHasChanged();
+    //     }
+    // }
 
     private Color GetChipColor(bool status)
 
@@ -350,7 +357,7 @@
 
     private string GetTranslation(string key)
     {
-        return CurrentLanguage == "ar"
+        return lg == "ar"
             ? TransAr.GetValueOrDefault(key, key)
             : TransEn.GetValueOrDefault(key, key);
     }

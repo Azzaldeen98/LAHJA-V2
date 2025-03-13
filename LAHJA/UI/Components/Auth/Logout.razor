@@ -1,5 +1,6 @@
 ﻿ @page "/Logout"
  @page "/Logout/{InBackend:bool}"
+ @page "/Logout/{CancelUrl}/{InBackend:bool}"
 
 @using Domain.ShareData
 @using LAHAJ.Loading
@@ -51,7 +52,9 @@
     public bool FlagDev { get; set; } = true;
 
     [Parameter]
-    public bool InBackend { get; set; } = true;
+    public bool InBackend { get; set; } = true;  
+    [Parameter]
+    public string CancelUrl { get; set; }
 
     Dictionary<string, Dictionary<string, string>> labels = new()
     {
@@ -65,12 +68,23 @@
         } }
     };
 
+
+
     private string Trans(string key)
     {
         return labels.ContainsKey(lg) &&
         labels[lg].ContainsKey(key) ? labels[lg][key] : "";
 
     }
+
+    protected override void OnInitialized()
+    {
+        if (!string.IsNullOrEmpty(CancelUrl))
+        {
+            CancelUrl = System.Web.HttpUtility.UrlDecode(CancelUrl);
+        }
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -95,8 +109,6 @@
 
         await templateAuth.LogoutAsync();
     }
-
-
 
     private async Task ConfirmLogout()
     {
@@ -136,7 +148,7 @@
 
     private void CancelLogout()
     {
-        Navigation.NavigateTo("/");
+        Navigation.NavigateTo(CancelUrl??"/");
     }
 }
 

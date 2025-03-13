@@ -11,10 +11,12 @@ namespace LAHJA.Helpers.Services
     {
         private readonly IJSRuntime _jsRuntime;
         private readonly ProtectedSessionStorage PSession;
-        public TokenService(IJSRuntime jsRuntime, ProtectedSessionStorage pSession)
+        private readonly ProtectedLocalStorage PLocalStorage;
+        public TokenService(IJSRuntime jsRuntime, ProtectedSessionStorage pSession, ProtectedLocalStorage pLocalStorage)
         {
             _jsRuntime = jsRuntime;
             PSession = pSession;
+            PLocalStorage = pLocalStorage;
         }
         public async Task<bool> IsWebHasStartUpAsync()
         {
@@ -85,7 +87,8 @@ namespace LAHJA.Helpers.Services
         {
             if (!string.IsNullOrEmpty(token))
             {
-                await _jsRuntime.InvokeVoidAsync("localStorageHelper.setItem", ConstantsApp.ACCESS_TOKEN, token);
+                await PLocalStorage.SetAsync(ConstantsApp.ACCESS_TOKEN, token);
+                //await _jsRuntime.InvokeVoidAsync("localStorageHelper.setItem", ConstantsApp.ACCESS_TOKEN, token);
             }
            
         }
@@ -94,7 +97,8 @@ namespace LAHJA.Helpers.Services
         {
             if (!string.IsNullOrEmpty(token))
             {
-                await _jsRuntime.InvokeVoidAsync("localStorageHelper.setItem", ConstantsApp.REFRESH_TOKEN, token);
+                await PLocalStorage.SetAsync(ConstantsApp.REFRESH_TOKEN, token);
+                //await _jsRuntime.InvokeVoidAsync("localStorageHelper.setItem", ConstantsApp.REFRESH_TOKEN, token);
             }
 
            
@@ -103,7 +107,8 @@ namespace LAHJA.Helpers.Services
         {
             if (!string.IsNullOrEmpty(expiresIn))
             {
-                await _jsRuntime.InvokeVoidAsync("localStorageHelper.setItem", ConstantsApp.EXPIRES_IN_TOKEN, expiresIn);
+                await PLocalStorage.SetAsync(ConstantsApp.EXPIRES_IN_TOKEN, expiresIn);
+                //await _jsRuntime.InvokeVoidAsync("localStorageHelper.setItem", ConstantsApp.EXPIRES_IN_TOKEN, expiresIn);
             }
            
         }
@@ -111,39 +116,99 @@ namespace LAHJA.Helpers.Services
         {
             if (!string.IsNullOrEmpty(tokenType))
             {
-                await _jsRuntime.InvokeVoidAsync("localStorageHelper.setItem", ConstantsApp.TOKEN_TYPE, tokenType);
+                await PLocalStorage.SetAsync(ConstantsApp.TOKEN_TYPE, tokenType);
+                //await _jsRuntime.InvokeVoidAsync("localStorageHelper.setItem", ConstantsApp.TOKEN_TYPE, tokenType);
             }
  
         }
         public async Task SaveLoginTypeAsync(LoginType type)
         {
-            await _jsRuntime.InvokeVoidAsync("localStorageHelper.setItem", ConstantsApp.LOGIN_TYPE, type.ToString());
+            await PLocalStorage.SetAsync(ConstantsApp.LOGIN_TYPE, type.ToString());
+
+            //await _jsRuntime.InvokeVoidAsync("localStorageHelper.setItem", ConstantsApp.LOGIN_TYPE, type.ToString());
         }
         public async Task DeleteLoginTypeAsync()
         {
-            await _jsRuntime.InvokeVoidAsync("localStorageHelper.setItem", ConstantsApp.LOGIN_TYPE);
+            try
+            {
+                await PLocalStorage.DeleteAsync(ConstantsApp.LOGIN_TYPE);
+
+            }
+            catch (Exception e)
+            {
+                
+            }
+           
+            //await _jsRuntime.InvokeVoidAsync("localStorageHelper.setItem", ConstantsApp.LOGIN_TYPE);
         }
         public async Task<string> GetLoginTypeAsync()
         {
-            return await _jsRuntime.InvokeAsync<string>("localStorageHelper.getItem", ConstantsApp.LOGIN_TYPE) ?? LoginType.Email.ToString();
+            try
+            {
+                return (await PLocalStorage.GetAsync<string>(ConstantsApp.LOGIN_TYPE)).Value ?? "";
+
+            }
+            catch (Exception e)
+            {
+                return "";
+            }
+            //return await _jsRuntime.InvokeAsync<string>("localStorageHelper.getItem", ConstantsApp.LOGIN_TYPE) ?? LoginType.Email.ToString();
         }
         public async Task<string> GetTokenAsync()
         {
-            return await _jsRuntime.InvokeAsync<string>("localStorageHelper.getItem", ConstantsApp.ACCESS_TOKEN)??"";
+            try
+            {
+                return (await PLocalStorage.GetAsync<string>(ConstantsApp.ACCESS_TOKEN)).Value ?? "";
+
+            }catch(Exception e)
+            {
+                return "";
+            }
+            //return await _jsRuntime.InvokeAsync<string>("localStorageHelper.getItem", ConstantsApp.ACCESS_TOKEN)??"";
         }  
         
 
         public async Task<string> GetRefreshTokenAsync()
         {
-            return await _jsRuntime.InvokeAsync<string>("localStorageHelper.getItem", ConstantsApp.REFRESH_TOKEN) ?? "";
+            try
+            {
+                return (await PLocalStorage.GetAsync<string>(ConstantsApp.REFRESH_TOKEN)).Value ?? "";
+
+            }
+            catch (Exception e)
+            {
+                return "";
+            }
+            //return await _jsRuntime.InvokeAsync<string>("localStorageHelper.getItem", ConstantsApp.REFRESH_TOKEN) ?? "";
         }
         public async Task<string> GetExpiresInTokenAsync()
         {
-            return await _jsRuntime.InvokeAsync<string>("localStorageHelper.getItem", ConstantsApp.EXPIRES_IN_TOKEN);
+            try
+            {
+                return (await PLocalStorage.GetAsync<string>(ConstantsApp.EXPIRES_IN_TOKEN)).Value ?? "";
+
+            }
+            catch (Exception e)
+            {
+                return "";
+            }
+            //return (await PLocalStorage.GetAsync<string>(ConstantsApp.EXPIRES_IN_TOKEN)).Value ?? "";
+            //return await _jsRuntime.InvokeAsync<string>("localStorageHelper.getItem", ConstantsApp.EXPIRES_IN_TOKEN);
         }
         public async Task<string> GetTokenTypeAsync()
         {
-            return await _jsRuntime.InvokeAsync<string>("localStorageHelper.getItem", ConstantsApp.TOKEN_TYPE);
+            try
+            {
+                return (await PLocalStorage.GetAsync<string>(ConstantsApp.TOKEN_TYPE)).Value ?? "";
+
+            }
+            catch (Exception e)
+            {
+                return "";
+            }
+
+            //return (await PLocalStorage.GetAsync<string>(ConstantsApp.TOKEN_TYPE)).Value ?? "";
+            //return await _jsRuntime.InvokeAsync<string>("localStorageHelper.getItem", ConstantsApp.TOKEN_TYPE);
         }
 
         public async Task SaveAllTokensAsync(string accessToken, string refreshToken,
@@ -172,7 +237,17 @@ namespace LAHJA.Helpers.Services
 
         public async Task RemoveTokenAsync()
         {
-            await _jsRuntime.InvokeVoidAsync("localStorageHelper.removeItem", ConstantsApp.ACCESS_TOKEN);
+            
+            try
+            {
+                await PLocalStorage.DeleteAsync(ConstantsApp.ACCESS_TOKEN);
+
+            }
+            catch (Exception e)
+            {
+
+            }
+            //await _jsRuntime.InvokeVoidAsync("localStorageHelper.removeItem", ConstantsApp.ACCESS_TOKEN);
         }
 
 	
@@ -180,10 +255,14 @@ namespace LAHJA.Helpers.Services
         {
             try
             {
-                await _jsRuntime.InvokeVoidAsync("localStorageHelper.removeItem", ConstantsApp.ACCESS_TOKEN);
-                await _jsRuntime.InvokeVoidAsync("localStorageHelper.removeItem", ConstantsApp.REFRESH_TOKEN);
-                await _jsRuntime.InvokeVoidAsync("localStorageHelper.removeItem", ConstantsApp.EXPIRES_IN_TOKEN);
-                await _jsRuntime.InvokeVoidAsync("localStorageHelper.removeItem", ConstantsApp.TOKEN_TYPE);
+                await PLocalStorage.DeleteAsync(ConstantsApp.ACCESS_TOKEN);
+                await PLocalStorage.DeleteAsync(ConstantsApp.REFRESH_TOKEN);
+                await PLocalStorage.DeleteAsync(ConstantsApp.EXPIRES_IN_TOKEN);
+                await PLocalStorage.DeleteAsync(ConstantsApp.TOKEN_TYPE);
+                //await _jsRuntime.InvokeVoidAsync("localStorageHelper.removeItem", ConstantsApp.ACCESS_TOKEN);
+                //await _jsRuntime.InvokeVoidAsync("localStorageHelper.removeItem", ConstantsApp.REFRESH_TOKEN);
+                //await _jsRuntime.InvokeVoidAsync("localStorageHelper.removeItem", ConstantsApp.EXPIRES_IN_TOKEN);
+                //await _jsRuntime.InvokeVoidAsync("localStorageHelper.removeItem", ConstantsApp.TOKEN_TYPE);
 
                 await RemoveTempTokenAsync();
             }

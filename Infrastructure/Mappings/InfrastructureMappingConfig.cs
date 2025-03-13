@@ -49,6 +49,7 @@ using Domain.Entities.AuthorizationSession;
 using Domain.Entities.ModelGateway;
 using Infrastructure.Models.ModelGateway;
 using Domain.Entities.Checkout.Request;
+using Domain.Entities.Subscriptions.Request;
 
 
 
@@ -123,9 +124,11 @@ namespace Infrastructure.Mappings.Plans
 
             //// Subscriptions 
             CreateMap<SubscriptionResponseModel, SubscriptionResponse>().ReverseMap();
+            CreateMap<SubscriptionCreateResponseModel, SubscriptionResponse>().ReverseMap();
             CreateMap<SubscriptionModel, SubscriptionResponseModel>().ReverseMap();
             CreateMap<SubscriptionModel, SubscriptionResponse>().ReverseMap();
             CreateMap<SubscriptionRequestModel, SubscriptionModel>().ReverseMap();
+            CreateMap<SubscriptionCreateModel, SubscriptionCreate>().ReverseMap();
 
             // Billing
             CreateMap<CardDetailsResponseModel,CardDetailsResponse>().ReverseMap();  

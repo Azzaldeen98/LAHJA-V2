@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Domain.Entities.Subscriptions.Request;
+using Domain.Exceptions;
 using Domain.Wrapper;
 using Infrastructure.DataSource.ApiClient.Base;
 using Infrastructure.DataSource.ApiClientFactory;
@@ -40,8 +42,33 @@ namespace Infrastructure.DataSource.ApiClient.Payment
 
 
 
-        }  
-        
+        }
+        public async Task<SubscriptionCreateResponseModel> CreateSubscriptionAsync(SubscriptionCreateModel request)
+        {
+            try
+            {
+                var model = _mapper.Map<Nswag.SubscriptionCreate>(request);
+                var client = await GetApiClient();
+                var response = await client.CreateSubscriptionAsync(model);
+
+
+                var resModel = _mapper.Map<SubscriptionCreateResponseModel>(response);
+                return resModel;
+
+            }
+            catch (ApiException e)
+            {
+
+               throw new ServerException(e.Message, e.StatusCode);
+
+            }
+            catch (Exception e)
+            {
+
+                throw;
+
+            }
+        }
         public async Task<Result<SubscriptionResponseModel>> PauseAsync(string id)
         {
             try
@@ -121,8 +148,6 @@ namespace Infrastructure.DataSource.ApiClient.Payment
 
                 var client = await GetApiClient();
                 var response = await client.CancelSubscriptionAsync(id);
-
-
                 var resModel = _mapper.Map<SubscriptionResponseModel>(response);
                 return Result<SubscriptionResponseModel>.Success(resModel);
 

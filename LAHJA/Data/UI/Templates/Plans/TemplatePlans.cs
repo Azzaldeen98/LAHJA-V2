@@ -187,7 +187,7 @@ namespace LAHJA.Data.UI.Templates.Plans
         public override async Task<Result<SubscriptionPlanInfo>> GetPlanAsync(DataBuildPlansBase data)
         {
 
-            var res = await Service.GetPlanAsync(data.PlanId, "en");
+            var res = await Service.GetPlanAsync(data.PlanId, data.Lg);
             if (res.Succeeded)
             {
                 var map = Mapper.Map<SubscriptionPlanInfo>(res.Data);

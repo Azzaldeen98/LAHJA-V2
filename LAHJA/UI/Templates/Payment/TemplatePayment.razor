@@ -11,6 +11,7 @@
 @using LAHJA.UI.Components.Billing.Shared
 @using LAHJA.UI.Components.Payment
 @using Microsoft.AspNetCore.Authorization
+@using System.Globalization
 @using global::Shared.Constants.Router
 
 @inject NavigationManager Navigation;
@@ -79,7 +80,7 @@
     {
         if (PlanId != null)
         {
-            var planResult = await TemplatePlan.GetSubmitSubscriptionPlan(new DataBuildPlansBase { PlanId = PlanId });
+            var planResult = await TemplatePlan.GetSubmitSubscriptionPlan(new DataBuildPlansBase { PlanId = PlanId, Lg = CultureInfo.CurrentUICulture.Name });
             if (planResult.Succeeded)
             {
                 buildPlanData = planResult.Data;

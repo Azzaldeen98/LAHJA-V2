@@ -576,10 +576,9 @@
     }
 
     async void logout(bool isauth)
-
     {
-
-        NavigationManager.NavigateTo($"Logout/{false}");
+        var cancelUrl = System.Web.HttpUtility.UrlEncode(NavigationManager.Uri);
+        NavigationManager.NavigateTo($"Logout/{cancelUrl}/{false}");
     }
     private void ChangeFillColor(bool _isDarkMode)
     {

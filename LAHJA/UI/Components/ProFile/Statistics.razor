@@ -1,6 +1,7 @@
 ﻿@using LAHJA.UI.Components.ProFile.Charts
 @using LAHJA.UI.Components.Statistics
 @using Microsoft.AspNetCore.Authorization
+@using System.Globalization
 @attribute [Authorize]
 @inject IManageLanguageService _manageLanguageService
 
@@ -8,8 +9,7 @@
 
 
 
-<IframeComponent 
-    Lg="@lg" 
+<IframeComponent Lg="@CultureInfo.CurrentUICulture.Name"
     StyleCss="width:100%;height:700px !important;border:none;"
     IsLoading="true" 
     ServiceId="serv_5c095af3909547e888f2a0636a307ff9"

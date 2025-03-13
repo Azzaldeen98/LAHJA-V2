@@ -1,5 +1,6 @@
 ﻿using Domain.Entities.Subscriptions.Request;
 using Domain.Entities.Subscriptions.Response;
+using Domain.Exceptions;
 using Domain.Repository.Subscriptions;
 using Domain.Wrapper;
 
@@ -14,10 +15,26 @@ namespace Application.UseCase.Plans.Get
             this.repository = repository;
         }
 
-        public async Task<Result<SubscriptionResponse>> ExecuteAsync(SubscriptionRequest request)
+        public async Task<Result<SubscriptionCreateResponse>> ExecuteAsync(SubscriptionCreate request)
         {
 
-            return await repository.CreateAsync(request);
+            try
+            {
+                var response = await repository.CreateAsync(request);
+              return  Result<SubscriptionCreateResponse>.Success(response);
+
+            }
+            catch(ServerException e)
+            {
+                return Result<SubscriptionCreateResponse>.Fail(e.Message,e.StatusCode);
+
+            }
+            catch(Exception e)
+            {
+                return Result<SubscriptionCreateResponse>.Fail(e.Message);
+            }
+           
+           
 
         }
     }  

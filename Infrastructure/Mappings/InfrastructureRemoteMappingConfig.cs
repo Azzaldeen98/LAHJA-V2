@@ -20,6 +20,7 @@ using Infrastructure.Models.Subscriptions.Response;
 using Infrastructure.Nswag;
 using Domain.Entities.Profile.Request;
 using Domain.Entities.ModelAi;
+using Infrastructure.Models.Subscriptions.Request;
 
 
 namespace Infrastructure.Mappings.Plans
@@ -98,9 +99,12 @@ namespace Infrastructure.Mappings.Plans
 
             //// Subscriptions 
             CreateMap<SubscriptionResponse, SubscriptionResponseModel>().ReverseMap();
+            CreateMap<SubscriptionCreateResponse, SubscriptionCreateResponseModel>().ReverseMap();
             CreateMap<PlanResponse, SubscriptionPlanModel>().ReverseMap();
-      
- 
+            CreateMap<SubscriptionCreate, SubscriptionCreateModel>().ReverseMap();
+            //CreateMap<SubscriptionCreateRequest, SubscriptionCreateModel>().ReverseMap();
+
+
 
             //// Settings 
             //CreateMap<object, SettingResponseModel>().ReverseMap();

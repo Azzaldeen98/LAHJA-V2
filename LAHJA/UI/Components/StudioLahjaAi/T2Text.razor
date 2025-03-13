@@ -12,6 +12,7 @@
 @using LAHJA.Data.UI.Components.ServiceCard
 @using LAHJA.ApiClient.Services.Query
 @using Microsoft.AspNetCore.Components
+@using System.Globalization
 
 @inherits StudioAi
 
@@ -27,7 +28,7 @@
 @if (!string.IsNullOrEmpty(_srcFrame))
 {
 
-    <IframeComponent Lg="@CurrentLanguage"
+    <IframeComponent Lg="@Lg"
                      StyleCss="width:100%;height:100%;border:none;"
                      IsLoading="true"
                      UrlCancel="@UrlCancel"
@@ -37,11 +38,11 @@
 
 }
 
-@if (isLoading)
+@* @if (isLoading)
 {
     <Loading IsLoading="@isLoading" />
 }
-
+ *@
 
 @* <div class="d-flex Cont-speech" >
 
@@ -164,7 +165,7 @@
    
 
     private bool IsSettingsMenuVisible = false;
-    private string CurrentLanguage = "ar";
+    // private string CurrentLanguage = "ar";
 
     private RenderFragment? SelectedComponent;
     private bool isProcessing = false;

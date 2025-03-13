@@ -266,7 +266,8 @@ namespace Domain.Wrapper
 
             public static Result<T> Success(T data)
             {
-                return new Result<T> { Succeeded = true, Data = data };
+                
+            return new Result<T> { Succeeded = true, Data = data };
             }
 
             public static Result<T> Success(T data, string message)

@@ -11,6 +11,7 @@
 @using LAHJA.UI.Components.ProFile.Settings
 @using LAHJA.UI.Components.ProFile.USettings
 @using Microsoft.AspNetCore.Authorization
+@using System.Globalization
 @attribute [Authorize]
 
 
@@ -23,12 +24,13 @@
 
 
 @if(Template!=null && buildData!=null){
-    <Subscription Language="@lg" 
-                  DataBuild="buildData"
-                  SubmitCheckoutManage="OnSubmitCheckoutManage"
-                  SubmitPause="TemplateSub.BuilderComponents.SubmitPause"
-                  SubmitResume="TemplateSub.BuilderComponents.SubmitResume"
-                  SubmitDelete="TemplateSub.BuilderComponents.SubmitDelete" />
+    <Subscription 
+        Language="@CultureInfo.CurrentUICulture.Name"
+        DataBuild="buildData"
+        SubmitCheckoutManage="OnSubmitCheckoutManage"
+        SubmitPause="TemplateSub.BuilderComponents.SubmitPause"
+        SubmitResume="TemplateSub.BuilderComponents.SubmitResume"
+        SubmitDelete="TemplateSub.BuilderComponents.SubmitDelete" />
 }
 
 @code{
@@ -50,10 +52,11 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        // lg = CultureInfo.CurrentUICulture.Name;
 
         if (firstRender)
         {
-            lg = await _manageLanguageService.GetLanguageFromSessionAsync();
+            // lg = await _manageLanguageService.GetLanguageFromSessionAsync();
             var res= await Template.GetDataBuildSubscriptions();
             if (res.Succeeded)
             {

@@ -25,7 +25,7 @@ namespace LAHJA.ApplicationLayer.Subscription
         {
             return await _subscriptionService.HasActiveSubscriptionAsync();
         }
-        public async Task<Result<SubscriptionResponse>> CreateAsync(SubscriptionRequest request)
+        public async Task<Result<SubscriptionCreateResponse>> CreateAsync(SubscriptionCreate request)
         {
             return await _subscriptionService.CreateAsync(request);
         }

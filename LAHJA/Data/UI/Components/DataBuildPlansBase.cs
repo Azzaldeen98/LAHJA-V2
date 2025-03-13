@@ -54,6 +54,7 @@ namespace LAHJA.Data.UI.Components
         {
             public string CategoryId { get; set; }
             public string PlanId { get; set; }
+            public string Lg { get; set; }
         }
 
     public  class CardStateCount<T>

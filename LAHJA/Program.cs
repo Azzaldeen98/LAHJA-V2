@@ -25,6 +25,7 @@ using LAHJA.Notification;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
 using Blazored.LocalStorage;
+using Microsoft.AspNetCore.DataProtection;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -126,10 +127,12 @@ builder.Services
     });
 
 
+
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<ISessionUserManager, SessionUserManager>();
-
+builder.Services.AddScoped<ProtectedLocalStorage>();
+builder.Services.AddScoped<ProtectedSessionStorage>();
 
 builder.Services.AddMudBlazorSnackbar(config =>
 {
@@ -143,11 +146,22 @@ builder.Services.AddMudBlazorSnackbar(config =>
 
 
 
+// جلب المفتاح من متغير البيئة
+//var key = Environment.GetEnvironmentVariable("6Ld41JsqAAAAAEvJSBeM48mCbu3ndltGRi7u06gU");
+
+//builder.Services.AddDataProtection()
+//    .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(builder.Environment.ContentRootPath, "App_Data"))) // حفظ المفاتيح في مجلد آمن
+//    .ProtectKeysWithDpapi() 
+//    .SetApplicationName("LAHJA");
+
+
+
+
 builder.Services.AddServerSideBlazor()
     .AddCircuitOptions(options => { options.DetailedErrors = true; });
 
 builder.Services.AddMudServices();
-builder.Services.AddScoped<ProtectedSessionStorage>();
+
 
 ///  تفعيل الجلسات (Sessions)
 builder.Services.AddDistributedMemoryCache();

@@ -11,15 +11,19 @@
     <Compile Remove="Data\UI\Templates\NewFolder1\**" />
     <Compile Remove="Infrastructure\**" />
     <Compile Remove="UI\Teamplat\**" />
+    <Compile Remove="wwwroot\js\NewFolder\**" />
     <Content Remove="Data\UI\Templates\NewFolder1\**" />
     <Content Remove="Infrastructure\**" />
     <Content Remove="UI\Teamplat\**" />
+    <Content Remove="wwwroot\js\NewFolder\**" />
     <EmbeddedResource Remove="Data\UI\Templates\NewFolder1\**" />
     <EmbeddedResource Remove="Infrastructure\**" />
     <EmbeddedResource Remove="UI\Teamplat\**" />
+    <EmbeddedResource Remove="wwwroot\js\NewFolder\**" />
     <None Remove="Data\UI\Templates\NewFolder1\**" />
     <None Remove="Infrastructure\**" />
     <None Remove="UI\Teamplat\**" />
+    <None Remove="wwwroot\js\NewFolder\**" />
   </ItemGroup>
 	<ItemGroup>
 
@@ -61,7 +65,6 @@
 	  <Folder Include="UI\Templates\Sections\Profile\" />
 	  <Folder Include="wwwroot\assets\images\Icon\" />
 	  <Folder Include="wwwroot\css\fonts\Jozoor_Font\__MACOSX\" />
-	  <Folder Include="wwwroot\js\NewFolder\" />
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\Application\Application.csproj" />
